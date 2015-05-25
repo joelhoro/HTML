@@ -11,6 +11,7 @@ Date.prototype.AddDays = function(n) {
 
 // Turn data into a html table
 function DataToTable(headers,data,tableId) {
+	console.log('Filling table with ', headers.length, ' columns (',headers,') on ', data.length, ' rows -> ', tableId, ': ', data);
     var output = "";
     var headersHtml = "<tr>";
     $.each(headers, function(idx) { headersHtml += "<th>"+this+"</th>"});

@@ -1,7 +1,20 @@
 <Query Kind="Program">
+  <NuGetReference>CsvHelper</NuGetReference>
   <NuGetReference>Newtonsoft.Json</NuGetReference>
   <Namespace>Newtonsoft.Json</Namespace>
 </Query>
+
+public class SalesRecord {
+
+	public DateTime OrderDate { get; set; }
+	public string Region { get; set; }
+	public string Rep { get; set; }
+	public string Item { get; set; }
+	public double Units { get; set; }
+	public double UnitCost { get; set; }
+	public double Total { get; set; }
+
+}
 
 public class JSDoc {
 
@@ -13,12 +26,24 @@ public class JSDoc {
 	public string Write(string fileName= "") {
 		if(fileName=="")
 			fileName = Path.GetRandomFileName() + ".js";
-			
+
 		File.WriteAllText(fileName,Contents());
 		return fileName;
 	}
 	
 	public static string TableVariableName =  "htmldocTable_{0:d2}";
+
+	public static IEnumerable<object> FlattenObject<T>(T row) {
+		return row
+			.GetType()
+			.GetProperties()
+			.Select(p => p.GetValue(row));
+	}
+
+	public void AddTable<T>(IEnumerable<string> headers, IEnumerable<T> rows, int tableCount) {
+		var flatRows = rows.Select(r => FlattenObject<T>(r));
+		AddTable(headers,flatRows,tableCount);
+	}
 	
 	public void AddTable(IEnumerable<string> headers, IEnumerable<IEnumerable<object>> rows, int tableCount) {
 		var tableName = string.Format(TableVariableName,tableCount);
@@ -55,6 +80,17 @@ public class HTMLDoc {
 		for(int i = 0; i < tableCount; i++ ) {
 			var variableName = String.Format(JSDoc.TableVariableName, i);
 			jsbody += string.Format("\tDataInfoToTable({0});\n",variableName);
+			// TODO: clean up
+			jsbody += string.Format(@"
+				var {0}_alldata= [{0}.headers].concat({0}.data);
+				var {0}_csv_link = CsvLink({0}_alldata,'data.csv');
+				{0}_csv_link.textContent = '[csv]';
+				$('#{0}-csv').append({0}_csv_link);
+				var {0}_link = JsonLink({0}_alldata,'data.json');
+				{0}_link.textContent = '[json]';
+				$('#{0}-json').append({0}_link);
+			", variableName);
+			
 		}
 		var initialization = String.Format( @"
 	<script>
@@ -76,6 +112,12 @@ public class HTMLDoc {
 	private JSDoc jsDoc = new JSDoc();
 
 	private int tableCount = 0;
+	
+	public void AddTable<T>(IEnumerable<string> headers, IEnumerable<T> rows) {
+		var flatRows = rows.Select(r => JSDoc.FlattenObject<T>(r));
+		AddTable(headers,flatRows);	
+	}
+	
 	public void AddTable(IEnumerable<string> headers, IEnumerable<IEnumerable<object>> rows) {
 		jsDoc.AddTable(headers, rows, tableCount);
 		var tableVariableName = string.Format(JSDoc.TableVariableName, tableCount++);
@@ -84,7 +126,11 @@ public class HTMLDoc {
 				<thead></thead><tbody></tbody>
 			</table>
 		", tableVariableName);
-
+		var addLink = true;
+		if(addLink) {
+			body += string.Format("<div id='{0}-csv'></div>", tableVariableName);
+			body += string.Format("<div id='{0}-json'></div>", tableVariableName);
+		}
 	}
 
 	public string Contents() {
@@ -95,7 +141,7 @@ public class HTMLDoc {
 		contents += "<body>\n" + body + "</body>\n";
 		
 		foreach(var link in _jsLinks) { contents += JSLink(link); }
-		var jsFileName = jsDoc.Write("htmldoc_data.js");
+		var jsFileName = jsDoc.Write(string.Format("data\\htmldoc_data_{0:yy-MM-dd-HHmmss}.js",DateTime.Now));
 		contents += JSLink(jsFileName);		
 		contents += JSInitialization();
 		
@@ -116,34 +162,37 @@ void Main()
 	Directory.SetCurrentDirectory(@"c:\Users\joel\Dropbox\Programming\HTML");
 	
 	var jsdoc = new JSDoc();
-	var headers = new List<string>() { "AAA", "BBB", "CCC" };
-	var table = new List<List<object>>() {
-		new List<object>() { "XXX", 123, 5.4 },
-		new List<object>() { "YuY", 54, 63 },
-		new List<object>() { "YuY", DateTime.Now, 63 }
-	};
+//	var headers = new List<string>() { "AAA", "BBB", "CCC" };
+//	var table = new List<List<object>>() {
+//		new List<object>() { "XXX", 123, 5.4 },
+//		new List<object>() { "YuY", 54, 63 },
+//		new List<object>() { "YuY", DateTime.Now, 63 }
+//	};
 	
+	var csvFile = @"sample data\sampledata.csv";
+	var reader = new StreamReader(csvFile);
+
+	var csv = new CsvHelper.CsvReader(reader);
+	csv.Configuration.AutoMap<SalesRecord>();
+	var headers = typeof(SalesRecord).GetProperties().Select(p => p.Name);
+	var records = csv.GetRecords<SalesRecord>().ToList();
 	
 	var htmldoc = new HTMLDoc();
 	htmldoc.AddCSSLink("bootstrap/css/bootstrap.css");
 	htmldoc.AddCSSLink("bootstrap/css/bootstrap-responsive.css");
 	htmldoc.AddJSLink("bootstrap/js/jquery.js");
-	htmldoc.AddJSLink("bootstrap/js/bootstrap.min.js");
+	htmldoc.AddJSLink("bootstrap/js/bootstrap.js");
 	// 
 	htmldoc.AddJSLink("htmldoc_utils.js");
 		
 	htmldoc.AddToBody("<H1>Table</H1>");
-	htmldoc.AddTable(headers,table);
+	htmldoc.AddTable<SalesRecord>(headers,records);
 	
-//	htmldoc.AddToBody("<H1>Second table</H1>");
-//	
-//	table.Add(new List<object>() { "YuY", DateTime.Now, 63 });
-//	htmldoc.AddTable(headers,table);
 	htmldoc.AddToBody(string.Format("Created at {0}",DateTime.Now.ToString()));
 
-	htmldoc.Write("test2.html");
-	
-	Process.Start("test2.html");
+	var fileName = "htmlDoc.html";
+	htmldoc.Write(fileName);
+	Process.Start(fileName);
 }
 
 // Define other methods and classes here
