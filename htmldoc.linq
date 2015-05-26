@@ -60,22 +60,87 @@ public class JSDoc {
 }
 
 
+public interface HTMLComponent {
+	string ToHTML();
+	string ToHTML(bool verbose);
+}
+
+public abstract class HTMLComponentBase : HTMLComponent {
+	public virtual string ToHTML() {
+		throw new NotImplementedException();
+	}
+	public string ToHTML(bool verbose) {
+		if(verbose)
+			return string.Format("<!-- Begin {0} -->\n{1}<!-- End {0} -->\n", GetType().Name, ToHTML() );
+		else
+			return ToHTML();
+	}
+}
+
+public class JSInclude : HTMLComponentBase {
+	private string _link;
+	public JSInclude(string link) {
+		_link = link;
+	}
+	public override string ToHTML() {
+		return string.Format("\t<script src='{0}'></script>\n", _link );
+	}
+	
+	public override string ToString() {
+		return string.Format("JSInclude[{0}]", _link);
+	}
+}
+
+public class CSSInclude : HTMLComponentBase {
+	private string _link;
+	public CSSInclude(string link) {
+		_link = link;
+	}
+	public override string ToHTML() {
+		return string.Format("\t<link href='{0}' rel='stylesheet'>\n",_link);
+	}
+	public override string ToString() {
+		return string.Format("CSSInclude[{0}]", _link);
+	}
+}
+
+public class HTML : HTMLComponentBase {
+	private string _html;
+	public HTML(string html) {
+		_html = html;
+	}
+	public override string ToHTML() {
+		return _html;
+	}
+	
+	public override string ToString() {
+		return string.Format("HTML[{0}]", _html);
+	}
+}
+
+public class JScript : HTMLComponentBase {
+	private string _code;
+	public JScript(string code) {
+		_code = code;
+	}
+	public override string ToHTML() {
+		return String.Format("<script>\n{0}\n</script>\n", _code);
+	}
+	
+	public override string ToString() {
+		return string.Format("JScript[{0}]", _code);
+	}
+}
+
 public class HTMLDoc {
 
 	private List<string> _jsLinks = new List<string>();
 	private List<string> _cssLinks = new List<string>();
 
-	private string body = ""; 
-
-	private static string JSLink(string link) {
-		return string.Format("\t<script src='{0}'></script>\n", link );
-	}
+	private List<HTMLComponent> components = new List<HTMLComponent>();
+	public bool VerboseHTML = false;
 	
-	private static string CSSLink(string link ) {
-		return string.Format("\t<link href='{0}' rel='stylesheet'>\n",link);
-	}
-	
-	private string JSInitialization() {
+	private JScript JSInitialization() {
 		var jsbody = initializationJs;
 		for(int i = 0; i < tableCount; i++ ) {
 			var variableName = String.Format(JSDoc.TableVariableName, i);
@@ -85,29 +150,29 @@ public class HTMLDoc {
 				var {0}_alldata= [{0}.headers].concat({0}.data);
 				var {0}_csv_link = CsvLink({0}_alldata,'data.csv');
 				{0}_csv_link.textContent = '[csv]';
-				$('#{0}-csv').append({0}_csv_link);
+				$('#{0}').append({0}_csv_link);
 				var {0}_link = JsonLink({0}_alldata,'data.json');
 				{0}_link.textContent = '[json]';
-				$('#{0}-json').append({0}_link);
+				$('#{0}').append({0}_link);
 			", variableName);
 			
 		}
 		var initialization = String.Format( @"
-	<script>
 	// initialization
 	$(document).ready( function() {{
 		{0}	}} );
-	</script>
 		", jsbody);
-		return initialization;
+		return new JScript(initialization);
 	}
 	
 	private string initializationJs = "";
 
-	public void AddJSLink(string link) { _jsLinks.Add(link); }
-	public void AddCSSLink(string link) { _cssLinks.Add(link); }
+	public void AddJSLink(string link) { Add(new JSInclude(link)); }
+	public void AddCSSLink(string link) { Add(new CSSInclude(link)); }
 	public void AddToJSInitialization(string code) { initializationJs += code + "\n"; }
-	public void AddToBody(string html) { body += html + "\n"; }
+	public void AddToBody(string html) { Add(new HTML(html + "\n")); }
+
+	public void Add(HTMLComponent component) { components.Add(component); }
 
 	private JSDoc jsDoc = new JSDoc();
 
@@ -121,29 +186,44 @@ public class HTMLDoc {
 	public void AddTable(IEnumerable<string> headers, IEnumerable<IEnumerable<object>> rows) {
 		jsDoc.AddTable(headers, rows, tableCount);
 		var tableVariableName = string.Format(JSDoc.TableVariableName, tableCount++);
-		body += string.Format( @"
+		var addLink = true;
+		var html = "";
+		if(addLink)
+			html += string.Format("<div id='{0}'></div>", tableVariableName);
+		html += string.Format( @"
 			<table id='{0}' class='table bootstrap-table table-striped table-hover'>
 				<thead></thead><tbody></tbody>
 			</table>
 		", tableVariableName);
-		var addLink = true;
-		if(addLink) {
-			body += string.Format("<div id='{0}-csv'></div>", tableVariableName);
-			body += string.Format("<div id='{0}-json'></div>", tableVariableName);
-		}
+		Add(new HTML(html));
 	}
 
-	public string Contents() {
-		var contents = "<html>\n<head>\n";
-		foreach(var link in _cssLinks) { contents += CSSLink(link); }
-		
-		contents += "</head>\n\n";
-		contents += "<body>\n" + body + "</body>\n";
-		
-		foreach(var link in _jsLinks) { contents += JSLink(link); }
+	public HTMLDoc() {
+		Add(new HTML("<html>\n<head>\n"));
+	}
+
+	public void StartBody() {
+		Add(new HTML("</head>\n\n"));
+		Add(new HTML("<body>\n"));
+	}
+	
+	public void EndBody() {
+		Add(new HTML("</body>\n\n"));
+	}
+	
+	public List<HTMLComponent> Components() {
+		var allcomponents = components.ToList();
 		var jsFileName = jsDoc.Write(string.Format("data\\htmldoc_data_{0:yy-MM-dd-HHmmss}.js",DateTime.Now));
-		contents += JSLink(jsFileName);		
-		contents += JSInitialization();
+		allcomponents.Add(new JSInclude(jsFileName));		
+		allcomponents.Add(JSInitialization());
+		return allcomponents;
+	}
+	
+	public string Contents() {
+		var contents = "";
+		foreach(var cpnt in Components()) {
+			contents += cpnt.ToHTML(VerboseHTML);
+		}
 		
 		return contents;
 	}
@@ -189,6 +269,10 @@ void Main()
 	htmldoc.AddTable<SalesRecord>(headers,records);
 	
 	htmldoc.AddToBody(string.Format("Created at {0}",DateTime.Now.ToString()));
+	htmldoc.Components();
+	htmldoc.Components();
+	htmldoc.Components();
+	htmldoc.Components();
 
 	var fileName = "htmlDoc.html";
 	htmldoc.Write(fileName);
