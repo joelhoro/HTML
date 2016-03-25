@@ -1,0 +1,94 @@
+<link href="css/jquery.treetable.theme.default.css" rel="stylesheet" type="text/css" />
+<script src="lib/jquery.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/jquery.treetable.js"></script>
+<script src="data.js"></script>
+<style>
+      .hidden {
+            visibility: hidden;
+      }
+</style>
+
+  <table class='hidden' id="example-advanced">
+        <caption>
+          <a href="#" onclick="jQuery('#example-advanced').treetable('expandAll'); return false;">Expand all</a>
+          <a href="#" onclick="jQuery('#example-advanced').treetable('collapseAll'); return false;">Collapse all</a>
+        </caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+<!--             <th>Kind</th>
+            <th>Size</th>
+ -->          </tr>
+        </thead>
+        <tbody>
+<!--         <tr data-tt-id='1'><td><span class='file'>Acknowledgements.rtf</span></td><td>File</td><td>480.95 KB</td></tr>
+      <tr data-tt-id='2'><td><span class='folder'>CHUD</span></td><td>Folder</td><td>--</td></tr>
+      <tr data-tt-id='2-1' data-tt-parent-id='2'><td><span class='folder'>amber</span></td><td>Folder</td><td>--</td></tr>
+      <tr data-tt-id='2-1-1' data-tt-parent-id='2-1'><td><span class='file'>AmberTraceFormats.pdf</span></td><td>File</td><td>124.46 KB</td></tr>
+ -->        </tbody>
+      </table>
+
+<script>
+
+Array.prototype.sum = function() { return this.reduce(function(a,b) { return a+b; } ) }
+Array.prototype.where = function(values) { return _.where(this,values); }
+Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
+Object.prototype.map = function(fn) { return _.map(this,fn); }
+
+// getdataforpath([], "Product");
+
+function ToObject(keys,values) {
+      return _.object(_.zip(keys,values));
+}
+
+function getdataforpath(path, values, nextPivot) {
+      //if(path == [])
+      valueFields = [ "Qtr 1"];
+      pivots = [ "Product", "Customer" ];
+      var filter = ToObject(path,values);
+      var filteredData = data.where(filter);
+      var groupedData = filteredData.groupBy(function(obj) { return obj[nextPivot]; });
+
+      // var filter = _.object(_.zip(path,values));
+      // var filteredData = _.where(data,filter);
+      // var groupedData = _.groupBy(filteredData, function(obj) { return obj[nextPivot]; })
+      var returnValue = groupedData.map(function(values,key) {
+             return { key: key, value: _.map(values, function(obj) { return obj[valueFields]; } ).sum() }
+      });
+      return returnValue;
+      // filteredData = data.filter(function(row) { 
+      //       var result = true;
+      //       var i = 0;
+      //       while(result && i < path.length) {
+      //             result = result & (row[path[i]].toLowerCase() == values[i].toLowerCase());
+      //             i++;
+      //       }
+      //       return result;
+      // } )
+}
+
+
+$(document).ready(function() {
+      var table = $("#example-advanced");
+      table.treetable({ expandable: true }).treetable("expandAll");
+      $(".hidden").removeClass("hidden");
+      table.treetable("loadBranch",null, "<tr data-tt-id='AAA'><td><span class=folder>Test1</span></td></tr>");
+
+      // table.treetable("loadBranch",null, "<tr data-tt-id='1'><td><span class='file'>Acknowledgements.rtf</span></td><td>File</td><td>480.95 KB</td></tr>");
+
+      node = table.treetable("node","AAA");
+      table.treetable("loadBranch",node, "<tr data-tt-id='AAA-1' data-tt-parent-id='AAA'><td><span class=folder>Test1</span></td></tr>");
+      node = table.treetable("node","AAA-1");
+      table.treetable("loadBranch",node, "<tr data-tt-id='1-2'  data-tt-parent-id='AAA'><td>Test2</td></tr>");
+      table.treetable({ expandable: true }).treetable("expandAll");
+
+      // table.treetable("loadBranch",node, "<tr data-tt-id='1' data-tt-parent-id='1'><td>Test1</td></tr>");
+      // table.treetable("loadBranch",node, "<tr data-tt-id='1' data-tt-parent-id='1'><td>Test1</td></tr>");
+
+
+      // $("[data-tt-id=2-1-1]").before("<tr data-tt-id='2-1-2' data-tt-parent-id='2-1'><td><span class='file'>Added node</span></td><td>NewNode</td><td>124.46 KB</td></tr>").addClass("indenter")
+})
+
+
+</script>

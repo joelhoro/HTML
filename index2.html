@@ -1,0 +1,104 @@
+<html>
+	<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
+
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        font-family: "Verdana"
+      }
+      h1 { border-bottom: 1px solid black }
+    </style>
+
+	<body>
+
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Project name</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- 	<div class="container">
+		<H1>Title</H1>
+			<p>Hello world</p>
+	</div>
+ -->
+
+<style>
+.table th {
+	text-align: center;
+}
+
+
+thead th {
+  background-color: #555555;
+  color: white;
+}
+
+
+</style>
+
+	<table id="datatable" style="height: 150px;" class="table bootstrap-table table-striped table-hover">
+		<H1>Employees</H1>
+		<div id="download"></div>
+		<thead>
+		<tr>
+		</tr>
+		</thead>
+		<tbody>
+	 		<tr><td>Loading...</td></tr>
+ 		</tbody>
+	</table>
+
+	    <script src="bootstrap/js/jquery.js"></script>
+	    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+	    <script src="data.js"></script>
+	    <script src="utils.js"></script>
+
+	    <script>
+
+		$(document).ready(function() {
+		    var tableId = "#datatable";
+			var headers = [ "First name", "Last name", "Job", "Age"];
+		    var data = GetData(5);
+
+		    DataToTable(headers,data,tableId);
+
+			var alldata= [headers].concat(data);
+
+			var link = CsvLink(alldata,"data.csv");
+			link.textContent = "[csv]";
+			$("#download").append(link);
+			var linkjson = JsonLink(alldata,"data.json");
+			linkjson.textContent = "[json]";
+			$("#download").append(linkjson);
+
+
+		})	   
+
+	    </script>
+
+
+	</body>
+	</head>
+</html>

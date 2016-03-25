@@ -1,0 +1,35 @@
+<html>
+	<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<body>
+<H1>Table</H1>
+
+	<H1>Employees</H1>
+	<div id="download"></div>
+	<table id="mytable0" style="height: 150px;" class="table bootstrap-table table-striped table-hover">
+		<thead>
+			<tr>
+			</tr>
+		</thead>
+		<tbody>
+	 		<tr><td>Loading...</td></tr>
+ 		</tbody>
+	</table>
+		<H1>Second table</H1>
+Created at 5/25/2015 3:35:14 PM
+</body>
+	    <script src='bootstrap/js/jquery.js'></script>
+	    <script src='bootstrap/js/bootstrap.min.js'></script>
+	    <script src='utils.js'></script>
+	    <script src='attachedData.js'></script>
+
+	<script>
+	// initialization
+	$(document).ready( function() {
+			DataToTable(table0.headers,table0.data,table0.link);
+	} );
+	</script>
+		

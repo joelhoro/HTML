@@ -1,0 +1,26 @@
+<html>
+<head>
+	<link href='bootstrap/css/bootstrap.css' rel='stylesheet'>
+	<link href='bootstrap/css/bootstrap-responsive.css' rel='stylesheet'>
+	<script src='bootstrap/js/jquery.js'></script>
+	<script src='bootstrap/js/bootstrap.js'></script>
+	<script src='lib/angular.min.js'></script>
+	<script src='htmldoc_utils.js'></script>
+	<script src='htmlDocTableDirective.js'></script>
+</head>
+
+<body ng-app='htmlDocApp'>
+<H1>Table</H1>
+
+		        <div ng-controller='htmlDocDataTableController'>
+                    <div html-doc-table headers='tables[0].headers' data='tables[0].data'></div>
+                </div>
+		        
+		        <div ng-controller='htmlDocDataTableController'>
+                    <div html-doc-table headers='tables[1].headers' data='tables[1].data'></div>
+                </div>
+		        Created at 7/6/2015 7:44:19 PM
+	<script src='data\htmldoc_data_15-07-06-194419.js'></script>
+	<script>
+angular.module('htmlDocApp', ['htmlDocTable', 'htmlDocData']);
+	</script>

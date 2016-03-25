@@ -1,0 +1,200 @@
+<style>
+
+	canvas {
+
+		border: 1px solid;
+	}
+</style>
+
+
+<script src="../js/createjs-2015.11.26.combined.js"></script>
+
+    <canvas id="demoCanvas" width="1500" height="800">
+        
+    </canvas>
+
+<script>
+
+(function() {
+ 
+	function SimpleCircle(posX,posY,size) {
+	    this.Container_constructor();
+	    this.posX = posX;
+	    this.posY = posY;
+	    this.size = size;
+
+	    this.setup();
+	}
+
+	var p = createjs.extend(SimpleCircle, createjs.Container);
+
+	p.setup =function() {
+		var circle = new createjs.Shape();
+	    //Set position of Shape instance.
+	    circle.x = this.posX;
+	    circle.y = this.posY;
+	    circle.graphics.beginFill("lightblue").drawCircle(0, 0, this.size);
+
+	    this.circle = circle;
+	    this.addChild(circle);
+	    this.on('tick', this.tick);
+	}
+
+	p.tick = function() {
+		this.circle.x = this.posX;
+		this.circle.y = this.posY;
+
+	}
+	 
+	 p.draxw = function() {
+	//     this.Container_draw();
+	// 	//console.debug(this.posX);
+	// 	//this.circle.x = this.posX;
+	// 	//stage.update();
+	//     // add custom logic here.
+	 }
+	 
+	window.SimpleCircle = createjs.promote(SimpleCircle, "Container");
+
+}());
+
+
+(function() {
+ 
+	function Card(number, color, shape, x, y) {
+	    this.Container_constructor();
+	    this.number = number;
+	    this.color = color;
+	    this.shape = shape;
+
+	    this.height = 350;
+	    this.width = 220;
+	    this.x = x;
+	    this.y = y;
+
+	    this.addEventListener("click", function(event) { debugger; })
+	    this.setup();
+	}
+
+	var p = createjs.extend(Card, createjs.Container);
+
+	p.setup =function() {
+		var container = new createjs.Container();
+		var border = new createjs.Shape();
+	    //Set position of Shape instance.
+	    // border.x = 200;
+	    // border.y = 50;
+	    var x = this.x;
+	    var y = this.y;
+	    container.x = x;
+	    container.y = y;
+
+	    var radius = 10;
+	    border.graphics
+	    	.beginFill("lightgrey")
+	    	.drawRoundRect(x, y, this.width, this.height, radius);
+
+	    var colors = ["darkgreen", "blue", "red" ];
+	    var color = colors[this.color];
+
+	    var positions;
+	    //console.debug(this.number);
+	    if(this.number == 0)
+	    	positions = [0];
+	    else if (this.number == 1)
+	    	positions = [-0.6,0.6];
+	    else if (this.number == 2)
+	    	positions = [-1,1,0];
+
+	    var thisCopy = this;
+//	    this.addChild(border);
+	    container.addChild(border);
+
+
+	    positions.forEach(function(p) {
+		  	var shape = new createjs.Shape();
+		  	var graphics = shape.graphics;
+		    shape.graphics
+		    	.beginFill(color)
+
+		    if(thisCopy.shape == 0)
+		    		graphics.drawCircle(x + 110, y + 170 + p * 100, thisCopy.width / 5 );
+		    else if (thisCopy.shape == 1)
+		    		graphics.drawRect(x + 80, y + 170 + p * 100, thisCopy.width / 3, thisCopy.width / 3 );
+		    else if (thisCopy.shape == 2)
+		    		graphics.drawRect(x + 80, y + 170 + p * 100, thisCopy.width / 3, thisCopy.width / 3 );
+
+		    container.addChild(shape);
+		});
+
+	    this.addChild(container);
+	    this.container = container;
+	    //var diffX = 
+	    console.log(container.x,container.y);
+	    console.log(this.x,this.y);
+		container.on("pressmove",function(evt) {
+						// currentTarget will be the container that the event listener was added to:
+						//debugger;
+						evt.currentTarget.x = evt.stageX - 100;
+						evt.currentTarget.y = evt.stageY - 50;
+						// make sure to redraw the stage to show the change:
+						stage.update();   
+					});
+
+	    this.on('tick', this.tick);
+	}
+
+	p.tick = function() {
+		// this.circle.x = this.posX;
+		// this.circle.y = this.posY;
+
+	}
+	 
+	 p.draxw = function() {
+	//     this.Container_draw();
+	// 	//console.debug(this.posX);
+	// 	//this.circle.x = this.posX;
+	// 	//stage.update();
+	//     // add custom logic here.
+	 }
+	 
+	window.Card = createjs.promote(Card, "Container");
+
+}());
+
+//var document = js.Browser.document; // must be linked to Browser
+		document.addEventListener( "keydown", function(e) { console.log(e.code);} );
+ //Create a stage by getting a reference to the canvas
+    stage = new createjs.Stage("demoCanvas");
+    //Create a Shape DisplayObject.
+    //Add Shape instance to stage display list.
+//    stage.addChild(circle);
+	var card = new Card(0,1,1, 100, 50);
+	stage.addChild(card);
+	var card2 = new Card(1,2,0, 220, 50);
+	stage.addChild(card2);
+	var card2 = new Card(2,0,2, 340, 50);
+	stage.addChild(card2);
+	var card = new Card(2,2,1, 100, 230);
+	stage.addChild(card);
+	var card2 = new Card(0,0,2, 220, 230);
+	stage.addChild(card2);
+	var card2 = new Card(1,1,1, 340, 230);
+	stage.addChild(card2);
+	// stage.update();
+
+	var card = new Card(0,1,1,100,50);
+	stage.addChild(card);
+
+    createjs.Ticker.addEventListener("tick", tick);
+    createjs.Ticker.setFPS(100);
+    function tick() {
+
+    	card.posX +=10;
+	    //Update stage will render next frame
+	    // circle.posX += 1;
+	    // circle.posY += 1;
+//	    circle.circle.x += 1;
+		stage.update();
+    }
+</script>

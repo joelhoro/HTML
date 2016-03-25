@@ -1,0 +1,83 @@
+<html>
+	<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
+
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        font-family: "Verdana"
+      }
+      h1 { border-bottom: 1px solid black }
+    </style>
+
+	<body>
+
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Project name</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+
+    <H1>Flot chart</H1>
+    <div id="chart" style="width:100%; height:80%; "></div>
+
+    <script src="flot\jquery.min.js"></script>
+    <script src="flot\jquery.flot.js"></script>
+    <script src="flot\jquery.flot.time.js"></script>
+    
+    <script src="utils.js"></script>
+    <script src="data.js"></script>
+    <script>
+
+
+    	$(document).ready(function() {
+
+    		var startDate = new Date("2015-05-24");
+    		var dx = 0.5;
+    		var points= 1000;
+
+    		var data = Brownian(startDate,dx,points);
+    		
+    		options = {
+				grid: {
+							backgroundColor: { colors: [ "#fff", "#ccc" ] },
+							borderWidth: {
+								top: 1,
+								right: 1,
+								bottom: 2,
+								left: 2
+							}
+						},
+				xaxis: { mode: "time", minTickSize: [1,"quarter"] }
+    		};
+
+    		$.plot("#chart",[
+	    			{ data: data, 		label : "Brownian motion"} 
+	    	//		{ data: movingAvg,  label : "Moving average" },
+    			],options)
+    	})
+    </script>
+
+	</body>
+	</head>
+</html>

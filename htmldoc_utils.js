@@ -11,10 +11,10 @@ Date.prototype.AddDays = function(n) {
 
 // Turn data into a html table
 function DataToTable(headers,data,tableId) {
-	console.log('Filling table with ', headers.length, ' columns (',headers,') on ', data.length, ' rows -> ', tableId, ': ', data);
+	console.log('Filling table ', tableId, 'with', headers.length, 'columns (',headers,') on', data.length, 'rows: ', data);
     var output = "";
     var headersHtml = "<tr>";
-    $.each(headers, function(idx) { headersHtml += "<th>"+this+"</th>"});
+    $.each(headers, function(idx) { headersHtml += "<th>"+this+"</th>" });
     headersHtml += "</tr>";
     $(tableId + " thead").html(headersHtml);
 
