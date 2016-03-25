@@ -17,12 +17,12 @@ data = [
   {
     "Product": "Alice Mutton",
     "Customer": "BOTTM",
-    "Qtr 1": "1,170.00"
+    "Qtr 1": 1170.00
   },
   {
     "Product": "Alice Mutton",
     "Customer": "ERNSH",
-    "Qtr 1": "1,123.20"
+    "Qtr 1": 1123.20
   },
   {
     "Product": "Alice Mutton",
@@ -257,12 +257,12 @@ data = [
   {
     "Product": "Camembert Pierrot",
     "Customer": "RICAR",
-    "Qtr 1": "1,088.00"
+    "Qtr 1": 1088.00
   },
   {
     "Product": "Camembert Pierrot",
     "Customer": "RICSU",
-    "Qtr 1": "1,550.40"
+    "Qtr 1": 1550.40
   },
   {
     "Product": "Camembert Pierrot",
@@ -287,7 +287,7 @@ data = [
   {
     "Product": "Carnarvon Tigers",
     "Customer": "BONAP",
-    "Qtr 1": "1,500.00"
+    "Qtr 1": 1500.00
   },
   {
     "Product": "Carnarvon Tigers",
@@ -642,7 +642,7 @@ data = [
   {
     "Product": "C�te de Blaye",
     "Customer": "MEREP",
-    "Qtr 1": "8,263.36"
+    "Qtr 1": 8263.36
   },
   {
     "Product": "C�te de Blaye",
@@ -652,12 +652,12 @@ data = [
   {
     "Product": "C�te de Blaye",
     "Customer": "RATTC",
-    "Qtr 1": "6,324.00"
+    "Qtr 1": 6324.00
   },
   {
     "Product": "C�te de Blaye",
     "Customer": "SIMOB",
-    "Qtr 1": "10,540.00"
+    "Qtr 1": 10540.00
   },
   {
     "Product": "C�te de Blaye",
@@ -832,7 +832,7 @@ data = [
   {
     "Product": "Fl�temysost",
     "Customer": "RATTC",
-    "Qtr 1": "1,032.00"
+    "Qtr 1": 1032.00
   },
   {
     "Product": "Fl�temysost",
@@ -947,7 +947,7 @@ data = [
   {
     "Product": "Gnocchi di nonna Alice",
     "Customer": "BLONP",
-    "Qtr 1": "1,094.40"
+    "Qtr 1": 1094.40
   },
   {
     "Product": "Gnocchi di nonna Alice",
@@ -1037,7 +1037,7 @@ data = [
   {
     "Product": "Gnocchi di nonna Alice",
     "Customer": "RATTC",
-    "Qtr 1": "2,128.00"
+    "Qtr 1": 2128.00
   },
   {
     "Product": "Gnocchi di nonna Alice",
@@ -1417,7 +1417,7 @@ data = [
   {
     "Product": "Gula Malacca",
     "Customer": "SAVEA",
-    "Qtr 1": "1,472.50"
+    "Qtr 1": 1472.50
   },
   {
     "Product": "Gula Malacca",
@@ -2207,7 +2207,7 @@ data = [
   {
     "Product": "Manjimup Dried Apples",
     "Customer": "HILAA",
-    "Qtr 1": "1,060.00"
+    "Qtr 1": 1060.00
   },
   {
     "Product": "Manjimup Dried Apples",
@@ -2327,7 +2327,7 @@ data = [
   {
     "Product": "Mishi Kobe Niku",
     "Customer": "WELLI",
-    "Qtr 1": "1,396.80"
+    "Qtr 1": 1396.80
   },
   {
     "Product": "Mishi Kobe Niku",
@@ -2412,7 +2412,7 @@ data = [
   {
     "Product": "Mozzarella di Giovanni",
     "Customer": "VICTE",
-    "Qtr 1": "1,112.00"
+    "Qtr 1": 1112.00
   },
   {
     "Product": "Nord-Ost Matjeshering",
@@ -2737,7 +2737,7 @@ data = [
   {
     "Product": "P�t� chinois",
     "Customer": "QUICK",
-    "Qtr 1": "2,073.60"
+    "Qtr 1": 2073.60
   },
   {
     "Product": "P�t� chinois",
@@ -2917,7 +2917,7 @@ data = [
   {
     "Product": "Perth Pasties",
     "Customer": "WARTH",
-    "Qtr 1": "1,965.00"
+    "Qtr 1": 1965.00
   },
   {
     "Product": "Perth Pasties",
@@ -3072,12 +3072,12 @@ data = [
   {
     "Product": "Raclette Courdavault",
     "Customer": "BOTTM",
-    "Qtr 1": "1,020.80"
+    "Qtr 1": 1020.80
   },
   {
     "Product": "Raclette Courdavault",
     "Customer": "ERNSH",
-    "Qtr 1": "2,464.00"
+    "Qtr 1": 2464.00
   },
   {
     "Product": "Raclette Courdavault",
@@ -3092,7 +3092,7 @@ data = [
   {
     "Product": "Raclette Courdavault",
     "Customer": "FRANK",
-    "Qtr 1": "1,320.00"
+    "Qtr 1": 1320.00
   },
   {
     "Product": "Raclette Courdavault",
@@ -3107,7 +3107,7 @@ data = [
   {
     "Product": "Raclette Courdavault",
     "Customer": "HILAA",
-    "Qtr 1": "2,640.00"
+    "Qtr 1": 2640.00
   },
   {
     "Product": "Raclette Courdavault",
@@ -3122,7 +3122,7 @@ data = [
   {
     "Product": "Raclette Courdavault",
     "Customer": "KOENE",
-    "Qtr 1": "1,584.00"
+    "Qtr 1": 1584.00
   },
   {
     "Product": "Raclette Courdavault",
@@ -3167,7 +3167,7 @@ data = [
   {
     "Product": "Raclette Courdavault",
     "Customer": "RATTC",
-    "Qtr 1": "2,640.00"
+    "Qtr 1": 2640.00
   },
   {
     "Product": "Raclette Courdavault",
@@ -3467,7 +3467,7 @@ data = [
   {
     "Product": "R�ssle Sauerkraut",
     "Customer": "QUEEN",
-    "Qtr 1": "1,375.92"
+    "Qtr 1": 1375.92
   },
   {
     "Product": "R�ssle Sauerkraut",
@@ -3487,7 +3487,7 @@ data = [
   {
     "Product": "R�ssle Sauerkraut",
     "Customer": "SUPRD",
-    "Qtr 1": "1,092.00"
+    "Qtr 1": 1092.00
   },
   {
     "Product": "R�ssle Sauerkraut",
@@ -3542,7 +3542,7 @@ data = [
   {
     "Product": "Schoggi Schokolade",
     "Customer": "OLDWO",
-    "Qtr 1": "1,755.00"
+    "Qtr 1": 1755.00
   },
   {
     "Product": "Schoggi Schokolade",
@@ -3852,7 +3852,7 @@ data = [
   {
     "Product": "Sirop d'�rable",
     "Customer": "SAVEA",
-    "Qtr 1": "1,744.20"
+    "Qtr 1": 1744.20
   },
   {
     "Product": "Sirop d'�rable",
@@ -4022,7 +4022,7 @@ data = [
   {
     "Product": "Tarte au sucre",
     "Customer": "BLONP",
-    "Qtr 1": "1,379.00"
+    "Qtr 1": 1379.00
   },
   {
     "Product": "Tarte au sucre",
@@ -4042,7 +4042,7 @@ data = [
   {
     "Product": "Tarte au sucre",
     "Customer": "FOLIG",
-    "Qtr 1": "1,379.00"
+    "Qtr 1": 1379.00
   },
   {
     "Product": "Tarte au sucre",
@@ -4067,7 +4067,7 @@ data = [
   {
     "Product": "Tarte au sucre",
     "Customer": "LAMAI",
-    "Qtr 1": "1,576.00"
+    "Qtr 1": 1576.00
   },
   {
     "Product": "Tarte au sucre",
@@ -4222,7 +4222,7 @@ data = [
   {
     "Product": "Th�ringer Rostbratwurst",
     "Customer": "EASTC",
-    "Qtr 1": "2,079.00"
+    "Qtr 1": 2079.00
   },
   {
     "Product": "Th�ringer Rostbratwurst",
@@ -4267,7 +4267,7 @@ data = [
   {
     "Product": "Th�ringer Rostbratwurst",
     "Customer": "SAVEA",
-    "Qtr 1": "2,019.60"
+    "Qtr 1": 2019.60
   },
   {
     "Product": "Th�ringer Rostbratwurst",
@@ -4277,7 +4277,7 @@ data = [
   {
     "Product": "Th�ringer Rostbratwurst",
     "Customer": "VAFFE",
-    "Qtr 1": "1,603.80"
+    "Qtr 1": 1603.80
   },
   {
     "Product": "Th�ringer Rostbratwurst",
@@ -4572,7 +4572,7 @@ data = [
   {
     "Product": "Vegie-spread",
     "Customer": "ERNSH",
-    "Qtr 1": "2,281.50"
+    "Qtr 1": 2281.50
   },
   {
     "Product": "Vegie-spread",

@@ -9,14 +9,15 @@
       }
 </style>
 
-  <table class='hidden' id="example-advanced">
+  <table class='hidden' id="pivottable">
         <caption>
-          <a href="#" onclick="jQuery('#example-advanced').treetable('expandAll'); return false;">Expand all</a>
-          <a href="#" onclick="jQuery('#example-advanced').treetable('collapseAll'); return false;">Collapse all</a>
+          <a href="#" onclick="jQuery('#pivottable').treetable('expandAll'); return false;">Expand all</a>
+          <a href="#" onclick="jQuery('#pivottable').treetable('collapseAll'); return false;">Collapse all</a>
         </caption>
         <thead>
           <tr>
             <th>Name</th>
+            <th>Value</th>
 <!--             <th>Kind</th>
             <th>Size</th>
  -->          </tr>
@@ -34,7 +35,8 @@
 Array.prototype.sum = function() { return this.reduce(function(a,b) { return a+b; } ) }
 Array.prototype.where = function(values) { return _.where(this,values); }
 Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
-Object.prototype.map = function(fn) { return _.map(this,fn); }
+Array.prototype.minus = function(remove) { return $(this).not(remove); }
+//Object.prototype.mapcar = function(fn) { return _.map(this,fn); }
 
 // getdataforpath([], "Product");
 
@@ -42,52 +44,85 @@ function ToObject(keys,values) {
       return _.object(_.zip(keys,values));
 }
 
-function getdataforpath(path, values, nextPivot) {
-      //if(path == [])
-      valueFields = [ "Qtr 1"];
-      pivots = [ "Product", "Customer" ];
-      var filter = ToObject(path,values);
-      var filteredData = data.where(filter);
-      var groupedData = filteredData.groupBy(function(obj) { return obj[nextPivot]; });
 
-      // var filter = _.object(_.zip(path,values));
-      // var filteredData = _.where(data,filter);
-      // var groupedData = _.groupBy(filteredData, function(obj) { return obj[nextPivot]; })
-      var returnValue = groupedData.map(function(values,key) {
-             return { key: key, value: _.map(values, function(obj) { return obj[valueFields]; } ).sum() }
+valueFields = [ "Qtr 1"];
+//pivots = [ "Product", "Customer" ];
+
+data = data.slice(0,100);
+data = data.filter(function(row) { return row["Qtr 1"] > 0; });
+
+function getdataforpath(filter, nextPivot) {
+      //if(path == [])
+//      var filter = ToObject(path,values);
+      var filteredData = data.where(filter);
+      
+      var groupedData = filteredData.groupBy(function(obj) { return obj[nextPivot]; });
+      var returnValue = _.map(groupedData,function(values,key) {
+//            debugger;
+             return { key: key, value: values.map( function(obj) { return obj[valueFields]; } ).sum() }
       });
       return returnValue;
-      // filteredData = data.filter(function(row) { 
-      //       var result = true;
-      //       var i = 0;
-      //       while(result && i < path.length) {
-      //             result = result & (row[path[i]].toLowerCase() == values[i].toLowerCase());
-      //             i++;
-      //       }
-      //       return result;
-      // } )
+}
+
+function query(id, nextPivot) {
+      console.debug("Opening %s at %s", id, nextPivot);
+      var table = $("#pivottable");
+      var node = table.treetable("node",id);
+      if (openNodes[id] != undefined) {
+            node.toggle();
+            return;
+      }
+      openNodes[id] = 1;
+      var filter = nodesDictionary[id];
+      var newData = getdataforpath(filter, nextPivot);
+
+
+      newData.map(function(row) {
+             addNode(node, { key: row.key, value: row.value }, nextPivot );
+       })
 }
 
 
 $(document).ready(function() {
-      var table = $("#example-advanced");
+      var table = $("#pivottable");
+      var id = 0;
+      nodesDictionary = [{}];
+      openNodes = {};
+
+      var rowTemplate = _.template("<tr onclick='query(<%= newid %>,\"<%= nextpivot %>\")' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>'><td><span class=folder><%= key %></span></td><td><%= value %></td></tr>");
+      function addNode(baseNode,obj,currentField,nextPivot) { 
+            var parentid;
+            if(baseNode == null)
+                  parentid = 0;
+            else
+                  parentid = baseNode.id;
+            id++;
+
+            nodesDictionary[id] = _.clone(nodesDictionary[parentid])
+            nodesDictionary[id][currentField]=obj.key;
+
+            var newNode = rowTemplate({ parentid: parentid, newid : id, key: obj.key, value: obj.value, nextpivot: nextPivot } );
+            
+            table.treetable("loadBranch", baseNode, newNode )
+      }
+      window.addNode = addNode;
+
       table.treetable({ expandable: true }).treetable("expandAll");
       $(".hidden").removeClass("hidden");
-      table.treetable("loadBranch",null, "<tr data-tt-id='AAA'><td><span class=folder>Test1</span></td></tr>");
+      table.treetable("loadBranch",null, "<tr data-tt-id='0'><td><span class=folder>Root</span></td><td></td></tr>");
+      //addNode(null, { key: "Root"} );
 
-      // table.treetable("loadBranch",null, "<tr data-tt-id='1'><td><span class='file'>Acknowledgements.rtf</span></td><td>File</td><td>480.95 KB</td></tr>");
+      var nextPivot = "Product";
+      var newData = getdataforpath({},nextPivot);
+      var root = table.treetable("node",'0');
 
-      node = table.treetable("node","AAA");
-      table.treetable("loadBranch",node, "<tr data-tt-id='AAA-1' data-tt-parent-id='AAA'><td><span class=folder>Test1</span></td></tr>");
-      node = table.treetable("node","AAA-1");
-      table.treetable("loadBranch",node, "<tr data-tt-id='1-2'  data-tt-parent-id='AAA'><td>Test2</td></tr>");
-      table.treetable({ expandable: true }).treetable("expandAll");
-
-      // table.treetable("loadBranch",node, "<tr data-tt-id='1' data-tt-parent-id='1'><td>Test1</td></tr>");
-      // table.treetable("loadBranch",node, "<tr data-tt-id='1' data-tt-parent-id='1'><td>Test1</td></tr>");
+      currentField = nextPivot;
+      nextPivot = "Customer";
+      newData.map(function(row) {
+             addNode(root, { key: row.key, value: row.value }, currentField, nextPivot );
+      })
 
 
-      // $("[data-tt-id=2-1-1]").before("<tr data-tt-id='2-1-2' data-tt-parent-id='2-1'><td><span class='file'>Added node</span></td><td>NewNode</td><td>124.46 KB</td></tr>").addClass("indenter")
 })
 
 
