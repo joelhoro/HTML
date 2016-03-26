@@ -37,7 +37,7 @@ class PivotTable {
 
                   // create the root node
                   var values = this.valueFields
-                        .map(function() { return ""; })
+                        .map(x => "")
                         .map(utils.HTMLWrapper("td"))
                         .join("\n");
                   var root = 
@@ -72,6 +72,7 @@ class PivotTable {
                   var values = this
                         .valueFields
                         .map(utils.ObjectFn(obj.values))
+                        .map(x => x.toFixed(2))
                         .map(utils.HTMLWrapper("td"))
                         .join("\n");
                   this.addSingleNode({ parentid: parentid, newid : id, key: obj.key, 
@@ -82,7 +83,7 @@ class PivotTable {
                   var newNode = this.rowTemplate(specs);
                   this.table.treetable("loadBranch", baseNode, newNode );
                   var thisCopy = this;
-                  $("[data-tt-id="+specs.newid+"]").click(function() { thisCopy.queryNode(specs.newid); });
+                  $("[data-tt-id="+specs.newid+"]").click(x => thisCopy.queryNode(specs.newid));
             }
 
             // query node id
@@ -101,9 +102,8 @@ class PivotTable {
 
                         var thisCopy = this;
                         this.source.drilldown(filter, nextPivot, this.valueFields, function(newData) {
-                              newData.map(function(row) {
-                                     thisCopy.addNode(node, row, nextPivot, pivotLevel+1 );
-                              })
+                              newData.map(row => thisCopy.addNode(node, row, nextPivot, pivotLevel+1))
+                              
                         });
 
                   }

@@ -6,6 +6,7 @@ angular
 
             constructor(data, dimensions, metrics) {
                   console.log("Creating source from %s records, with dimensions=%o and metrics=%o", data.length, dimensions, metrics);
+                  console.log("Fields: %o", _.keys(data[0]));                  
                   this.data = data;
                   this.dimensions = dimensions;
                   this.metrics = metrics;
@@ -19,12 +20,12 @@ angular
                   var groupedData = this.data
                         .where(filter)
                         .groupBy(utils.FieldExtractor(nextPivot));
-                  var keys = _.keys(groupedData);
+                  var keys = _.keys(groupedData).sortBy();
                   console.log("Found %s groups: %o", keys.length, keys );
                   // for each group, summarize the results
-                  var returnValue = _.map(groupedData, function(values,key) {
+                  var returnValue = _.map(keys, function(key) {
                         var values = valueFields
-                              .toObject(function(field) { return values.sum(utils.FieldExtractor(field)); });
+                              .toObject(field => groupedData[key].sum(utils.FieldExtractor(field)));
                         return { key: key, values: values };
                   });
                   
@@ -36,7 +37,7 @@ angular
                   var groupBy = this.data
                         .where(filter)
                         .groupBy(utils.FieldExtractor(dimension));
-                  return _.map(groupBy, function(values,key) { return key; });
+                  return _.map(groupBy, (values,key) => key);
             }
       }
 
@@ -63,13 +64,13 @@ angular
                         'queryParams' : { filter: filter, nextPivot: nextPivot, valueFields: valueFields }, 
                         'settings' : this.settings 
                   };
-                  
+
                   console.debug("Querying server for ", JSON.stringify(queryData));
                   $http({
                     method: "POST",
                     url: this.url,
                     data: JSON.stringify(queryData),
-                  }).then(function(result) { 
+                  }).then(result => {
                         console.debug("Results downloaded from server: %s", result.data.d.length); 
                         successFn(result.data.d);
                   }); 

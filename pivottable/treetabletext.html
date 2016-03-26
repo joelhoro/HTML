@@ -4,6 +4,7 @@
 <script src="lib/jquery.treetable.js"></script>
 <script src="lib/angular.js"></script>
 <script src="data.js"></script>
+<script src="data2.js"></script>
 <script src="utils.js"></script>
 <script src="pivottablesource.js"></script>
 <script src="pivottable.js"></script>
@@ -13,6 +14,9 @@
             visibility: hidden;
       }
 </style>
+
+<title>PivotTable test</title>
+
 <div ng-app="pivottable" ng-controller="pivottableCtrl">
 <span>Started at: {{ startTime }} | useAjax={{useAjax}}</span>
   <table class='hidden' id="pivottable">
@@ -32,7 +36,7 @@
 
 var app = angular.module('pivottable', 
       ['dataService','utilsService', 'pivotTableService'] );
-app.controller("pivottableCtrl", function($scope,$,$http,data,PivotTable, PivotTableSourceFromTable, PivotTableSourceAjax) {
+app.controller("pivottableCtrl", function($scope,$,$http,data2,PivotTable, PivotTableSourceFromTable, PivotTableSourceAjax) {
       console.log("Starting pivottable at %s", new Date());
       $scope.startTime = new Date();
 
@@ -40,8 +44,11 @@ app.controller("pivottableCtrl", function($scope,$,$http,data,PivotTable, PivotT
       var table = $("#pivottable");
       var useAjax = location.search.indexOf("useAjax") != -1;
       $scope.useAjax = useAjax;
-      var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
-      var pivots = [ "Product", "Customer" ];
+      //var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
+      //var pivots = [ "Product", "Customer" ];
+
+      var pivots = [ /* "Order Priority", "Ship Mode",  */ "Product Category", "Product Sub-Category", "Product Name","Region", "Province"  ];
+      var valueFields = ["Sales" ];
 
       $scope.valueFields = valueFields;
       $scope.pivots = pivots;
@@ -49,7 +56,7 @@ app.controller("pivottableCtrl", function($scope,$,$http,data,PivotTable, PivotT
       var limit = -1;
       if(!useAjax) {
             // datasource from table
-            var data = data.slice(0,limit);
+            var data = data2.slice(0,limit);
 
             var source = new PivotTableSourceFromTable(data, pivots, valueFields);
       }
