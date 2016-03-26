@@ -1,4 +1,14 @@
-data = [
+angular.module('dataService',[])
+.service("data", function() { 
+  return [
+  {
+    "Product": "Alice Mutton",
+    "Customer": "ANTON",
+    "Qtr 1": 0,
+    "Qtr 2": 702,
+    "Qtr 3": 0,
+    "Qtr 4": 0
+  },
   {
     "Product": "Alice Mutton",
     "Customer": "ANTON",
@@ -7575,4 +7585,6 @@ data = [
     "Qtr 3": 143,
     "Qtr 4": 0
   }
-]
+];
+
+} );
