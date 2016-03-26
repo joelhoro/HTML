@@ -2,6 +2,7 @@
 <script src="lib/jquery.js"></script>
 <script src="lib/underscore.js"></script>
 <script src="lib/jquery.treetable.js"></script>
+<script src="lib/angular.js"></script>
 <script src="data.js"></script>
 <script src="utils.js"></script>
 <script src="pivottable.js"></script>
@@ -12,8 +13,8 @@
             visibility: hidden;
       }
 </style>
-
-  <table class='hidden' id="pivottable">
+<div ng-app="pivottable">
+  <table class='hidden' id="pivottable" ng-controller="pivottableCtrl">
         <caption>
           <a href="#" onclick="jQuery('#pivottable').treetable('expandAll'); return false;">Expand all</a>
           <a href="#" onclick="jQuery('#pivottable').treetable('collapseAll'); return false;">Collapse all</a>
@@ -23,21 +24,20 @@
         <tbody>
         </tbody>
   </table>
+</div>
 
 <script>
 
+var app = angular.module('pivottable', []);
 
-      
-      
-
-$(document).ready(function() {
+app.controller("pivottableCtrl", function($scope) {
       // HTML placeholder
       var table = $("#pivottable");
 
       // data source
       var data = window.data.slice(0,100);
-      var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
-      var pivots = [ "Product", "Customer" ];
+      $scope.valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
+      $scope.pivots = [ "Product", "Customer" ];
 
       var source = new PivotTableSourceFromTable(data, pivots, valueFields);
 
@@ -47,8 +47,6 @@ $(document).ready(function() {
 
       $(".hidden").removeClass("hidden");
       pivotTable.queryNode(2);
-
-})
-
+} );
 
 </script>
