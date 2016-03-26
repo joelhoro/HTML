@@ -1,5 +1,5 @@
 angular.module('pivotTableService',['utilsService'])
-.factory('PivotTable', function(utils) {
+.factory('PivotTable', function(utils,_,$) {
 class PivotTable {
             constructor(table,source,pivots,valueFields,classes) {
                   this.table = table;

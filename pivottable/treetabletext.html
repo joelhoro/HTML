@@ -13,9 +13,9 @@
             visibility: hidden;
       }
 </style>
-<div ng-app="pivottable">
-<span>{{ startTime }}</span>
-  <table class='hidden' id="pivottable" ng-controller="pivottableCtrl">
+<div ng-app="pivottable" ng-controller="pivottableCtrl">
+<span>Started at: {{ startTime }}</span>
+  <table class='hidden' id="pivottable">
         <caption>
           <a href="#" onclick="jQuery('#pivottable').treetable('expandAll'); return false;">Expand all</a>
           <a href="#" onclick="jQuery('#pivottable').treetable('collapseAll'); return false;">Collapse all</a>
@@ -32,7 +32,7 @@
 
 var app = angular.module('pivottable', 
       ['dataService','utilsService', 'pivotTableService', 'pivotTableSourceService'] );
-app.controller("pivottableCtrl", function($scope,data,PivotTable, PivotTableSourceFromTable) {
+app.controller("pivottableCtrl", function($scope,$,data,PivotTable, PivotTableSourceFromTable) {
       console.log("Starting pivottable at %s", new Date());
       $scope.startTime = new Date();
 

@@ -1,5 +1,5 @@
 angular.module('pivotTableSourceService',['utilsService'])
-.factory('PivotTableSourceFromTable', function(utils) {
+.factory('PivotTableSourceFromTable', function(utils,_) {
 
       class PivotTableSourceFromTable {
 
@@ -13,12 +13,13 @@ angular.module('pivotTableSourceService',['utilsService'])
             // returns a list of rows where each row has key = is one possible value for 'nextPivot', 
             // and all the aggregated valueFields
             drilldown(filter, nextPivot, valueFields) {
-                  console.log("Drilling down on %s, based on filter=%o => metrics=%o", nextPivot, filter, valueFields);
+                  console.log("Drilling down %s, filter=%s => metrics=%o", nextPivot, JSON.stringify(filter), valueFields);
                   // get all the filtered data, grouped by nextPivot
                   var groupedData = this.data
                         .where(filter)
                         .groupBy(utils.FieldExtractor(nextPivot));
-                  //console.log("Found %s groups: %o", groupedData.length, )
+                  var keys = _.keys(groupedData);
+                  console.log("Found %s groups: %o", keys.length, keys );
                   // for each group, summarize the results
                   var returnValue = _.map(groupedData, function(values,key) {
                         var summary = valueFields

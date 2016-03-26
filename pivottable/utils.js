@@ -1,5 +1,7 @@
 angular.module('utilsService',[])
-.factory('utils', function() {
+.service('_', function() { var _ = window._; delete window._; return _; })
+.service('$', function() { var $ = window.$; delete window.$; return $; })
+.service('utils', function(_,$) {
 	// Generic array functions
 	Array.prototype.sum = function(fn) { 
 	      if ( fn == undefined )
