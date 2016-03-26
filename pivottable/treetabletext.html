@@ -44,8 +44,7 @@ $(document).ready(function() {
       var classes = [ "Folder", "File", "File" ];
       // pivottable
       var pivotTable = new PivotTable(table,source,pivots,valueFields,classes);
-      window.pivotTable = pivotTable;
-      pivotTable.initialize();
+
       $(".hidden").removeClass("hidden");
       pivotTable.queryNode(2);
 

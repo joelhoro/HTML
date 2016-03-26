@@ -7,8 +7,7 @@ class PivotTable {
             this.pivots = pivots;
             this.id = 0;
             var template = _.template(`
-            <tr onclick='pivotTable.queryNode(<%= newid %>)' 
-                  data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' >
+            <tr data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' >
                   <td>
                         <span class=<%= classes[pivotLevel] %>><%= key %></span>
                   </td>
@@ -19,6 +18,8 @@ class PivotTable {
                   obj.pivots = pivots;
                   return template(obj);
             }
+
+            this.initialize();
       }
 
       initialize() {
@@ -46,7 +47,8 @@ class PivotTable {
                   pivotLevel: 0, 
                   values: values,
             };
-            this.table.treetable("loadBranch",null,this.rowTemplate(root));
+
+            this.addSingleNode(root,null);
 
             // open the root node
             this.queryNode(0);
@@ -70,10 +72,15 @@ class PivotTable {
                   .map(ObjectFn(obj))
                   .map(HTMLWrapper("td"))
                   .join("\n");
-            var newNode = this.rowTemplate({ parentid: parentid, newid : id, key: obj.key, 
-                  pivotLevel: pivotLevel, values: values } );
-            
+            this.addSingleNode({ parentid: parentid, newid : id, key: obj.key, 
+                  pivotLevel: pivotLevel, values: values }, baseNode );
+      }
+
+      addSingleNode(specs, baseNode) {
+            var newNode = this.rowTemplate(specs);
             this.table.treetable("loadBranch", baseNode, newNode );
+            var thisCopy = this;
+            $("[data-tt-id="+specs.newid+"]").click(function() { thisCopy.queryNode(specs.newid); });
       }
 
       // query node id
