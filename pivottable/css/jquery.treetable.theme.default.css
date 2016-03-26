@@ -1,3 +1,8 @@
+body {
+  font-family: Verdana;
+  font-size: 0.8em;
+}
+
 table.treetable {
   border: 1px solid #888;
   border-collapse: collapse;
