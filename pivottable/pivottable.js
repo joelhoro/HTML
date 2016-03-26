@@ -7,13 +7,23 @@ class PivotTable {
             this.valueFields = valueFields;
             this.pivots = pivots;
             this.id = 0;
-            this.initialize();
+            this.rowTemplate = _.template("<tr onclick='pivotTable.query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
       }
 
       initialize() {
-            this.rowTemplate = _.template("<tr onclick='treeModel.query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
 
             this.table.treetable({ expandable: true }).treetable("expandAll");
+            $("thead tr").append(this.valueFields.map(HTMLWrapper("th")));
+            $("#pivotFieldSequence").html(this.pivots.join(" &gt;&gt; "));
+
+            var values = this.valueFields
+                  .map(function() { return ""; })
+                  .map(HTMLWrapper("td"))
+                  .join("\n");
+            var root = { parentid: -1, newid : 0, key: "Sales database", value: "", pivotLevel: 0, pivots: this.pivots, values: values };
+            this.table.treetable("loadBranch",null,this.rowTemplate(root));
+            var rootNode = $("[data-tt-id='0']");
+            rootNode.click();
 
       }
       

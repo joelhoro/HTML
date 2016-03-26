@@ -30,35 +30,26 @@
 <script>
 
 
-
-//data = data.filter(function(row) { return row["Qtr 1"] > 0; });
-
       
       
 
 $(document).ready(function() {
+      // HTML placeholder
       var table = $("#pivottable");
+
+      // data source
       var data = window.data.slice(0,100);
       var source = new PivotTableSourceFromTable(data);
-      var id = 0;
+
       var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
       var pivots = [ "Product", "Customer" ];
 
-      var treeModel = new PivotTable(table,source,pivots,valueFields);
-      window.treeModel = treeModel;
-
-      $("thead tr").append(valueFields.map(HTMLWrapper("th")));
-      $("#pivotFieldSequence").html(pivots.join(" &gt;&gt; "));
-
+      // pivottable
+      var pivotTable = new PivotTable(table,source,pivots,valueFields);
+      window.pivotTable = pivotTable;
+      pivotTable.initialize();
       $(".hidden").removeClass("hidden");
-      var values = valueFields
-            .map(function() { return ""; })
-            .map(HTMLWrapper("td"))
-            .join("\n");
-      var root = { parentid: -1, newid : 0, key: "Sales database", value: "", pivotLevel: 0, pivots: pivots, values: values };
-      table.treetable("loadBranch",null,treeModel.rowTemplate(root));
-      var rootNode = $("[data-tt-id='0']");
-      rootNode.click();
+
 })
 
 
