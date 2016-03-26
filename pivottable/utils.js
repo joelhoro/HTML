@@ -11,7 +11,6 @@ angular.module('utilsService',[])
 
 	Array.prototype.where = function(values) { return _.where(this,values); }
 	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
-	Array.prototype.minus = function(remove) { return $(this).not(remove); }
 	Array.prototype.toObject = function(fn) { 
 	      var obj = {}; 
 	      this.forEach(function(field) { obj[field] = fn(field); });

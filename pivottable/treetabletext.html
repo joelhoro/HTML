@@ -5,8 +5,8 @@
 <script src="lib/angular.js"></script>
 <script src="data.js"></script>
 <script src="utils.js"></script>
-<script src="pivottable.js"></script>
 <script src="pivottablesource.js"></script>
+<script src="pivottable.js"></script>
 
 <style>
       .hidden {
@@ -31,7 +31,7 @@
 
 
 var app = angular.module('pivottable', 
-      ['dataService','utilsService', 'pivotTableService', 'pivotTableSourceService'] );
+      ['dataService','utilsService', 'pivotTableService'] );
 app.controller("pivottableCtrl", function($scope,$,data,PivotTable, PivotTableSourceFromTable) {
       console.log("Starting pivottable at %s", new Date());
       $scope.startTime = new Date();

@@ -1,5 +1,6 @@
-angular.module('pivotTableSourceService',['utilsService'])
-.factory('PivotTableSourceFromTable', function(utils,_) {
+angular
+.module('pivotTableService',['utilsService'])
+.service('PivotTableSourceFromTable', function(utils,_) {
 
       class PivotTableSourceFromTable {
 
