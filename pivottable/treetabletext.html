@@ -4,6 +4,7 @@
 <script src="lib/jquery.treetable.js"></script>
 <script src="data.js"></script>
 <script src="utils.js"></script>
+<script src="pivottable.js"></script>
 
 <style>
       .hidden {
@@ -28,71 +29,76 @@
 <script>
 
 
-valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
-pivots = [ "Product", "Customer" ];
 
-data = data.slice(0,100);
 //data = data.filter(function(row) { return row["Qtr 1"] > 0; });
 
-function getdataforpath(filter, nextPivot) {
-      var filteredData = data.where(filter);
       
-      var groupedData = filteredData.groupBy(FieldExtractor(nextPivot));
-      var returnValue = _.map(groupedData,function(values,key) {
-            var summary = valueFields
-                  .toObject(function(field) { return values.sum(FieldExtractor(field)); });
-            summary.key = key;
-            return summary;
-      });
-      return returnValue;
-}
+      
+class TreeModel {
+      constructor(table,source,pivots,valueFields) {
+            this.table = table;
+            this.source = source;
+            this.nodesDictionary = [{}];
+            this.openNodes = {};
+            this.valueFields = valueFields;
+            this.pivots = pivots;
+            this.id = 0;
+            this.rowTemplate = _.template("<tr onclick='treeModel.query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
 
-function query(id, pivotLevel) {
-      var table = $("#pivottable");
-      var node = table.treetable("node",id);
-      if (openNodes[id] != undefined) {
-            node.toggle();
-            return;
       }
-      openNodes[id] = 1;
-      var filter = nodesDictionary[id];
-      var nextPivot = pivots[pivotLevel];
-      var newData = getdataforpath(filter, nextPivot);
 
-      newData.map(function(row) {
-             addNode(node, row, nextPivot, pivotLevel+1 );
-       })
-}
-
-
-$(document).ready(function() {
-      var table = $("#pivottable");
-      var id = 0;
-      nodesDictionary = [{}];
-      openNodes = {};
-
-      var rowTemplate = _.template("<tr onclick='query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
-      function addNode(baseNode,obj,currentField,pivotLevel) { 
+      addNode(baseNode,obj,currentField,pivotLevel) { 
             var parentid;
             if(baseNode == null)
                   parentid = 0;
             else
                   parentid = baseNode.id;
-            id++;
+            this.id++;
+            var id = this.id;
+            this.nodesDictionary[id] = _.clone(this.nodesDictionary[parentid])
+            this.nodesDictionary[id][currentField]=obj.key;
 
-            nodesDictionary[id] = _.clone(nodesDictionary[parentid])
-            nodesDictionary[id][currentField]=obj.key;
-
-            var values = valueFields
+            var values = this
+                  .valueFields
                   .map(ObjectFn(obj))
                   .map(HTMLWrapper("td"))
                   .join("\n");
-            var newNode = rowTemplate({ parentid: parentid, newid : id, key: obj.key, 
-                  pivotLevel: pivotLevel, pivots: pivots, values: values } );
+            var newNode = this.rowTemplate({ parentid: parentid, newid : id, key: obj.key, 
+                  pivotLevel: pivotLevel, pivots: this.pivots, values: values } );
             
-            table.treetable("loadBranch", baseNode, newNode );
+            this.table.treetable("loadBranch", baseNode, newNode );
       }
-      window.addNode = addNode;
+
+      query(id, pivotLevel) {
+                  var node = this.table.treetable("node",id);
+                  if (this.openNodes[id] != undefined) {
+                        node.toggle();
+                        return;
+                  }
+                  this.openNodes[id] = 1;
+                  var filter = this.nodesDictionary[id];
+                  var nextPivot = this.pivots[pivotLevel];
+                  var newData = this.source.drilldown(filter, nextPivot,this.valueFields);
+
+                  var thiscopy = this;
+                  newData.map(function(row) {
+                         thiscopy.addNode(node, row, nextPivot, pivotLevel+1 );
+                  })
+      }
+
+}
+
+$(document).ready(function() {
+      var table = $("#pivottable");
+      var data = window.data.slice(0,100);
+      var source = new PivotTableSourceFromTable(data);
+      var id = 0;
+      var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
+      var pivots = [ "Product", "Customer" ];
+
+      var treeModel = new TreeModel(table,pivottable,pivots,valueFields);
+      window.treeModel = treeModel;
+
 
       table.treetable({ expandable: true }).treetable("expandAll");
 
@@ -105,7 +111,7 @@ $(document).ready(function() {
             .map(HTMLWrapper("td"))
             .join("\n");
       var root = { parentid: -1, newid : 0, key: "Sales database", value: "", pivotLevel: 0, pivots: pivots, values: values };
-      table.treetable("loadBranch",null,rowTemplate(root));
+      table.treetable("loadBranch",null,treeModel.rowTemplate(root));
       var rootNode = $("[data-tt-id='0']");
       rootNode.click();
 })
