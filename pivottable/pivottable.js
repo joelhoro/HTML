@@ -2,8 +2,7 @@ class PivotTable {
       constructor(table,source,pivots,valueFields,classes) {
             this.table = table;
             this.source = source;
-            this.nodesDictionary = [{level:0, filter: {}}];
-            this.openNodes = {};
+            this.nodesDictionary = [{level:0, filter: {}, open: false}];
             this.valueFields = valueFields;
             this.pivots = pivots;
             this.id = 0;
@@ -62,7 +61,7 @@ class PivotTable {
                   parentid = baseNode.id;
             this.id++;
             var id = this.id;
-            this.nodesDictionary[id] = {level: pivotLevel};
+            this.nodesDictionary[id] = {level: pivotLevel, open: false};
             this.nodesDictionary[id].filter = _.clone(this.nodesDictionary[parentid].filter)
             this.nodesDictionary[id].filter[currentField]=obj.key;
 
@@ -80,21 +79,21 @@ class PivotTable {
       // query node id
       queryNode(id) {
                   var node = this.table.treetable("node",id);
+                  var nodeInfo = this.nodesDictionary[id];
                   // if this node has already been opened, just toggle it
-                  if (this.openNodes[id] != undefined) {
+                  if (nodeInfo.opened) {
                         node.toggle();
                         return;
                   }
-                  this.openNodes[id] = 1;
-                  var nodeInfo = this.nodesDictionary[id];
+                  nodeInfo.opened = true;
                   var filter = nodeInfo.filter;
                   var pivotLevel = nodeInfo.level;
                   var nextPivot = this.pivots[pivotLevel];
-                  var newData = this.source.drilldown(filter, nextPivot,this.valueFields);
+                  var newData = this.source.drilldown(filter, nextPivot, this.valueFields);
 
-                  var thiscopy = this;
+                  var thisCopy = this;
                   newData.map(function(row) {
-                         thiscopy.addNode(node, row, nextPivot, pivotLevel+1 );
+                         thisCopy.addNode(node, row, nextPivot, pivotLevel+1 );
                   })
       }
 
