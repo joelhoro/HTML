@@ -16,19 +16,12 @@
         </caption>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Value</th>
-<!--             <th>Kind</th>
-            <th>Size</th>
- -->          </tr>
+            <th id='pivotFieldSequence'></th>
+          </tr>
         </thead>
         <tbody>
-<!--         <tr data-tt-id='1'><td><span class='file'>Acknowledgements.rtf</span></td><td>File</td><td>480.95 KB</td></tr>
-      <tr data-tt-id='2'><td><span class='folder'>CHUD</span></td><td>Folder</td><td>--</td></tr>
-      <tr data-tt-id='2-1' data-tt-parent-id='2'><td><span class='folder'>amber</span></td><td>Folder</td><td>--</td></tr>
-      <tr data-tt-id='2-1-1' data-tt-parent-id='2-1'><td><span class='file'>AmberTraceFormats.pdf</span></td><td>File</td><td>124.46 KB</td></tr>
- -->        </tbody>
-      </table>
+        </tbody>
+  </table>
 
 <script>
 
@@ -36,6 +29,7 @@ Array.prototype.sum = function() { return this.reduce(function(a,b) { return a+b
 Array.prototype.where = function(values) { return _.where(this,values); }
 Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
 Array.prototype.minus = function(remove) { return $(this).not(remove); }
+function FieldExtracter(fieldName) { return function(obj) { return obj[fieldName]; } }
 //Object.prototype.mapcar = function(fn) { return _.map(this,fn); }
 
 // getdataforpath([], "Product");
@@ -45,27 +39,27 @@ function ToObject(keys,values) {
 }
 
 
-valueFields = [ "Qtr 1"];
-//pivots = [ "Product", "Customer" ];
+valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
+pivots = [ "Product", "Customer" ];
 
 data = data.slice(0,100);
-data = data.filter(function(row) { return row["Qtr 1"] > 0; });
+//data = data.filter(function(row) { return row["Qtr 1"] > 0; });
 
 function getdataforpath(filter, nextPivot) {
-      //if(path == [])
-//      var filter = ToObject(path,values);
       var filteredData = data.where(filter);
       
       var groupedData = filteredData.groupBy(function(obj) { return obj[nextPivot]; });
       var returnValue = _.map(groupedData,function(values,key) {
-//            debugger;
-             return { key: key, value: values.map( function(obj) { return obj[valueFields]; } ).sum() }
+            var summary = { key: key };
+            valueFields.forEach(function(field) { 
+                  summary[field] = values.map(function(obj) { return obj[field]; } ).sum();
+            })
+            return summary;
       });
       return returnValue;
 }
 
-function query(id, nextPivot) {
-      console.debug("Opening %s at %s", id, nextPivot);
+function query(id, pivotLevel) {
       var table = $("#pivottable");
       var node = table.treetable("node",id);
       if (openNodes[id] != undefined) {
@@ -74,11 +68,11 @@ function query(id, nextPivot) {
       }
       openNodes[id] = 1;
       var filter = nodesDictionary[id];
+      var nextPivot = pivots[pivotLevel];
       var newData = getdataforpath(filter, nextPivot);
 
-
       newData.map(function(row) {
-             addNode(node, { key: row.key, value: row.value }, nextPivot );
+             addNode(node, row, nextPivot, pivotLevel+1 );
        })
 }
 
@@ -89,8 +83,8 @@ $(document).ready(function() {
       nodesDictionary = [{}];
       openNodes = {};
 
-      var rowTemplate = _.template("<tr onclick='query(<%= newid %>,\"<%= nextpivot %>\")' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>'><td><span class=folder><%= key %></span></td><td><%= value %></td></tr>");
-      function addNode(baseNode,obj,currentField,nextPivot) { 
+      var rowTemplate = _.template("<tr onclick='query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
+      function addNode(baseNode,obj,currentField,pivotLevel) { 
             var parentid;
             if(baseNode == null)
                   parentid = 0;
@@ -101,26 +95,27 @@ $(document).ready(function() {
             nodesDictionary[id] = _.clone(nodesDictionary[parentid])
             nodesDictionary[id][currentField]=obj.key;
 
-            var newNode = rowTemplate({ parentid: parentid, newid : id, key: obj.key, value: obj.value, nextpivot: nextPivot } );
+            var values = valueFields.map(function(field) { return "<td>"+obj[field]+"</td>"; } ).join("\n");
+            var newNode = rowTemplate({ parentid: parentid, newid : id, key: obj.key, 
+                  pivotLevel: pivotLevel, pivots: pivots, values: values } );
             
-            table.treetable("loadBranch", baseNode, newNode )
+            table.treetable("loadBranch", baseNode, newNode );
       }
       window.addNode = addNode;
 
       table.treetable({ expandable: true }).treetable("expandAll");
-      $(".hidden").removeClass("hidden");
-      table.treetable("loadBranch",null, "<tr data-tt-id='0'><td><span class=folder>Root</span></td><td></td></tr>");
-      //addNode(null, { key: "Root"} );
-
-      var nextPivot = "Product";
-      var newData = getdataforpath({},nextPivot);
-      var root = table.treetable("node",'0');
-
-      currentField = nextPivot;
-      nextPivot = "Customer";
-      newData.map(function(row) {
-             addNode(root, { key: row.key, value: row.value }, currentField, nextPivot );
+      valueFields.forEach(function(field) {
+            $("thead tr").append("<th>"+field+"</th>");
       })
+      $("#pivotFieldSequence").html(pivots.join(" &gt;&gt; "));
+
+      $(".hidden").removeClass("hidden");
+      var values = valueFields.map(function() { return "<td></td>" } ).join("\n");
+      var root = { parentid: -1, newid : 0, key: "Sales database", value: "", pivotLevel: 0, pivots: pivots, values: values };
+      var x= rowTemplate(root); 
+      table.treetable("loadBranch",null,rowTemplate(root));
+      var rootNode = $("[data-tt-id='0']");
+      rootNode.click();
 
 
 })
