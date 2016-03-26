@@ -14,7 +14,7 @@
       }
 </style>
 <div ng-app="pivottable" ng-controller="pivottableCtrl">
-<span>Started at: {{ startTime }}</span>
+<span>Started at: {{ startTime }} | useAjax={{useAjax}}</span>
   <table class='hidden' id="pivottable">
         <caption>
           <a href="#" onclick="jQuery('#pivottable').treetable('expandAll'); return false;">Expand all</a>
@@ -32,28 +32,38 @@
 
 var app = angular.module('pivottable', 
       ['dataService','utilsService', 'pivotTableService'] );
-app.controller("pivottableCtrl", function($scope,$,data,PivotTable, PivotTableSourceFromTable) {
+app.controller("pivottableCtrl", function($scope,$,$http,data,PivotTable, PivotTableSourceFromTable, PivotTableSourceAjax) {
       console.log("Starting pivottable at %s", new Date());
       $scope.startTime = new Date();
 
       // HTML placeholder
       var table = $("#pivottable");
-      // data source
-      var data = data.slice(0,100);
+      var useAjax = location.search.indexOf("useAjax") != -1;
+      $scope.useAjax = useAjax;
       var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
       var pivots = [ "Product", "Customer" ];
 
       $scope.valueFields = valueFields;
       $scope.pivots = pivots;
 
-      var source = new PivotTableSourceFromTable(data, pivots, valueFields);
+      var limit = -1;
+      if(!useAjax) {
+            // datasource from table
+            var data = data.slice(0,limit);
+
+            var source = new PivotTableSourceFromTable(data, pivots, valueFields);
+      }
+      else {
+            // datasource from Ajax
+            var url = "http://localhost:17041/DBAccessor.asmx/Query";
+            var settings = { limit: limit };
+            var source = new PivotTableSourceAjax(url, settings, pivots, valueFields);
+      }
 
       var classes = [ "Folder", "File", "File" ];
-      // pivottable
-      var pivotTable = new PivotTable(table,source,pivots,valueFields,classes);
+      new PivotTable(table,source,pivots,valueFields,classes);
 
       $(".hidden").removeClass("hidden");
-      pivotTable.queryNode(2);
 } );
 
 </script>

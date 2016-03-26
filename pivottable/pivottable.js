@@ -71,7 +71,7 @@ class PivotTable {
 
                   var values = this
                         .valueFields
-                        .map(utils.ObjectFn(obj))
+                        .map(utils.ObjectFn(obj.values))
                         .map(utils.HTMLWrapper("td"))
                         .join("\n");
                   this.addSingleNode({ parentid: parentid, newid : id, key: obj.key, 
@@ -98,13 +98,15 @@ class PivotTable {
                         var filter = nodeInfo.filter;
                         var pivotLevel = nodeInfo.level;
                         var nextPivot = this.pivots[pivotLevel];
-                        var newData = this.source.drilldown(filter, nextPivot, this.valueFields);
 
                         var thisCopy = this;
-                        newData.map(function(row) {
-                               thisCopy.addNode(node, row, nextPivot, pivotLevel+1 );
-                        })
-            }
+                        this.source.drilldown(filter, nextPivot, this.valueFields, function(newData) {
+                              newData.map(function(row) {
+                                     thisCopy.addNode(node, row, nextPivot, pivotLevel+1 );
+                              })
+                        });
+
+                  }
       }
 
       return PivotTable;

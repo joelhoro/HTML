@@ -13,8 +13,8 @@ angular
 
             // returns a list of rows where each row has key = is one possible value for 'nextPivot', 
             // and all the aggregated valueFields
-            drilldown(filter, nextPivot, valueFields) {
-                  console.log("Drilling down %s, filter=%s => metrics=%o", nextPivot, JSON.stringify(filter), valueFields);
+            drilldown(filter, nextPivot, valueFields, successFn) {
+                  console.log("[%s] Drilling down %s, filter=%s => metrics=%o", this.constructor.name, nextPivot, JSON.stringify(filter), valueFields);
                   // get all the filtered data, grouped by nextPivot
                   var groupedData = this.data
                         .where(filter)
@@ -23,12 +23,12 @@ angular
                   console.log("Found %s groups: %o", keys.length, keys );
                   // for each group, summarize the results
                   var returnValue = _.map(groupedData, function(values,key) {
-                        var summary = valueFields
+                        var values = valueFields
                               .toObject(function(field) { return values.sum(utils.FieldExtractor(field)); });
-                        summary.key = key;
-                        return summary;
+                        return { key: key, values: values };
                   });
-                  return returnValue;
+                  
+                  successFn(returnValue);
             }
 
             // returns the list of possible values for a dimension, optionally, with a filter
@@ -41,5 +41,46 @@ angular
       }
 
       return PivotTableSourceFromTable;      
+
+} ) // factory('PivotTableSourceFromTable', function(utils) ...
+.service('PivotTableSourceAjax', function(utils,_,$http) {
+
+      class PivotTableSourceAjax {
+
+            constructor(url,settings,dimensions, metrics) {
+                  this.url = url;
+                  this.settings = settings;
+                  this.dimensions = dimensions;
+                  this.metrics = metrics;
+            }
+
+            // returns a list of rows where each row has key = is one possible value for 'nextPivot', 
+            // and all the aggregated valueFields
+            drilldown(filter, nextPivot, valueFields, successFn) {
+
+                  var results;                  
+                  var queryData = { 
+                        'queryParams' : { filter: filter, nextPivot: nextPivot, valueFields: valueFields }, 
+                        'settings' : this.settings 
+                  };
+                  
+                  console.debug("Querying server for ", JSON.stringify(queryData));
+                  $http({
+                    method: "POST",
+                    url: this.url,
+                    data: JSON.stringify(queryData),
+                  }).then(function(result) { 
+                        console.debug("Results downloaded from server: %s", result.data.d.length); 
+                        successFn(result.data.d);
+                  }); 
+            }
+
+            // returns the list of possible values for a dimension, optionally, with a filter
+            distinctValues(dimension, filter = {}) {
+
+            }
+      }
+
+      return PivotTableSourceAjax;      
 
 } ); // factory('PivotTableSourceFromTable', function(utils) ...
