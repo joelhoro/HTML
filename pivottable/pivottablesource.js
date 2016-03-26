@@ -1,7 +1,9 @@
 class PivotTableSourceFromTable {
 
-      constructor(data) {
+      constructor(data, dimensions, metrics) {
             this.data = data;
+            this.dimensions = dimensions;
+            this.metrics = metrics;
       }
 
       // returns a list of rows where each row has key = is one possible value for 'nextPivot', 
@@ -19,6 +21,14 @@ class PivotTableSourceFromTable {
                   return summary;
             });
             return returnValue;
+      }
+
+      // returns the list of possible values for a dimension, optionally, with a filter
+      distinctValues(dimension, filter = {}) {
+            var groupBy = this.data
+                  .where(filter)
+                  .groupBy(FieldExtractor(dimension));
+            return _.map(groupBy, function(values,key) { return key; });
       }
 }
 

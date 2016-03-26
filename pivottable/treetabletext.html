@@ -19,9 +19,6 @@
           <a href="#" onclick="jQuery('#pivottable').treetable('collapseAll'); return false;">Collapse all</a>
         </caption>
         <thead>
-          <tr>
-            <th id='pivotFieldSequence'></th>
-          </tr>
         </thead>
         <tbody>
         </tbody>
@@ -39,16 +36,18 @@ $(document).ready(function() {
 
       // data source
       var data = window.data.slice(0,100);
-      var source = new PivotTableSourceFromTable(data);
-
       var valueFields = [ "Qtr 1", "Qtr 2", "Qtr 3", "Qtr 4" ];
       var pivots = [ "Product", "Customer" ];
 
+      var source = new PivotTableSourceFromTable(data, pivots, valueFields);
+
+      var classes = [ "Folder", "File", "File" ];
       // pivottable
-      var pivotTable = new PivotTable(table,source,pivots,valueFields);
+      var pivotTable = new PivotTable(table,source,pivots,valueFields,classes);
       window.pivotTable = pivotTable;
       pivotTable.initialize();
       $(".hidden").removeClass("hidden");
+      pivotTable.queryNode(2);
 
 })
 

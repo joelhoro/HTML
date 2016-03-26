@@ -1,29 +1,56 @@
 class PivotTable {
-      constructor(table,source,pivots,valueFields) {
+      constructor(table,source,pivots,valueFields,classes) {
             this.table = table;
             this.source = source;
-            this.nodesDictionary = [{}];
+            this.nodesDictionary = [{level:0, filter: {}}];
             this.openNodes = {};
             this.valueFields = valueFields;
             this.pivots = pivots;
             this.id = 0;
-            this.rowTemplate = _.template("<tr onclick='pivotTable.query(<%= newid %>,<%= pivotLevel %>)' data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' ><td><span class=folder><%= key %></span></td><%= values %></tr>");
+            var template = _.template(`
+            <tr onclick='pivotTable.queryNode(<%= newid %>)' 
+                  data-tt-id='<%= newid %>' data-tt-parent-id='<%= parentid %>' >
+                  <td>
+                        <span class=<%= classes[pivotLevel] %>><%= key %></span>
+                  </td>
+                  <%= values %>
+            </tr>`);
+            this.rowTemplate = function(obj) {
+                  obj.classes = classes;
+                  obj.pivots = pivots;
+                  return template(obj);
+            }
       }
 
       initialize() {
 
+            // create the table
             this.table.treetable({ expandable: true }).treetable("expandAll");
-            $("thead tr").append(this.valueFields.map(HTMLWrapper("th")));
-            $("#pivotFieldSequence").html(this.pivots.join(" &gt;&gt; "));
+            // create the column names based on the fields
+            var firstColumName = this.pivots.join(" &gt;&gt; ");
+            var columns = [ firstColumName ].concat(this.valueFields);
+            this.table
+                  .find("thead")
+                  .append(columns.map(HTMLWrapper("th")));
 
+            // create the root node
             var values = this.valueFields
                   .map(function() { return ""; })
                   .map(HTMLWrapper("td"))
                   .join("\n");
-            var root = { parentid: -1, newid : 0, key: "Sales database", value: "", pivotLevel: 0, pivots: this.pivots, values: values };
+            var root = 
+            { 
+                  parentid: -1, 
+                  newid : 0, 
+                  key: "Sales database", 
+                  value: "", 
+                  pivotLevel: 0, 
+                  values: values,
+            };
             this.table.treetable("loadBranch",null,this.rowTemplate(root));
-            var rootNode = $("[data-tt-id='0']");
-            rootNode.click();
+
+            // open the root node
+            this.queryNode(0);
 
       }
       
@@ -35,8 +62,9 @@ class PivotTable {
                   parentid = baseNode.id;
             this.id++;
             var id = this.id;
-            this.nodesDictionary[id] = _.clone(this.nodesDictionary[parentid])
-            this.nodesDictionary[id][currentField]=obj.key;
+            this.nodesDictionary[id] = {level: pivotLevel};
+            this.nodesDictionary[id].filter = _.clone(this.nodesDictionary[parentid].filter)
+            this.nodesDictionary[id].filter[currentField]=obj.key;
 
             var values = this
                   .valueFields
@@ -44,19 +72,23 @@ class PivotTable {
                   .map(HTMLWrapper("td"))
                   .join("\n");
             var newNode = this.rowTemplate({ parentid: parentid, newid : id, key: obj.key, 
-                  pivotLevel: pivotLevel, pivots: this.pivots, values: values } );
+                  pivotLevel: pivotLevel, values: values } );
             
             this.table.treetable("loadBranch", baseNode, newNode );
       }
 
-      query(id, pivotLevel) {
+      // query node id
+      queryNode(id) {
                   var node = this.table.treetable("node",id);
+                  // if this node has already been opened, just toggle it
                   if (this.openNodes[id] != undefined) {
                         node.toggle();
                         return;
                   }
                   this.openNodes[id] = 1;
-                  var filter = this.nodesDictionary[id];
+                  var nodeInfo = this.nodesDictionary[id];
+                  var filter = nodeInfo.filter;
+                  var pivotLevel = nodeInfo.level;
                   var nextPivot = this.pivots[pivotLevel];
                   var newData = this.source.drilldown(filter, nextPivot,this.valueFields);
 
