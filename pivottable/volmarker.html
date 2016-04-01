@@ -1,0 +1,163 @@
+<link href="css/jquery.treetable.theme.default.css" rel="stylesheet" type="text/css" />
+<link href="css/ng-grid.css" rel="stylesheet" type="text/css" />
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+
+<script src="lib/jquery-1.10.2.js"></script>
+
+<script src="lib/underscore.js"></script>
+<script src="lib/jquery.treetable.js"></script>
+
+
+<script src="lib/angular.min.js"></script>
+
+<script type='text/javascript' src='lib/d3.min.js'></script> 
+<script type='text/javascript' src='lib/angular-charts.min.js'></script>
+
+
+<script type="text/javascript" src="lib/ng-grid.debug.js"></script>
+<script type="text/javascript" src="lib/ng-grid-layout.js"></script>
+<script src="data/data.js"></script>
+<script src="data/data2.js"></script>
+<script src="js/utils.js"></script>
+
+<style>
+
+.chart {
+ width: 500px;
+ height: 500px;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 400px; 
+    height: 300px
+}
+      .hidden {
+            visibility: hidden;
+      }
+      .node-level-1 {
+            font-size: 1em;
+      }
+      .node-level-2 {
+            font-size: 0.8em;
+      }
+      .node-level-3 {
+            font-size: 0.7em;
+      }
+</style>
+
+<title>PivotTable test</title>
+<html ng-app="volmarker">
+
+<div  ng-controller="volmarkerCtrl">
+
+<div class=container>
+<span>Started at: {{ startTime }}</span>
+
+<p>Data = {{activeVolSurface.curve}}
+  <div class="row">
+    <div class=col-md-2>
+    Select volsurface <select selected={{underlier}} name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
+      <option ng-repeat="underlier in underliers" value="{{underlier}}">{{underlier}}</option>
+    </select>
+    </div>
+    <div class=col-md-2>
+      <span>Active volsurface: {{activeVolSurface.underlier}}</span>
+    </div>
+  </div>
+  <div class="row">
+      <div class=col-md-4 ng-grid="gridOptions" class=gridStyle></div>
+      <div
+        data-ac-chart="'line'" 
+        data-ac-data="chartData" 
+        data-ac-config="chartConfig" 
+        class="chart">
+      </div>
+  </div>
+
+</div>
+</div>
+</html>
+
+<script>
+
+
+var app = angular.module('volmarker', 
+      ['utilsService','ngGrid','angularCharts'] );
+app.controller("volmarkerCtrl", function($scope,$,$http) {
+      console.log("Starting app at %s", new Date());
+      $scope.startTime = new Date();
+
+      class VolSurface {
+          constructor(underlier) {
+            this.underlier = underlier;
+            this.curve = [
+             { "tenor" : "1m", "vol" : 0.2 },
+             { "tenor" : "3m", "vol" : 0.21 },
+             { "tenor" : "6m", "vol" : 0.22 },
+             ]
+
+             if(underlier == "SX5E")
+              this.curve.forEach(function(r) {r.vol += 0.1});
+          }
+        }
+
+      $scope.updateUnderlier = function() {
+          $scope.activeVolSurface = new VolSurface($scope.underlier);
+          $scope.data = $scope.activeVolSurface.curve;
+
+      }
+
+      $scope.underliers = ["SPX", "SX5E"];
+      $scope.underlier = $scope.underliers[0];
+      $scope.updateUnderlier();
+
+      //$scope.data = $scope.activeVolSurface.curve;
+      // $scope.data = [
+      //        { "tenor" : "1m", "vol" : 0.2 },
+      //        { "tenor" : "3m", "vol" : 0.21 },
+      //        { "tenor" : "6m", "vol" : 0.22 },
+      //        ];
+      $scope.gridOptions = {
+        data: 'data',
+        enableCellSelection: true,
+        enableRowSelection: false,
+        enableCellEdit: true,
+        columnDefs: [{field: 'tenor', displayName: 'Tenor', enableCellEdit: false}, 
+                     {field:'vol', displayName:'Volatility', enableCellEdit: true}]
+      };
+      
+
+  $scope.chartConfig = {
+    "click": function(d) { debugger; },
+    "labels": false,
+    "title": "Products",
+    "legend": {
+      "display": true,
+      "position": "right"
+    },
+    "innerRadius": 0,
+    "lineLegend": "lineEnd"
+  };
+
+  function getChartData(curve) {
+    var data = curve.map(function(r) { return {x: r.tenor,y:[r.vol]}});
+    return { series: ["Vol"], data : data};    
+  }
+  $scope.chartData = getChartData($scope.activeVolSurface.curve);
+
+  $scope.$watch('activeVolSurface.curve', function(oldval,newval) {
+    //debugger;
+    $scope.chartData = getChartData($scope.activeVolSurface.curve);
+    $scope.chartConfig.title = "Vol surface for " + $scope.activeVolSurface.underlier;
+  },true)
+
+
+} );
+
+
+angular.module('plunker', ['angularCharts']);
+app.controller("chartControl",function($scope) {
+//function MainCtrl($scope) {
+} );
+</script>
