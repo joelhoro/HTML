@@ -38,31 +38,49 @@
 }
 </style>
 
-<title>VolMarket</title>
+<title>VolMarker</title>
 <html ng-app="volmarker">
 
 <div ng-controller="volmarkerCtrl">
 
-<span>Started at: {{ startTime }}</span>
+<!-- <span>Started at: {{ startTime }}</span> -->
 
-  <div class="row">
-      <div class="col-sm-3 pre-scrollable">
-          <div ng-repeat="underlier in underliers" ng-controller="chartCtrl" class="">
-            <div ng-class="{'chart-highlighted': underlier == $parent.activeUnderlier }">
-            <h4>{{underlier}}</h4>
-              <canvas id="line" class="chart chart-line" chart-data="chartData" 
-                chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+      <div class="col-md-3  panel panel-warning">
+        <div class="panel-heading"><h1>Underliers</h1></div>
+        <div class="panel-body list-group">
+          <div ng-repeat="activeUnderlier in underliers" ng-controller="chartCtrl" class="list-group-item" ng-class="{'active': activeUnderlier == $parent.$parent.activeUnderlier }">
+            <div >
+            <div class='list-group-item-heading'><b>{{activeUnderlier}}
+              [{{points}} maturities]</b></div>
+              <canvas id="line" class="chart chart-line list-group-item-text" chart-data="chartData" 
+                chart-labels="chartLabels" chart-options="chartOptions" chart-legend="false" chart-series="chartSeries"
                 chart-hover="chartHover" >
-
               </canvas> 
             </div>
           </div>
+        </div>
       </div>
-      <div class="col-sm-6">
-              <h2 class="bold">{{underlier}}</h2>
-          <div class="row gridStyle" ng-grid="gridConfig" </div>
+      
+      <div class="col-md-9 panel panel-primary" ng-model="activeUnderlier" ng-controller="chartCtrl">
+        <div class="row panel-heading">
+          <span class="col-md-12 "><h1>{{activeUnderlier}}</h1></span>
+        </div>
+
+        <div class="row panel-body">
+          <div class="col-md-6">
+              <div class="gridStyle" ng-grid="gridConfig"></div>
+          </div>
+          <div class="col-md-6">
+            <div >
+              <canvas id="line" class="chart chart-line" chart-data="chartData"
+                    chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                    chart-hover="chartHover" >
+                  </canvas> 
+            </div>
+          </div>
+        </div>
+
       </div>
-  </div>
 
 
 
@@ -72,5 +90,5 @@
 
   $("#underlier").focus();
 $(".gridStyle").css("height","90%");
-$(".gridStyle").css("width","30%");
+//$(".gridStyle").css("width","100%");
 </script>

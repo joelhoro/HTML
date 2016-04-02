@@ -4438,13 +4438,16 @@ var app = angular.module('dataService',['utilsService'])
     return d.getMonthAbbr() + (d.getYear()-100);
   } 
 
+  var getTime = x => x.substr(0,x.indexOf("M")+1);
+
   var cleanData = data.map(
     r => ( { 
         underlying:   r.Underlying,
         tenor:        date(r["End Date"]), 
         theovar:      double(r["Var from Surface (0 Basis)"]),
         markedvar:    double(r["Marked Var"]),
-        newvar:       (double(r["New Market Var Fn"])+Math.random()-0.5).round(2)
+        newvar:       (double(r["New Market Var Fn"])+Math.random()-0.5).round(2),
+        surfacetime:  getTime(r["SurfaceDateTime(local)"])
       } )
     );
 

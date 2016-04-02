@@ -1,5 +1,10 @@
+body {
+  padding: 40px;
+}
 
-
+h1 {
+  text-align: center;
+}
 .gridStyle {
     border: 1px solid rgb(212,212,212);
 }
