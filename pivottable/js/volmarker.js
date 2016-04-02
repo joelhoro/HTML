@@ -57,7 +57,7 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
       $scope.initialize();
 } );
   
-app.controller("chartCtrl", function($scope) {
+app.controller("volSurfaceCtrl", function($scope) {
   var parent = $scope.$parent;
   this.tooltip = function(flag) { $scope.tooltip = flag };
   $scope.points = parent.volsurfaces[parent.activeUnderlier].length;
