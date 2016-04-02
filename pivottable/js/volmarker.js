@@ -17,20 +17,22 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
           $scope.$broadcast("underlierChanged",und);
       }
 
+      $scope.reloadSurfaces = function() {
+        $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
+        $scope.$broadcast("underlierChanged");
+      }
+
       var testMode = true;
       if(testMode)
         $scope.underliers = ["SPX","NKY"];
       else
         $scope.underliers = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
                           //voldata.underliers;
-      $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
 
       $scope.activeUnderlierIndex = function() {
         return $scope.underliers.indexOf($scope.activeUnderlier);
       }
       
-      $scope.activeUnderlier = $scope.underliers[0];
-      $scope.updateUnderlier($scope.activeUnderlier);
 
       $scope.gridConfig = {
         data: 'data',
@@ -46,21 +48,37 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
                     ]
       };
 
+      $scope.initialize = function() {
+        $scope.reloadSurfaces();
+        $scope.activeUnderlier = $scope.underliers[0];
+        $scope.updateUnderlier($scope.activeUnderlier);
+      }
+
+      $scope.initialize();
 } );
   
 app.controller("chartCtrl", function($scope) {
   var parent = $scope.$parent;
+  this.tooltip = function(flag) { $scope.tooltip = flag };
   $scope.points = parent.volsurfaces[parent.activeUnderlier].length;
   var update = function(n,o) { 
       var newCurve = parent.volsurfaces[parent.activeUnderlier];    
       $scope.chartLabels = newCurve.map(r => r.tenor);
-      $scope.chartSeries = [ "Var (0 basis)", "Marked var", "New var"];
+      $scope.chartSeries = [ "Theo", "Marked", "New"];
       $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
-      $scope.chartOptions = { scaleLabel : "<%=value%>%"};
+      $scope.chartOptions = { 
+          scaleLabel : "<%=value%>%", 
+          showTooltips: $scope.tooltip,
+          legendTemplate: 
+       "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+        };
+      
+      // "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       $scope.chartHover = 
         () => parent.updateUnderlier($scope.activeUnderlier);
       
     };
     parent.$watch('data',update, true);
+    parent.$on('underlierChanged', update)
 
 } );  // chartCtrl

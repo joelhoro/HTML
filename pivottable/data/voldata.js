@@ -4440,7 +4440,7 @@ var app = angular.module('dataService',['utilsService'])
 
   var getTime = x => x.substr(0,x.indexOf("M")+1);
 
-  var cleanData = data.map(
+  var cleanData = () => data.map(
     r => ( { 
         underlying:   r.Underlying,
         tenor:        date(r["End Date"]), 
@@ -4452,7 +4452,7 @@ var app = angular.module('dataService',['utilsService'])
     );
 
   function getVol(underlier) {
-      return _.filter(cleanData,{underlying:underlier});
+      return _.filter(cleanData(),{underlying:underlier});
   }
 
   var underliers = _.uniq(data.map(r => r.Underlying));
