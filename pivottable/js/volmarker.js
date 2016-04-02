@@ -48,7 +48,7 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
 
 } );
   
-app.controller("chartCtrl", function($scope,$,$http,voldata) {
+app.controller("chartCtrl", function($scope) {
   var parent = $scope.$parent;
   $scope.points = parent.volsurfaces[parent.activeUnderlier].length;
   var update = function(n,o) { 
