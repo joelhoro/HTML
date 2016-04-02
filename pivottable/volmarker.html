@@ -1,6 +1,7 @@
 <link href="css/jquery.treetable.theme.default.css" rel="stylesheet" type="text/css" />
 <link href="css/ng-grid.css" rel="stylesheet" type="text/css" />
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/angular-chart.css">
 
 <script src="lib/jquery-1.10.2.js"></script>
 
@@ -11,7 +12,9 @@
 <script src="lib/angular.min.js"></script>
 
 <script type='text/javascript' src='lib/d3.min.js'></script> 
-<script type='text/javascript' src='lib/angular-charts.min.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
 
 
 <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
@@ -93,13 +96,11 @@ flex {
       <div class="flex-item" ng-grid="gridOptions" class=gridStyle></div>
         </div>
   </div>
-      <div
-        data-ac-chart="'line'" 
-        data-ac-data="chartData" 
-        data-ac-config="chartConfig" 
-        class="chart flex-item flex-grow">
-      </div>
+      <canvas id="line" class="chart chart-line" chart-data="chartData"
+  chart-labels="chartLabels" chart-legend="true" chart-series="chartSeries"
+  chart-click="onClick" >
       <div class="flex-item">Data = {{activeVolSurface.curve}}</div>
+</canvas> 
   </div>
 </div>
 </html>
@@ -108,8 +109,10 @@ flex {
 
 
 var app = angular.module('volmarker', 
-      ['utilsService','ngGrid','angularCharts','dataService'] );
+      ['utilsService','ngGrid','chart.js','dataService'] 
+      );
 app.controller("volmarkerCtrl", function($scope,$,$http,voldata) {
+
       console.log("Starting app at %s", new Date());
       $scope.startTime = new Date();
 
@@ -159,14 +162,31 @@ app.controller("volmarkerCtrl", function($scope,$,$http,voldata) {
   };
 
   function getChartData(curve) {
-    var data = curve.map(function(r) { return {x: r.tenor,y:[r.vol]}});
-    return { series: ["Vol"], data : data};    
+
+    // return { labels : ["January", "February", "March", "April", "May", "June", "July"],
+    //         series : ['Series A', 'Series B'],
+    //         data : [
+    //   [65, 59, 80, 81, 56, 55, 40],
+    //   [28, 48, 40, 19, 86, 27, 90]
+    // ] };
+
+    return {
+        labels : curve.map(r => r.tenor),
+        series : [ "Vol"],
+        data : [ curve.map(r => r.vol) ]
+    }
+    // var data = curve.map(function(r) { return {x: r.tenor,y:[r.vol]}});
+    // return { series: ["Vol"], data : data};    
   }
   $scope.chartData = getChartData($scope.activeVolSurface.curve);
 
   $scope.$watch('activeVolSurface.curve', function(oldval,newval) {
     //debugger;
-    $scope.chartData = getChartData($scope.activeVolSurface.curve);
+    var chartData = getChartData($scope.activeVolSurface.curve);
+    $scope.chartData = chartData.data;
+    $scope.chartLabels = chartData.labels;
+    $scope.chartSeris = chartData.series;
+
     $scope.chartConfig.title = "Vol surface for " + $scope.activeVolSurface.underlier;
   },true)
 
