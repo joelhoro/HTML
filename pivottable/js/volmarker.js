@@ -22,7 +22,7 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
         $scope.$broadcast("underlierChanged");
       }
 
-      var testMode = true;
+      var testMode = false;
       if(testMode)
         $scope.underliers = ["SPX","NKY"];
       else
@@ -86,7 +86,6 @@ app.controller("volSurfaceCtrl", function($scope) {
 app.directive("volSurfaceChart", function() {
   return {
     restrict: "E",
-    //scope: { activeUnderlier: "=activeUnderlier"},
     template: `
      <canvas  class="chart chart-line" chart-data="chartData"
                           chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"

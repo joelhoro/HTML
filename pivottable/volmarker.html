@@ -36,6 +36,10 @@
 .chart-highlighted {
   background-color: lightblue;
 }
+.list-group {
+  overflow: scroll;
+  max-height: 90%;
+}
 </style>
 
 <title>VolMarker</title>
@@ -50,18 +54,17 @@
           <div class="panel-heading"><h1>Underliers <button class="btn" ng-click="reloadSurfaces()">reload</button></h1></div>
           <div class="panel-body list-group">
             <div ng-repeat="activeUnderlier in underliers" ng-controller="volSurfaceCtrl" class="list-group-item" ng-class="{'active': activeUnderlier == $parent.$parent.activeUnderlier }">
-              <div >
               <div class='list-group-item-heading'><b>{{activeUnderlier}}
                 [{{points}} maturities]</b></div>
-                <vol-surface-chart/>
-              </div>
+              <vol-surface-chart  />
             </div>
           </div>
+          
         </div>
       </div>
       
       <div class="col-md-9">
-        <div class="panel panel-primary" ng-model="activeUnderlier" ng-controller="volSurfaceCtrl as vsCtrl" ng-init="vsCtrl.tooltip(true)">
+        <div class="panel panel-primary" >
           <div class="panel-heading">
             <h1>Var surface for  {{activeUnderlier}}</h1>
           </div>
@@ -72,7 +75,7 @@
             </div>
             <div class="col-md-6">
               <div>
-                <vol-surface-chart/>
+                <vol-surface-chart ng-controller="volSurfaceCtrl as vsCtrl" ng-init="vsCtrl.tooltip(true)"/>
               </div>
             </div>
           </div>
@@ -87,6 +90,6 @@
 <script>
 
   $("#underlier").focus();
-$(".gridStyle").css("height","90%");
+$(".gridStyle").css("height","85%");
 //$(".gridStyle").css("width","100%");
 </script>
