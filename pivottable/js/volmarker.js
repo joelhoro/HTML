@@ -39,15 +39,30 @@ app.controller("volmarkerCtrl", function($scope,$,$http,voldata) {
                      {field:'newvar',   displayName: 'New Var',         enableCellEdit: true },
                     ]
       };
-      
-  $scope.$watch('data', function(newCurve,oldCurve) {
-    // update chart when curve changes
-    console.debug("Switching from ", oldCurve, " to ", newCurve);
-    $scope.chartLabels = newCurve.map(r => r.tenor);
-    $scope.chartSeries = [ "Var (0 basis)", "Marked var", "New var"];
-    $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
-    $scope.chartOptions = { scaleLabel : "<%=value%>%"};
-  },true)
+
+       
+  // $scope.$watch('data', function(newCurve,oldCurve) {
+  //   // update chart when curve changes
+  //   console.debug("Switching from ", oldCurve, " to ", newCurve);
+  //   $scope.chartLabels = newCurve.map(r => r.tenor);
+  //   $scope.chartSeries = [ "Var (0 basis)", "Marked var", "New var"];
+  //   $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
+  //   $scope.chartOptions = { scaleLabel : "<%=value%>%"};
+  // },true)
 
 
 } );
+
+
+  
+app.controller("chartCtrl", function($scope,$,$http,voldata) {
+  $scope.underlier = $scope.$parent.underlier;
+  var newCurve = voldata.getVol($scope.underlier);
+  $scope.chartLabels = newCurve.map(r => r.tenor);
+  $scope.chartSeries = [ "Var (0 basis)", "Marked var", "New var"];
+  $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
+  $scope.chartOptions = { scaleLabel : "<%=value%>%"};
+  $scope.chartHover = function() { var x = $scope.underlier; $scope.$parent.updateUnderlier($scope.underlier) }
+}
+
+);

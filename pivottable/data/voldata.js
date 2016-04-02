@@ -4433,15 +4433,18 @@ var app = angular.module('dataService',['utilsService'])
     return number.round(2);
   };
 
-  function getVol(underlier) {
-    var extractVol = r => ( { 
+  var cleanData = data.map(
+    r => ( { 
+        underlying:   r.Underlying,
         tenor:        new Date(r["End Date"]).format("My"), 
         theovar:      double(r["Var from Surface (0 Basis)"]),
         markedvar:    double(r["Marked Var"]),
         newvar:       (double(r["New Market Var Fn"])+Math.random()-0.5).round(2)
-      } );
-    return _.filter(data,{Underlying:underlier})
-      .map(extractVol);
+      } )
+    );
+
+  function getVol(underlier) {
+      return _.filter(cleanData,{underlying:underlier});
   }
 
   var underliers = _.uniq(data.map(r => r.Underlying));
