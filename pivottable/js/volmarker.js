@@ -48,10 +48,12 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
         enableCellSelection: true,
         enableRowSelection: false,
         columnDefs: [
-                     {field: 'tenor',   displayName: 'Tenor',           enableCellEdit: false, width: 70 }, 
-                     {field:'theovar',  displayName: 'Theoretical', enableCellEdit: false, width: 100 },
-                     {field:'markedvar',displayName: 'Marked',      enableCellEdit: true, width: 70 },
-                     {field:'newvar',   displayName: 'New Var',         enableCellEdit: true, width: 70 },
+                     {field: 'tenor',     displayName: 'Tenor',           enableCellEdit: false, width: 70 }, 
+                     {field:'theovar',    displayName: 'Theo',            enableCellEdit: false, width: 50 },
+                     {field:'markedvar',  displayName: 'Marked',          enableCellEdit: true, width: 60 },
+                     {field:'basis',      displayName: 'Basis',           enableCellEdit: false, width: 50 },
+                     {field:'newtheovar',   displayName: 'NewTheo',       enableCellEdit: false, width: 80 },
+                     {field:'newmarkedvar',   displayName: 'NewMark',     enableCellEdit: true, width: 70 },
                      {field:'surfacetime',   displayName: 'Time',         enableCellEdit: false, width: 200 },
 
                     ]
@@ -97,8 +99,13 @@ app.controller("volSurfaceCtrl", function($scope) {
       var newCurve = parent.volsurfaces[und]; 
       //console.debug(und, newCurve[0]);
       $scope.chartLabels = newCurve.map(r => r.tenor);
-      $scope.chartSeries = [ "Theo", "Marked", "New"];
-      $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
+      $scope.chartSeries = [ "Theo", "Marked", "NewTheo", "NewMark"];
+      $scope.chartData = [ 
+          newCurve.map(r => r.theovar), 
+          newCurve.map(r => r.markedvar), 
+          newCurve.map(r => r.newtheovar),
+          newCurve.map(r => r.newmarkedvar) 
+          ];
       $scope.chartOptions = { 
           scaleLabel : "<%=value%>%", 
           showTooltips: $scope.tooltip,

@@ -4427,7 +4427,7 @@ var app = angular.module('dataService',['utilsService'])
   var double = x => { 
     if(typeof(x)=="number")
       return x;
-    if(x == "#VALUE!")
+    if(x == "#VALUE!" || x == undefined)
       return 0;
     var number = Number(x.replace("%",""));
     return number.round(2);
@@ -4446,7 +4446,9 @@ var app = angular.module('dataService',['utilsService'])
         tenor:        date(r["End Date"]), 
         theovar:      double(r["Var from Surface (0 Basis)"]),
         markedvar:    double(r["Marked Var"]),
-        newvar:       (double(r["New Market Var Fn"])+Math.random()-0.5).round(2),
+        newtheovar:   double(r["New Market Var Fn"]),//+Math.random()-0.5).round(2),
+        basis:        double(r["Marked Basis"]),
+        newmarkedvar: double(r["New Market Var Fn"]) + double(r["Market Basis"]),
         surfacetime:  getTime(r["SurfaceDateTime(local)"])
       } )
     );
