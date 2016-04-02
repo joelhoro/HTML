@@ -1,6 +1,6 @@
 angular.module('utilsService',[])
 .service('_', function() { var _ = window._; return _; })
-.service('$', function() { var $ = window.$; delete window.$; return $; })
+.service('$', function() { var $ = window.$; return $; })
 .service('utils', function(_,$) {
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
