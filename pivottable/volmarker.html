@@ -2,6 +2,7 @@
 <link href="css/ng-grid.css" rel="stylesheet" type="text/css" />
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="css/angular-chart.css">
+<link rel="stylesheet" href="css/volmarker.css">
 
 <script src="lib/jquery-1.10.2.js"></script>
 
@@ -19,60 +20,16 @@
 
 <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
 <script type="text/javascript" src="lib/ng-grid-layout.js"></script>
-<script src="data/voldata.js"></script>
+
+<!-- Project specific libs -->
 <script src="js/utils.js"></script>
 <script src="js/dateUtils.js"></script>
 
+<script src="data/voldata.js"></script>
+<script src="js/volmarker.js"></script>
+
 <style>
 
-flex {
-  display: flex;
-}
-
-.chart {
- width: 1200px;
- height: 300px;
-}
-
-.gridStyle {
-    border: 1px solid rgb(212,212,212);
-    width: 400px; 
-    height: 300px
-}
-      .hidden {
-            visibility: hidden;
-      }
-      .node-level-1 {
-            font-size: 1em;
-      }
-      .node-level-2 {
-            font-size: 0.8em;
-      }
-      .node-level-3 {
-            font-size: 0.7em;
-      }
-
-      .flex-container {
-      border: 1px solid lightgrey;
-    display: -webkit-flex;
-    display: flex;
-    padding: 30px;
-}
-
-.flex-item {
-  margin: 0px 20px;
-}
-
-.flex-vertical {
-  flex-direction: column;
-}
-
-.flex-grow {
-  flex-grow: 3;
-}
-.bold {
-  font-weight: bold;
-}
 </style>
 
 <title>VolMarket</title>
@@ -80,117 +37,39 @@ flex {
 
 <div  ng-controller="volmarkerCtrl">
 
-<div class=container>
+<div>
 <span>Started at: {{ startTime }}</span>
 
-  <div class="flex-container">
-  <div class="flex-item flex-container flex-vertical">
-    Select volsurface 
-        <select class='flex-item' selected={{underlier}} name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
-          <option ng-repeat="underlier in underliers" value="{{underlier}}">{{underlier}}</option>
-        </select>
+  <div class="flex container">
+    <div class="flex-item">
+      <ul>
+      <button ng-click="updateUnderlier(und)" class="btn-primary btn btn-sm" type="button" ng-repeat="und in underliers">{{und}}</button>
+    </div>
+    <div class="flex-item flex-container flex-vertical">
+      <div class="flex-item flex-container"> <!-- vol surface and grid -->
+            Select volsurface 
+            <div class='flex-item'>
+            <select  name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
+              <option ng-repeat="und in underliers" ng-selected="{{underlier==und}}" value="{{und}}">{{und}}</option>
+            </select>
+            </div>
+            <div class="flex-item flex-container ">
+              <span class="flex-item bold">Active volsurface: {{activeVolSurface.underlier}}</span>
+              <div class="flex-item" ng-grid="gridConfig" class=gridStyle></div>
+            </div>
       </div>
-        <div class="flex-item flex-container flex-vertical">
-      <span class="flex-item bold">Active volsurface: {{activeVolSurface.underlier}}</span>
-
-      <div class="flex-item" ng-grid="gridOptions" class=gridStyle></div>
-        </div>
-  </div>
-      <canvas id="line" class="chart chart-line" chart-data="chartData"
-  chart-labels="chartLabels" chart-legend="true" chart-series="chartSeries"
-  chart-click="onClick" >
+      <div class="flex-item">
+        <canvas id="line" class="chart chart-line" chart-data="chartData" 
+          chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+          chart-hover="chartHover" >
+        </canvas> 
+      </div>
       <div class="flex-item">Data = {{activeVolSurface.curve}}</div>
-</canvas> 
   </div>
-</div>
 </html>
 
 <script>
 
-
-var app = angular.module('volmarker', 
-      ['utilsService','ngGrid','chart.js','dataService'] 
-      );
-app.controller("volmarkerCtrl", function($scope,$,$http,voldata) {
-
-      console.log("Starting app at %s", new Date());
-      $scope.startTime = new Date();
-
-      class VolSurface {
-          constructor(underlier) {
-            this.underlier = underlier;
-            this.curve = voldata.getVol(underlier);
-          }
-      }
-
-      $scope.updateUnderlier = function() {
-          $scope.activeVolSurface = new VolSurface($scope.underlier);
-          $scope.data = $scope.activeVolSurface.curve;
-
-      }
-
-      $scope.underliers = ["SPX", "SX5E", "NKY" ];//voldata.underliers;
-      $scope.underlier = $scope.underliers[0];
-      $scope.updateUnderlier();
-
-      //$scope.data = $scope.activeVolSurface.curve;
-      // $scope.data = [
-      //        { "tenor" : "1m", "vol" : 0.2 },
-      //        { "tenor" : "3m", "vol" : 0.21 },
-      //        { "tenor" : "6m", "vol" : 0.22 },
-      //        ];
-      $scope.gridOptions = {
-        data: 'data',
-        enableCellSelection: true,
-        enableRowSelection: false,
-        enableCellEdit: true,
-        columnDefs: [{field: 'tenor', displayName: 'Tenor', enableCellEdit: false}, 
-                     {field:'vol', displayName:'Volatility', enableCellEdit: true}]
-      };
-      
-
-  $scope.chartConfig = {
-    "click": function(d) { debugger; },
-    "labels": false,
-    "title": "Products",
-    "legend": {
-      "display": true,
-      "position": "right"
-    },
-    "innerRadius": 0,
-    "lineLegend": "lineEnd"
-  };
-
-  function getChartData(curve) {
-
-    // return { labels : ["January", "February", "March", "April", "May", "June", "July"],
-    //         series : ['Series A', 'Series B'],
-    //         data : [
-    //   [65, 59, 80, 81, 56, 55, 40],
-    //   [28, 48, 40, 19, 86, 27, 90]
-    // ] };
-
-    return {
-        labels : curve.map(r => r.tenor),
-        series : [ "Vol"],
-        data : [ curve.map(r => r.vol) ]
-    }
-    // var data = curve.map(function(r) { return {x: r.tenor,y:[r.vol]}});
-    // return { series: ["Vol"], data : data};    
-  }
-  $scope.chartData = getChartData($scope.activeVolSurface.curve);
-
-  $scope.$watch('activeVolSurface.curve', function(oldval,newval) {
-    //debugger;
-    var chartData = getChartData($scope.activeVolSurface.curve);
-    $scope.chartData = chartData.data;
-    $scope.chartLabels = chartData.labels;
-    $scope.chartSeris = chartData.series;
-
-    $scope.chartConfig.title = "Vol surface for " + $scope.activeVolSurface.underlier;
-  },true)
-
-
-} );
+  $("#underlier").focus();
 
 </script>

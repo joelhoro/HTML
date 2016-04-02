@@ -1,5 +1,5 @@
-angular.module('dataService',[])
-.service("voldata", function() { 
+var app = angular.module('dataService',['utilsService'])
+.service("voldata", function(utils) { 
 
   function getVolBasic(underlier) {
     var curve = [
@@ -4424,10 +4424,22 @@ angular.module('dataService',[])
   }
   ];
 
-  var double = x => Number(x.replace("%",""));
+  var double = x => { 
+    if(typeof(x)=="number")
+      return x;
+    if(x == "#VALUE!")
+      return 0;
+    var number = Number(x.replace("%",""));
+    return number.round(2);
+  };
 
   function getVol(underlier) {
-    var extractVol = r => ( { tenor: new Date(r["End Date"]).format("My"), vol: double(r["Var from Surface (0 Basis)"]) } );
+    var extractVol = r => ( { 
+        tenor:        new Date(r["End Date"]).format("My"), 
+        theovar:      double(r["Var from Surface (0 Basis)"]),
+        markedvar:    double(r["Marked Var"]),
+        newvar:       (double(r["New Market Var Fn"])+Math.random()-0.5).round(2)
+      } );
     return _.filter(data,{Underlying:underlier})
       .map(extractVol);
   }

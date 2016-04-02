@@ -16,6 +16,8 @@ angular.module('utilsService',[])
 	      return obj;
 	}
 
+	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
+
 	String.prototype.contains = function(substr) { return this.indexOf(substr)>-1 };
 	
 	return { 
