@@ -29,54 +29,48 @@
 <script src="js/volmarker.js"></script>
 
 <style>
-div
-{
-  flex-wrap: wrap;
+.pre-scrollable {
+
+  max-height: 100%
+}
+.chart-highlighted {
+  background-color: lightblue;
 }
 </style>
 
 <title>VolMarket</title>
 <html ng-app="volmarker">
 
-<div  ng-controller="volmarkerCtrl">
+<div ng-controller="volmarkerCtrl">
 
-<div>
 <span>Started at: {{ startTime }}</span>
 
-  <div class="flex container">
-    <div class="flex-item">
-      <ul>
-      <button ng-click="updateUnderlier(und)" class="btn-primary btn btn-sm" type="button" ng-repeat="und in underliers">{{und}}</button>
-    </div>
-    <div class="flex-item flex-container flex-vertical">
-      <div class="flex-item flex-container"> <!-- vol surface and grid -->
-            Select volsurface 
-            <div class='flex-item'>
-            <select  name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
-              <option ng-repeat="und in underliers" ng-selected="{{underlier==und}}" value="{{und}}">{{und}}</option>
-            </select>
-            </div>
-            <div class="flex-item flex-container ">
-              <span class="flex-item bold">Active volsurface: {{activeVolSurface.underlier}}</span>
-              <div class="flex-item" ng-grid="gridConfig" class=gridStyle></div>
-            </div>
-      </div>
-      <div class="flex-item flex-container">
-        <div class="" ng-repeat="underlier in underliers" ng-controller="chartCtrl">
-          <h4>{{underlier}}</h4>
-          <canvas id="line" class="chart chart-line" chart-data="chartData" 
-            chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-            chart-hover="chartHover" >
+  <div class="row">
+      <div class="col-sm-3 pre-scrollable">
+          <div ng-repeat="underlier in underliers" ng-controller="chartCtrl" class="">
+            <div ng-class="{'chart-highlighted': underlier == $parent.activeUnderlier }">
+            <h4>{{underlier}}</h4>
+              <canvas id="line" class="chart chart-line" chart-data="chartData" 
+                chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                chart-hover="chartHover" >
 
-          </canvas> 
-        </div>
+              </canvas> 
+            </div>
+          </div>
       </div>
-      <div class="flex-item">Data = {{activeVolSurface.curve}}</div>
+      <div class="col-sm-6">
+              <h2 class="bold">{{underlier}}</h2>
+          <div class="row gridStyle" ng-grid="gridConfig" </div>
+      </div>
   </div>
+
+
+
 </html>
 
 <script>
 
   $("#underlier").focus();
-
+$(".gridStyle").css("height","90%");
+$(".gridStyle").css("width","30%");
 </script>
