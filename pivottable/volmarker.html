@@ -16,15 +16,19 @@
 
 <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
 <script type="text/javascript" src="lib/ng-grid-layout.js"></script>
-<script src="data/data.js"></script>
-<script src="data/data2.js"></script>
+<script src="data/voldata.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/dateUtils.js"></script>
 
 <style>
 
+flex {
+  display: flex;
+}
+
 .chart {
- width: 500px;
- height: 500px;
+ width: 1200px;
+ height: 300px;
 }
 
 .gridStyle {
@@ -44,9 +48,31 @@
       .node-level-3 {
             font-size: 0.7em;
       }
+
+      .flex-container {
+      border: 1px solid lightgrey;
+    display: -webkit-flex;
+    display: flex;
+    padding: 30px;
+}
+
+.flex-item {
+  margin: 0px 20px;
+}
+
+.flex-vertical {
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 3;
+}
+.bold {
+  font-weight: bold;
+}
 </style>
 
-<title>PivotTable test</title>
+<title>VolMarket</title>
 <html ng-app="volmarker">
 
 <div  ng-controller="volmarkerCtrl">
@@ -54,28 +80,27 @@
 <div class=container>
 <span>Started at: {{ startTime }}</span>
 
-<p>Data = {{activeVolSurface.curve}}
-  <div class="row">
-    <div class=col-md-2>
-    Select volsurface <select selected={{underlier}} name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
-      <option ng-repeat="underlier in underliers" value="{{underlier}}">{{underlier}}</option>
-    </select>
-    </div>
-    <div class=col-md-2>
-      <span>Active volsurface: {{activeVolSurface.underlier}}</span>
-    </div>
+  <div class="flex-container">
+  <div class="flex-item flex-container flex-vertical">
+    Select volsurface 
+        <select class='flex-item' selected={{underlier}} name="underlier" id="underlier" ng-model="underlier" ng-change="updateUnderlier()">
+          <option ng-repeat="underlier in underliers" value="{{underlier}}">{{underlier}}</option>
+        </select>
+      </div>
+        <div class="flex-item flex-container flex-vertical">
+      <span class="flex-item bold">Active volsurface: {{activeVolSurface.underlier}}</span>
+
+      <div class="flex-item" ng-grid="gridOptions" class=gridStyle></div>
+        </div>
   </div>
-  <div class="row">
-      <div class=col-md-4 ng-grid="gridOptions" class=gridStyle></div>
       <div
         data-ac-chart="'line'" 
         data-ac-data="chartData" 
         data-ac-config="chartConfig" 
-        class="chart">
+        class="chart flex-item flex-grow">
       </div>
+      <div class="flex-item">Data = {{activeVolSurface.curve}}</div>
   </div>
-
-</div>
 </div>
 </html>
 
@@ -83,24 +108,17 @@
 
 
 var app = angular.module('volmarker', 
-      ['utilsService','ngGrid','angularCharts'] );
-app.controller("volmarkerCtrl", function($scope,$,$http) {
+      ['utilsService','ngGrid','angularCharts','dataService'] );
+app.controller("volmarkerCtrl", function($scope,$,$http,voldata) {
       console.log("Starting app at %s", new Date());
       $scope.startTime = new Date();
 
       class VolSurface {
           constructor(underlier) {
             this.underlier = underlier;
-            this.curve = [
-             { "tenor" : "1m", "vol" : 0.2 },
-             { "tenor" : "3m", "vol" : 0.21 },
-             { "tenor" : "6m", "vol" : 0.22 },
-             ]
-
-             if(underlier == "SX5E")
-              this.curve.forEach(function(r) {r.vol += 0.1});
+            this.curve = voldata.getVol(underlier);
           }
-        }
+      }
 
       $scope.updateUnderlier = function() {
           $scope.activeVolSurface = new VolSurface($scope.underlier);
@@ -108,7 +126,7 @@ app.controller("volmarkerCtrl", function($scope,$,$http) {
 
       }
 
-      $scope.underliers = ["SPX", "SX5E"];
+      $scope.underliers = ["SPX", "SX5E", "NKY" ];//voldata.underliers;
       $scope.underlier = $scope.underliers[0];
       $scope.updateUnderlier();
 
@@ -155,9 +173,4 @@ app.controller("volmarkerCtrl", function($scope,$,$http) {
 
 } );
 
-
-angular.module('plunker', ['angularCharts']);
-app.controller("chartControl",function($scope) {
-//function MainCtrl($scope) {
-} );
 </script>
