@@ -53,10 +53,7 @@
               <div >
               <div class='list-group-item-heading'><b>{{activeUnderlier}}
                 [{{points}} maturities]</b></div>
-                <canvas id="line" class="chart chart-line list-group-item-text" chart-data="chartData" 
-                  chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-                  chart-hover="chartHover" >
-                </canvas> 
+                <vol-surface-chart/>
               </div>
             </div>
           </div>
@@ -74,11 +71,8 @@
                 <div class="gridStyle" ng-grid="gridConfig"></div>
             </div>
             <div class="col-md-6">
-              <div >
-                <canvas id="line" class="chart chart-line" chart-data="chartData"
-                      chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-                      chart-hover="chartHover" >
-                    </canvas> 
+              <div>
+                <vol-surface-chart/>
               </div>
             </div>
           </div>

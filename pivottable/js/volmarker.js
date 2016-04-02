@@ -82,3 +82,17 @@ app.controller("chartCtrl", function($scope) {
     parent.$on('underlierChanged', update)
 
 } );  // chartCtrl
+
+app.directive("volSurfaceChart", function() {
+  return {
+    restrict: "E",
+    //scope: { activeUnderlier: "=activeUnderlier"},
+    template: `
+     <canvas  class="chart chart-line" chart-data="chartData"
+                          chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                          chart-hover="chartHover" >
+                        </canvas> 
+            `
+  };
+   } );
+
