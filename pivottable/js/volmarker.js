@@ -2,7 +2,6 @@ var app = angular.module('volmarker',
       ['utilsService','ngGrid','chart.js','dataService'] 
       );
 app.controller("volmarkerCtrl", function($scope,$http,voldata) {
-
       console.log("Starting app at %s", new Date());
       $scope.startTime = new Date();
       $scope.voldata = voldata;
@@ -11,10 +10,10 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
       $scope.updateUnderlier = function(und) {
           if(und == undefined)
             und = $scope.activeUnderlier;
-          $scope.data = $scope.volsurfaces[und];
           $scope.activeUnderlier = und;
-          console.debug("Switching to ", und);//, $scope.data);
           $scope.$broadcast("underlierChanged",und);
+          $scope.data = $scope.volsurfaces[und];
+          console.debug("Switching to ", und);//, $scope.data);
       }
 
       $scope.reloadSurfaces = function() {
@@ -22,7 +21,17 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
         $scope.$broadcast("underlierChanged");
       }
 
-      var testMode = false;
+      $scope.next = function(inc) {
+        var idx = $scope.activeUnderlierIndex() + inc;
+        if(idx >= $scope.underliers.length)
+          idx = 0;
+        if(idx < 0)
+          idx = 0;
+        var und = $scope.underliers[idx];
+        $scope.updateUnderlier(und);
+      }
+
+      var testMode = true;
       if(testMode)
         $scope.underliers = ["SPX","NKY"];
       else
@@ -52,6 +61,14 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
         $scope.reloadSurfaces();
         $scope.activeUnderlier = $scope.underliers[0];
         $scope.updateUnderlier($scope.activeUnderlier);
+
+        $(document).keydown(evt => {
+          if(evt.keyCode == 40)
+            $scope.next(1);
+          if(evt.keyCode == 38)
+            $scope.next(-1);
+        })
+
       }
 
       $scope.initialize();
@@ -59,10 +76,26 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
   
 app.controller("volSurfaceCtrl", function($scope) {
   var parent = $scope.$parent;
-  this.tooltip = function(flag) { $scope.tooltip = flag };
-  $scope.points = parent.volsurfaces[parent.activeUnderlier].length;
-  var update = function(n,o) { 
-      var newCurve = parent.volsurfaces[parent.activeUnderlier];    
+  //$scope.active = false;
+  //debugger;
+  this.initialize = function(und, tooltip = false, listen = false) { 
+    console.debug("Initializing ",$scope.$id, " with listen=",listen, " und=", und);
+    $scope.underlier = und; 
+    $scope.tooltip = tooltip;
+    $scope.listen = listen;
+  }
+
+  var thisCopy = this;
+
+  var update = function(und) { 
+      if(und == undefined)
+        und = $scope.underlier;
+      else
+        $scope.underlier = und;
+      thisCopy.initialize(und,$scope.tooltip,$scope.listen);
+      //$scope.points = parent.volsurfaces[und].length;
+      var newCurve = parent.volsurfaces[und]; 
+      //console.debug(und, newCurve[0]);
       $scope.chartLabels = newCurve.map(r => r.tenor);
       $scope.chartSeries = [ "Theo", "Marked", "New"];
       $scope.chartData = [ newCurve.map(r => r.theovar), newCurve.map(r => r.markedvar), newCurve.map(r => r.newvar) ];
@@ -75,18 +108,22 @@ app.controller("volSurfaceCtrl", function($scope) {
       
       // "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       $scope.chartHover = 
-        () => parent.updateUnderlier($scope.activeUnderlier);
-      
+        () => parent.updateUnderlier(und);
     };
-    parent.$watch('data',update, true);
-    parent.$on('underlierChanged', update)
+
+    if($scope.listen) {
+      parent.$on('underlierChanged', (evt,und) => update(und))
+    }
+    else
+      parent.$watch('data', (n,o) => update(n[0].underlier), true);
 
 } );  // chartCtrl
 
 app.directive("volSurfaceChart", function() {
   return {
     restrict: "E",
-    template: `
+    scope: true,//{ vs : "@"},
+    template: `{{underlier}}
      <canvas  class="chart chart-line" chart-data="chartData"
                           chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
                           chart-hover="chartHover" >

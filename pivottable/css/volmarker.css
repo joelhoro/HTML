@@ -1,6 +1,8 @@
 body {
-  padding: 20px;
+  padding: 10px;
+  overflow: hidden;
 }
+
 
 h1 {
   text-align: center;
