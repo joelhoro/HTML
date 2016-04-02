@@ -1,6 +1,3 @@
-flex {
-  display: flex;
-}
 
 
 .gridStyle {
@@ -9,31 +6,3 @@ flex {
       .hidden {
             visibility: hidden;
       }
-      .node-level-1 {
-            font-size: 1em;
-      }
-      .node-level-2 {
-            font-size: 0.8em;
-      }
-      .node-level-3 {
-            font-size: 0.7em;
-      }
-
-      .flex-container {
-      border: 1px solid lightgrey;
-    display: -webkit-flex;
-    display: flex;
-    padding: 30px;
-}
-
-.flex-item {
-  margin: 0px 20px;
-}
-
-.flex-vertical {
-  flex-direction: column;
-}
-
-.bold {
-  font-weight: bold;
-}
