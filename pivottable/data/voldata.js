@@ -4463,14 +4463,13 @@ var app = angular.module('dataService',['utilsService'])
         enableCellSelection: true,
         enableRowSelection: false,
         columnDefs: [
-                     {field: 'tenor',     displayName: 'Tenor',           enableCellEdit: false, width: 70 }, 
-                     {field:'theovar',    displayName: 'Theo',            enableCellEdit: false, width: 50 },
-                     {field:'markedvar',  displayName: 'Marked',          enableCellEdit: true, width: 60 },
-                     {field:'basis',      displayName: 'Basis',           enableCellEdit: false, width: 50 },
-                     {field:'newtheovar',   displayName: 'NewTheo',       enableCellEdit: false, width: 80 },
-                     {field:'newmarkedvar',   displayName: 'NewMark',     enableCellEdit: true, width: 70 },
-                     {field:'surfacetime',   displayName: 'Time',         enableCellEdit: false, width: 200 },
-
+                     {field: 'tenor',       displayName: 'Tenor',           enableCellEdit: false,  width: 70   }, 
+                     {field:'theovar',      displayName: 'Theo',            enableCellEdit: false,  width: 50   },
+                     {field:'markedvar',    displayName: 'Marked',          enableCellEdit: true,   width: 60   },
+                     {field:'basis',        displayName: 'Basis',           enableCellEdit: false,  width: 50   },
+                     {field:'newtheovar',   displayName: 'NewTheo',         enableCellEdit: false,  width: 80   },
+                     {field:'newmarkedvar', displayName: 'NewMark',         enableCellEdit: true,   width: 70   },
+                     {field:'surfacetime',  displayName: 'Time',            enableCellEdit: false,  width: 200  },
                     ]
             };
     };
