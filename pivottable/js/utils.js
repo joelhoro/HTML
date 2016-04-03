@@ -79,24 +79,29 @@ angular.module('utilsService',[])
 	var originalConsoleWidth = 600;
 	var maxConsoleWidth = 1000;
 	var consoleWidthIncrement = 200;
+	var consoleOn = true;
 
     var setConsoleWidth = w => {
     	consoleWidth = w;
-		consoleElt.css("width",consoleWidth+"px");    		
+		consoleElt.animate({ width : consoleWidth+"px" });    		
     }
 
    	setConsoleWidth(originalConsoleWidth);
 
     function toggleConsole() {
-    	if(consoleElt.hasClass("hidden")) {
-    		consoleElt.removeClass("hidden");
+    	if(!consoleOn) {
+    		consoleElt.animate({bottom: 10});
+    		consoleOn= true;
     		setConsoleWidth(originalConsoleWidth);
     	}
     	else {
     		consoleWidth += consoleWidthIncrement;
-    		setConsoleWidth(consoleWidth);
-    		if(consoleWidth>maxConsoleWidth)
-	    		consoleElt.addClass("hidden");
+    		if(consoleWidth>maxConsoleWidth) {
+				consoleElt.animate({bottom:-300, width: originalConsoleWidth+"px"});
+				consoleOn = false;
+    		}
+    		else
+				setConsoleWidth(consoleWidth);
     	}
     }
 
@@ -105,7 +110,7 @@ angular.module('utilsService',[])
 		ObjectFn		: obj => fieldName => obj[fieldName],
 		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">",
 		log				: log,
-		toggleConsole	: toggleConsole
+		toggleConsole	: window._.throttle(toggleConsole,200)
 	};	
 })
 

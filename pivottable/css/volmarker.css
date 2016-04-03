@@ -26,9 +26,6 @@ h1 {
   color: black;
 }
 
-.hidden {
-  display: hidden;
-}
 
 #console {
    position:absolute;
