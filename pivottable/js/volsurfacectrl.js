@@ -1,6 +1,7 @@
 var app = angular.module('volmarker');
 
-app.controller("volSurfaceCtrl", function($scope) {
+app.controller("volSurfaceCtrl", function($scope,utils) {
+  utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
   var parent = $scope.$parent.$parent;
   $scope.underlier = $scope.$parent.underlier;
   var underlier = $scope.underlier;
@@ -27,8 +28,8 @@ app.controller("volSurfaceCtrl", function($scope) {
         };
       
       // "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-      $scope.chartHover = 
-        () => parent.updateUnderlier(und);
+      if(!$scope.listen)
+        $scope.chartHover = () => parent.updateUnderlier(und);
       
     };
     update(underlier);

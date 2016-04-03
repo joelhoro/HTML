@@ -2,65 +2,77 @@ var app = angular.module('volmarker',
       ['utilsService','ngGrid','chart.js','dataService'] 
       );
 
-app.controller("volmarkerCtrl", ['$scope','voldata', function($scope,voldata) {
+app.controller("volmarkerCtrl", function($scope,voldata,utils) {
+  utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
-      console.log("Starting app at %s", new Date());
-      $scope.startTime = new Date();
- 
-      $scope.updateUnderlier = function(und) {
-          if(und == undefined)
-            und = $scope.activeUnderlier;
-          $scope.data = $scope.volsurfaces[und];
-          $scope.activeUnderlier = und;
-          console.debug("Switching to ", und);//, $scope.data);
-          $scope.$broadcast("underlierChanged",und);
-      }
+  $scope.startTime = new Date();
 
-      $scope.reloadSurfaces = function() {
-        $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
-        $scope.points = _.keys($scope.volsurfaces).toObject(und => $scope.volsurfaces[und].length)
-        $scope.$broadcast("underlierChanged");
-      }
+  $scope.updateUnderlier = function(und) {
+      if(und == undefined)
+        und = $scope.activeUnderlier;
+      $scope.data = $scope.volsurfaces[und];
+      $scope.activeUnderlier = und;
+      utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
+      $scope.$broadcast("underlierChanged",und);
+  }
 
-      // user interaction
-      $(document).keydown(evt => {
-        if(evt.keyCode == 40)  // down
-          $scope.next(1);
-        if(evt.keyCode == 38)  // up
-          $scope.next(-1); 
-      })
+  $scope.reloadSurfaces = function() {
+    $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
+    $scope.points = _.keys($scope.volsurfaces).toObject(und => $scope.volsurfaces[und].length)
+    $scope.$broadcast("underlierChanged");
+  }
 
-      $scope.next = function(inc) {
-        var idx = ($scope.activeUnderlierIndex() + inc)
-         .capfloor(0,$scope.underliers.length-1);
-        var und = $scope.underliers[idx];
-        $scope.updateUnderlier(und);
-        $scope.$apply();
-        $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
-      }
+  // user interaction
+  $(document).keydown(evt => {
+    if(evt.keyCode == 40)  // down
+      $scope.next(1);
+    if(evt.keyCode == 38)  // up
+      $scope.next(-1); 
+    if(evt.keyCode == 67)   // c
+      utils.toggleConsole();
+  })
 
-      function getUnderliers() {
-        var search = location.search;
-        if(search.contains("test"))
-          $scope.underliers = ["SPX","NKY"];
-        else if(search.contains("full"))
-          $scope.underliers = voldata.underliers;
-        else
-          $scope.underliers = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
-      }
-    
-      $scope.activeUnderlierIndex = function() {
-        return $scope.underliers.indexOf($scope.activeUnderlier);
-      }
+  $scope.next = function(inc) {
+    var idx = ($scope.activeUnderlierIndex() + inc)
+     .capfloor(0,$scope.underliers.length-1);
+    var und = $scope.underliers[idx];
+    $scope.updateUnderlier(und);
+    $scope.$apply();
+    $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
+  }
 
-      $scope.gridConfig = voldata.gridConfig('data');
+  function getUnderliers() {
+    var search = location.search;
+    if(search.contains("test")) {
+      utils.log("Starting in test mode");
+      $scope.underliers = ["SPX","NKY"];
+    }
+    else if(search.contains("full")) {
+      utils.log("Starting in full mode");
+      $scope.underliers = voldata.underliers;
+    }
+    else {
+      utils.log("Starting in extended test mode");
+      $scope.underliers = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
+    }
+    utils.log("Using {0} underliers", $scope.underliers.length);
+  }
 
-      $scope.initialize = function() {
-        getUnderliers();
-        $scope.reloadSurfaces();
-        $scope.updateUnderlier($scope.underliers[0]);
-      }
+  $scope.activeUnderlierIndex = function() {
+    return $scope.underliers.indexOf($scope.activeUnderlier);
+  }
 
-      $scope.initialize();
-} ] );
+  $scope.gridConfig = voldata.gridConfig('data');
+  //$scope.gridConfig.onRegisterApi = function(g) {
+  //   debugger;
+  // }
+
+  $scope.initialize = function() {
+    getUnderliers();
+    $scope.reloadSurfaces();
+    $scope.updateUnderlier($scope.underliers[0]);
+  }
+
+  $scope.initialize();
+} );
   

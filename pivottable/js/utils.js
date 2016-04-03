@@ -1,8 +1,8 @@
 angular.module('utilsService',[])
 .service('_', function() { var _ = window._; return _; })
-.service('$', function() { 
+.service('jquery', function() { 
 	var $ = window.$; 
-	
+
 	$.fn.goTo = function(parent) {
 	  parent.animate({
 	      scrollTop: ($(this).offset().top - parent.offset().top )+ 'px'
@@ -31,7 +31,7 @@ angular.module('utilsService',[])
 
 	return $; 
 })
-.service('utils', function(_,$) {
+.service('utils', function(_,jquery) {
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
 	      return this.map(fn).reduce((a,b) => a+b) 
@@ -48,13 +48,64 @@ angular.module('utilsService',[])
 
 	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
 	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); }
-	
+
 	String.prototype.contains = function(substr) { return this.indexOf(substr)>-1 };
-	
+    String.prototype.format = function(...arguments) {
+        var str = this.toString();
+        if (!arguments.length)
+            return str;
+        var args = typeof arguments[0],
+            args = (("string" == args || "number" == args) ? arguments : arguments[0]);
+        for (arg in args)
+            str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), JSON.stringify(args[arg]));
+        return str;
+    }
+
+    var id = 0;
+
+	scrollTo = window._.throttle(spanId => $("#console").scrollTo($("#"+spanId)));
+
+	// console stuff
+    function log(message,...arg) {
+    	console.debug(message,arg);
+    	var spanId = "console_" + id;
+    	var html = "<p># <span id=" + spanId + ">" + message.format(arg) + "</span>";
+		$("#console").append(html);
+		scrollTo(spanId);
+		id++;
+    }
+
+	var consoleElt = $("#console");
+	var originalConsoleWidth = 600;
+	var maxConsoleWidth = 1000;
+	var consoleWidthIncrement = 200;
+
+    var setConsoleWidth = w => {
+    	consoleWidth = w;
+		consoleElt.css("width",consoleWidth+"px");    		
+    }
+
+   	setConsoleWidth(originalConsoleWidth);
+
+    function toggleConsole() {
+    	if(consoleElt.hasClass("hidden")) {
+    		consoleElt.removeClass("hidden");
+    		setConsoleWidth(originalConsoleWidth);
+    	}
+    	else {
+    		consoleWidth += consoleWidthIncrement;
+    		setConsoleWidth(consoleWidth);
+    		if(consoleWidth>maxConsoleWidth)
+	    		consoleElt.addClass("hidden");
+    	}
+    }
+
 	return { 
 		FieldExtractor	: fieldName => obj => obj[fieldName], 
 		ObjectFn		: obj => fieldName => obj[fieldName],
-		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">"
+		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">",
+		log				: log,
+		toggleConsole	: toggleConsole
 	};	
 })
 

@@ -1,6 +1,7 @@
 var app = angular.module('dataService',['utilsService'])
 .service("voldata", function(utils) { 
 
+    utils.log("Initializing voldata service");
   function getVolBasic(underlier) {
     var curve = [
              { "tenor" : "1m", "vol" : 0.2 },
@@ -4454,7 +4455,9 @@ var app = angular.module('dataService',['utilsService'])
     );
 
   function getVol(underlier) {
-      return _.filter(cleanData(),{underlying:underlier});
+      var result = _.filter(cleanData(),{underlying:underlier});
+      utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
+      return result;
   }
 
   var gridConfig = function(dataField) {
@@ -4476,6 +4479,7 @@ var app = angular.module('dataService',['utilsService'])
         config.columnDefs
             .map(row => { if(!row.enableCellEdit) row.cellClass="bold"; })
 
+        utils.log("Configuring grid: {0}", config);
         return config;
     };
 

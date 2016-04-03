@@ -1,5 +1,6 @@
 body {
   padding: 20px;
+  overflow-y: hidden;
 }
 
 h1 {
@@ -11,4 +12,35 @@ h1 {
 
 .bold {
   font-weight: bold;
+}
+
+
+.list-group {
+  overflow: scroll;
+  max-height: 90%;
+}
+
+.list-group-item.active, .list-group-item.active:hover {
+  background-color: E6F8A0;
+  border-color: E6F8A0;
+  color: black;
+}
+
+.hidden {
+  display: hidden;
+}
+
+#console {
+   position:absolute;
+   bottom:10;
+   right: 10;
+   line-height: 15px;
+   width:600px;   /* Height of the footer */
+   height:250px;   /* Height of the footer */
+   background: #1b2838;
+   border: 5px darkgrey solid;
+   color: #c6d4df;
+   overflow-y: scroll;
+   overflow-x: hidden;
+   padding:10px;
 }
