@@ -8,6 +8,7 @@ h1 {
 .gridStyle {
     border: 1px solid rgb(212,212,212);
 }
-      .hidden {
-            visibility: hidden;
-      }
+
+.bold {
+  font-weight: bold;
+}
