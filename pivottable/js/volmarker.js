@@ -7,7 +7,6 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
       $scope.startTime = new Date();
       $scope.voldata = voldata;
 
-
       $scope.updateUnderlier = function(und) {
           if(und == undefined)
             und = $scope.activeUnderlier;
@@ -19,10 +18,11 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
 
       $scope.reloadSurfaces = function() {
         $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
+        $scope.points = _.keys($scope.volsurfaces).toObject(und => $scope.volsurfaces[und].length)
         $scope.$broadcast("underlierChanged");
       }
 
-      var testMode = false;
+      var testMode = true;
       if(testMode)
         $scope.underliers = ["SPX","NKY"];
       else
@@ -60,11 +60,19 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
 } );
   
 app.controller("volSurfaceCtrl", function($scope) {
-  var parent = $scope.$parent;
-  this.tooltip = function(flag) { $scope.tooltip = flag };
-  $scope.points = parent.volsurfaces[parent.activeUnderlier].length;
-  var update = function(n,o) { 
-      var newCurve = parent.volsurfaces[parent.activeUnderlier];    
+  //debugger;
+  var parent = $scope.$parent.$parent;
+  $scope.underlier = $scope.$parent.underlier;
+  var underlier = $scope.underlier;
+  // this.init = function(und) { $scope.underlier = und; };
+  // this.tooltip = function(flag) { $scope.tooltip = flag };
+
+  var update = function(und) { 
+      if(und != undefined)
+        $scope.underlier = und;
+      else
+        und = $scope.underlier;
+      var newCurve = parent.volsurfaces[und];    
       $scope.chartLabels = newCurve.map(r => r.tenor);
       $scope.chartSeries = [ "Theo", "Marked", "NewTheo", "NewMark"];
       $scope.chartData = [ 
@@ -82,23 +90,51 @@ app.controller("volSurfaceCtrl", function($scope) {
       
       // "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       $scope.chartHover = 
-        () => parent.updateUnderlier($scope.activeUnderlier);
+        () => parent.updateUnderlier(und);
       
     };
-    parent.$watch('data',update, true);
-    parent.$on('underlierChanged', update)
+    update(underlier);
+    parent.$watch('data',(n,o) => { 
+      var newUnderlier = n[0].underlying;
+      if(newUnderlier == underlier)
+        update(newUnderlier);
+    }, true);
+    if($scope.listen=="1")
+      parent.$on('underlierChanged', (evt,und) => update(und))
 
 } );  // chartCtrl
 
 app.directive("volSurfaceChart", function() {
   return {
     restrict: "E",
+     scope: {
+       underlier : '@',
+       listen: '@',
+       name: '@',
+     },
+    transclude: true,
     template: `
-     <canvas  class="chart chart-line" chart-data="chartData"
-                          chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-                          chart-hover="chartHover" >
-                        </canvas> 
-            `
+<div ng-controller="volSurfaceCtrl">
+<canvas  class="chart chart-line" chart-data="chartData"
+                            chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                            chart-hover="chartHover" >
+                          </canvas> 
+</div>
+
+    `,
+    lindddk:  (scope,elt,attr) => {
+      scope.underlier = attr.underlier;
+      var html = `
+        Und => {{underlier}}
+       <canvas  class="chart chart-line" chart-data="chartData"
+                            chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                            chart-hover="chartHover" >
+                          </canvas> 
+              `;
+              debugger;
+      elt.html(html);              
+
+    } 
   };
    } );
 

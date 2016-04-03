@@ -53,10 +53,10 @@
         <div class="panel panel-primary">
           <div class="panel-heading"><h1>Underliers <button class="btn" ng-click="reloadSurfaces()">reload</button></h1></div>
           <div class="panel-body list-group">
-            <div ng-repeat="activeUnderlier in underliers" ng-controller="volSurfaceCtrl" class="list-group-item" ng-class="{'active': activeUnderlier == $parent.$parent.activeUnderlier }">
-              <div class='list-group-item-heading'><b>{{activeUnderlier}}
-                [{{points}} maturities]</b></div>
-              <vol-surface-chart  />
+            <div ng-repeat="und in underliers" class="list-group-item" ng-class="{'active': und == $parent.$parent.activeUnderlier }">
+              <div class='list-group-item-heading'><b>{{und}}
+                [{{points[und]}} maturities]</b></div>
+              <vol-surface-chart underlier='{{und}}'  name='small-{{und}}' />
             </div>
           </div>
           
@@ -75,7 +75,7 @@
             </div>
             <div class="col-md-6">
               <div>
-                <vol-surface-chart ng-controller="volSurfaceCtrl as vsCtrl" ng-init="vsCtrl.tooltip(true)"/>
+                <vol-surface-chart underlier='{{activeUnderlier}}' name='large-{{activeUnderlier}}' listen=1 />
               </div>
             </div>
           </div>
