@@ -22,7 +22,38 @@ app.controller("volmarkerCtrl", function($scope,$http,voldata) {
         $scope.$broadcast("underlierChanged");
       }
 
-      var testMode = true;
+       $(document).keydown(evt => {
+         if(evt.keyCode == 40)
+           $scope.next(1);
+         if(evt.keyCode == 38)
+           $scope.next(-1);
+       })
+       $(document).click(evt => { $scope.next(1); });
+      
+
+      (function($) {
+          $.fn.goTo = function(parent) {
+              parent.animate({
+                  scrollTop: $(this).offset().top + 'px'
+              }, 'fast');
+              return this; // for chaining...
+          }
+      })($);
+
+       $scope.next = function(inc) {
+          var idx = $scope.activeUnderlierIndex() + inc;
+          if(idx >= $scope.underliers.length)
+            idx = 0;
+          if(idx < 0)
+            idx = 0;
+          var und = $scope.underliers[idx];
+          $scope.updateUnderlier(und);
+          $scope.$apply();
+          $(".active").goTo($(".list-group"));
+        }
+
+
+      var testMode = false;
       if(testMode)
         $scope.underliers = ["SPX","NKY"];
       else

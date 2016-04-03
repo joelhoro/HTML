@@ -51,9 +51,13 @@
 
       <div class="col-md-3">
         <div class="panel panel-primary">
-          <div class="panel-heading"><h1>Underliers <button class="btn" ng-click="reloadSurfaces()">reload</button></h1></div>
+          <div class="panel-heading"><h1>Underliers 
+             <button class="btn" ng-click="reloadSurfaces()">reload</button>
+             <button class="btn" ng-click="next(1)">next</button>
+ 
+          </h1></div>
           <div class="panel-body list-group">
-            <div ng-repeat="und in underliers" class="list-group-item" ng-class="{'active': und == $parent.$parent.activeUnderlier }">
+            <div ng-repeat="und in underliers" class="list-group-item" ng-class="{'active': und == $parent.activeUnderlier }">
               <div class='list-group-item-heading'><b>{{und}}
                 [{{points[und]}} maturities]</b></div>
               <vol-surface-chart underlier='{{und}}' />
