@@ -83,7 +83,7 @@ app.controller("volSurfaceCtrl", function($scope) {
           ];
       $scope.chartOptions = { 
           scaleLabel : "<%=value%>%", 
-          showTooltips: $scope.tooltip,
+          showTooltips: $scope.tooltip == "1",
           legendTemplate: 
        "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
@@ -111,30 +111,15 @@ app.directive("volSurfaceChart", function() {
        underlier : '@',
        listen: '@',
        name: '@',
+       tooltip: '@',
      },
-    transclude: true,
     template: `
-<div ng-controller="volSurfaceCtrl">
-<canvas  class="chart chart-line" chart-data="chartData"
-                            chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-                            chart-hover="chartHover" >
-                          </canvas> 
-</div>
-
-    `,
-    lindddk:  (scope,elt,attr) => {
-      scope.underlier = attr.underlier;
-      var html = `
-        Und => {{underlier}}
-       <canvas  class="chart chart-line" chart-data="chartData"
-                            chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
-                            chart-hover="chartHover" >
-                          </canvas> 
-              `;
-              debugger;
-      elt.html(html);              
-
-    } 
+      <div ng-controller="volSurfaceCtrl">
+      <canvas  class="chart chart-line" chart-data="chartData"
+                                  chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+                                  chart-hover="chartHover" >
+                                </canvas> 
+      </div>`,
   };
    } );
 

@@ -56,7 +56,7 @@
             <div ng-repeat="und in underliers" class="list-group-item" ng-class="{'active': und == $parent.$parent.activeUnderlier }">
               <div class='list-group-item-heading'><b>{{und}}
                 [{{points[und]}} maturities]</b></div>
-              <vol-surface-chart underlier='{{und}}'  name='small-{{und}}' />
+              <vol-surface-chart underlier='{{und}}' />
             </div>
           </div>
           
@@ -75,7 +75,7 @@
             </div>
             <div class="col-md-6">
               <div>
-                <vol-surface-chart underlier='{{activeUnderlier}}' name='large-{{activeUnderlier}}' listen=1 />
+                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 />
               </div>
             </div>
           </div>
