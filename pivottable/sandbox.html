@@ -1,0 +1,75 @@
+<link href="css/ng-grid.css" rel="stylesheet" type="text/css" />
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/angular-chart.css">
+<link rel="stylesheet" href="css/volmarker.css">
+
+<script src="lib/jquery-1.10.2.js"></script>
+<script src="lib/underscore.js"></script>
+
+<script src="lib/angular.min.js"></script>
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+
+
+<script type="text/javascript" src="lib/ng-grid.debug.js"></script>
+<script type="text/javascript" src="lib/ng-grid-layout.js"></script>
+
+<!-- Project specific libs -->
+<script src="js/utils.js"></script>
+<script src="js/dateUtils.js"></script>
+
+<script src="data/datawarehouse.js"></script>
+
+<script src="js/voldata.js"></script>
+<script src="js/volmarker.js"></script>
+<script src="js/volsurfacectrl.js"></script>
+<script src="js/volsurfacechart.js"></script>
+
+<style>
+
+</style>
+
+<title>VolMarker</title>
+<html ng-app="volmarker">
+
+<div ng-controller="volmarkerCtrl">
+
+<!-- <span>Started at: {{ startTime }}</span> -->
+Hello
+</div>
+
+
+<!-- <div id='console'></div> -->
+
+</html>
+
+<script>
+
+// curve = [{date:x, value:y}, ...]
+function interpolator(curve) {
+  var dates = curve.map(r => r.date.valueOf());
+  var values = curve.map(r => r.value);
+
+  var spline = numeric.spline(dates,values);
+  this.at = function(d) {
+    return spline.at(d.valueOf());
+  }
+}
+
+var curve = [
+  { date: new Date("2016-4-4"), value : 12 },
+  { date: new Date("2016-4-14"), value : 22 },
+  { date: new Date("2016-4-18"), value : 27 },
+];
+
+console.debug(curve);
+var iCurve = new interpolator(curve);
+
+console.debug(iCurve.at(new Date("2016-4-11")));
+
+
+</script>

@@ -1,10 +1,9 @@
 app.directive("volSurfaceChart", function() {
 
-  function controller($scope,voldata, utils) {
+  function controller($scope,voldata, utils, analytics) {
         utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
         $scope.basis = $scope.type === 'basis';
-        $scope.chartClass='chart-line';
         var update = function(und) { 
             if(und != undefined)
               $scope.underlier = und;
@@ -13,20 +12,31 @@ app.directive("volSurfaceChart", function() {
             var newCurve = $scope.$parent.volsurfaces[und];
 
             $scope.chartLabels = newCurve.map(r => r.tenor);
-            if($scope.basis)  {
-              $scope.chartSeries = [ "Basis" ];
+            if($scope.tenor != undefined) {
+              $scope.chartSeries = [ "Fwd variance"  ];
+              var fwdCurve = analytics.fwdVarCurve(newCurve, $scope.tenor);
               $scope.chartData = [ 
-                  newCurve.map(r => r.basis), 
-                  ];              
+                  fwdCurve, 
+                  ];                            
             }
             else {
-              $scope.chartSeries = [ "Theo", "Marked", "NewTheo", "NewMark"];
-              $scope.chartData = [ 
-                  newCurve.map(r => r.theovar), 
-                  newCurve.map(r => r.markedvar), 
-                  newCurve.map(r => r.newtheovar),
-                  newCurve.map(r => r.newmarkedvar) 
-                  ];              
+              if($scope.basis)  {
+                $scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
+                $scope.chartData = [ 
+                    newCurve.map(r => r.basis), 
+                    newCurve.map(r => r.newbasis), 
+                    ];              
+              }
+              else {
+                $scope.chartSeries = [ "BM estimate", "Dealer" ];
+                $scope.chartData = [ 
+                    // newCurve.map(r => r.theovar), 
+                    // newCurve.map(r => r.markedvar), 
+                    // newCurve.map(r => r.newtheovar),
+                    newCurve.map(r => r.newmarkedvar),
+                    newCurve.map(r => r.dealervar),
+                    ];              
+              }
             }
               $scope.chartOptions = { 
                 scaleLabel : "<%=value%>%", 
@@ -37,7 +47,6 @@ app.directive("volSurfaceChart", function() {
 
             if(!$scope.listen)
               $scope.chartHover = () => parent.updateUnderlier(und);
-            
           };
 
           update(underlier);
@@ -53,11 +62,10 @@ app.directive("volSurfaceChart", function() {
 
   function templateFn(elt,attr)     
   {
-      var tmpl = '<canvas  class="chart ' + 
-        (attr.type=='basis' ? 'chart-bar' : 'chart-line') + 
-      ` 
-        " chart-data="chartData" chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
-        chart-hover="chartHover" >
+      var tmpl = '<div ng-transclude/><canvas  class="chart ' + 
+        (attr.type=='basis' ? 'chart-bar' : 'chart-line') + '"' +
+      ` chart-data="chartData" chart-legend=true chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
+       chart-hover="chartHover" >
         </canvas> 
       `;
 
@@ -67,12 +75,14 @@ app.directive("volSurfaceChart", function() {
 
   return {
     restrict: "E",
+    transclude: true,
     scope: {
        underlier : '@',
        listen: '@',
        name: '@',
        tooltip: '@',
-      type: '@'
+       type: '@',
+       tenor: '@'
      },
     template: templateFn,
     controller: controller

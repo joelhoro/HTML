@@ -6,10 +6,10 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
   var data = dataWarehouse.data;
 
   var double = x => { 
+    if(x == "#VALUE!" || x == undefined || x === 0)
+      return null;
     if(typeof(x)=="number")
       return x;
-    if(x == "#VALUE!" || x == undefined)
-      return 0;
     var number = Number(x.replace("%",""));
     return number.round(2);
   };
@@ -24,12 +24,15 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
   var cleanData = () => data.map(
     r => ( { 
         underlying:   r.Underlying,
+        maturity:     new Date(r["End Date"]),
         tenor:        date(r["End Date"]), 
         theovar:      double(r["Var from Surface (0 Basis) \nToday"]),
         markedvar:    double(r["Marked Var"]),
         newtheovar:   double(r["New Market Var Fn"]),//+Math.random()-0.5).round(2),
         basis:        double(r["Marked Basis\nYesterday"]),
         newmarkedvar: double(r["New Market Var Fn"]) + double(r["Market Basis"]),
+        dealervar:    double(r["SGVS"]),
+        newbasis:     double(r["SGVS"])- double(r["New Market Var Fn"]),
         surfacetime:  getTime(r["SurfaceDateTime(local)"])
       } )
     );

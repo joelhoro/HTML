@@ -13,6 +13,7 @@
 <script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
 
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
 
 <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
 <script type="text/javascript" src="lib/ng-grid-layout.js"></script>
@@ -20,6 +21,8 @@
 <!-- Project specific libs -->
 <script src="js/utils.js"></script>
 <script src="js/dateUtils.js"></script>
+
+<script src="js/analytics.js"></script>
 
 <script src="data/datawarehouse.js"></script>
 
@@ -39,7 +42,7 @@
 
 <!-- <span>Started at: {{ startTime }}</span> -->
 
-      <div class="col-md-3">
+      <div class="col-md-1">
         <div class="panel panel-primary">
           <div class="panel-heading"><h1>Underliers 
              <button class="btn" ng-click="reloadSurfaces()">reload</button>
@@ -57,7 +60,7 @@
         </div>
       </div>
       
-      <div class="col-md-9">
+      <div class="col-md-5">
         <div class="panel panel-primary" >
           <div class="panel-heading">
             <h1>Var surface for  {{activeUnderlier}}</h1>
@@ -80,6 +83,24 @@
         </div>
       </div>
 
+      <div class="col-md-6">
+        <div class="panel panel-primary" >
+          <div class="panel-heading">
+            <h1>Fwd Var surfaces for  {{activeUnderlier}}</h1>
+          </div>
+
+          <div class="panel-body">
+            <div class="row">
+              <div ng-repeat="tenor in ['1m','3m','6m','1y']" class="col-md-6">
+                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 tenor='{{tenor}}'>
+                <b>{{tenor}} forward variance</b>
+                </vol-surface-chart>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
 <!-- <div id='console'></div> -->
 
