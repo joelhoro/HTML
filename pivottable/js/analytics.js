@@ -31,8 +31,7 @@ angular.module('utilsService')
     var iCurve = new interpolator(termCurve,'maturity','newmarkedvar',convertor);
     var tenors = termCurve.map(r => r.tenor);
 
-    var interval = {'1m':30, '3m':90, '6m': 180, '1y':360}[tenor];
-//debugger;
+    var interval = {'1m':30, '2m' : 60, '3m':90, '6m': 180, '1y':360}[tenor];
     var fwdVars = termCurve
       .map(r => {
         start = r.maturity;
@@ -41,7 +40,7 @@ angular.module('utilsService')
         back = iCurve.at(end);
         var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
         fwdVar = isNaN(fwdVar) ? null : fwdVar;
-        return fwdVar;
+        return fwdVar.round(2);
       })
 
     return fwdVars;
