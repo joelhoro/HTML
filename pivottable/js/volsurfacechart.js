@@ -1,14 +1,6 @@
 app.directive("volSurfaceChart", function() {
-  return {
-    restrict: "E",
-     scope: {
-       underlier : '@',
-       listen: '@',
-       name: '@',
-       tooltip: '@',
-      type: '@'
-     },
-     controller : function($scope,voldata, utils) {
+
+  function controller($scope,voldata, utils) {
         utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
         $scope.basis = $scope.type === 'basis';
@@ -57,8 +49,10 @@ app.directive("volSurfaceChart", function() {
           }, true);
           if($scope.listen=="1")
             parent.$on('underlierChanged', (evt,und) => update(und))
-     },
-    template: (elt,attr) => {
+  }
+
+  function templateFn(elt,attr)     
+  {
       var tmpl = '<canvas  class="chart ' + 
         (attr.type=='basis' ? 'chart-line' : 'chart-line') + 
       ` 
@@ -67,7 +61,22 @@ app.directive("volSurfaceChart", function() {
         </canvas> 
       `;
 
-      return tmpl;
-     },
+     return tmpl;
   };
-   } );
+
+
+  return {
+    restrict: "E",
+    scope: {
+       underlier : '@',
+       listen: '@',
+       name: '@',
+       tooltip: '@',
+      type: '@'
+     },
+    template: templateFn,
+    controller: controller
+  } 
+
+}
+);
