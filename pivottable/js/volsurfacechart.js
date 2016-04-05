@@ -54,9 +54,9 @@ app.directive("volSurfaceChart", function() {
   function templateFn(elt,attr)     
   {
       var tmpl = '<canvas  class="chart ' + 
-        (attr.type=='basis' ? 'chart-line' : 'chart-line') + 
+        (attr.type=='basis' ? 'chart-bar' : 'chart-line') + 
       ` 
-        " chart-data="chartData" chart-labels="chartLabels" chart-options="chartOptions" chart-legend="true" chart-series="chartSeries"
+        " chart-data="chartData" chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
         chart-hover="chartHover" >
         </canvas> 
       `;

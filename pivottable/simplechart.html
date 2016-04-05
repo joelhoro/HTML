@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="css/angular-chart.css">
+
+
+<script src="lib/angular.min.js"></script>
+
+<script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+
+<style>
+.c {
+
+  height : 200,
+  width : 200,
+
+}
+
+</style>
+
+<title>Chart test</title>
+<html ng-app="app">
+
+  <div class=c ng-controller="BarCtrl">
+
+<canvas id="line" class="chart chart-bar" chart-data="chartData.data" chart-labels="chartData.labels" chart-legend="true" chart-series="chartData.series">
+</canvas>
+  </div>
+
+<!-- <span>Started at: {{ startTime }}</span> -->
+
+
+</html>
+
+<script>
+
+
+angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
+
+  $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+  $scope.series = ['Series A', 'Series B'];
+  $scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90]
+  ];
+  $scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };
+});
+        
+angular.module("app", ["chart.js"]).controller("BarCtrl", function ($scope) {
+  $scope.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  $scope.series = ['Series A', 'Series B'];
+
+  $scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90]
+  ];
+
+
+
+$scope.chartData = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    series: ['Foo', 'Baz', 'Bar'],
+    data: [
+        [65, 59, 80, 81, 56, 55, 40],
+        [28, 48, 40, 19, 86, 27, 90],
+        [42, 17, 28, 73, 50, 12, 68]
+    ]
+};
+});
+
+</script>
