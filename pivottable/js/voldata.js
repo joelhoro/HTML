@@ -64,8 +64,8 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
                          // {field:'markedvar',    displayName: 'Marked',          enableCellEdit: true,   width: 40   },
                          {field:'basis',        displayName: 'Basis',           enableCellEdit: false,  width: 40   },
                          // {field:'newtheovar',   displayName: 'NewTheo',         enableCellEdit: false,  width: 50   },
-                         {field:'newmarkedvar', displayName: 'NewMark',         enableCellEdit: true,   width: 40   },
-                         {field:'dealervar',    displayName: 'SGWP',            enableCellEdit: false,   width: 40   },                         
+                         {field:'newmarkedvar', displayName: 'BM est',         enableCellEdit: true,   width: 55   },
+                         {field:'dealervar',    displayName: 'SocGen',            enableCellEdit: false,   width: 55   },                         
                          {field:'surfacetime',  displayName: 'Time',            enableCellEdit: false,  width: 200  },
                         ]
                 };
