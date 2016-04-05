@@ -28,11 +28,7 @@ app.directive("volSurfaceChart", function() {
             else if($scope.type == 'totalstdev')  {
                 var today = new Date();
                 $scope.chartSeries = [ "Total stdev"  ];
-                $scope.chartData = [ 
-                    newCurve.map(r => 
-                      r.newmarkedvar*Math.sqrt(utils.yearFrac(today,r.maturity))), 
-                    ];              
-
+                $scope.chartData = [ analytics.stdevCurve(newCurve,'maturity','newmarkedvar',today) ];
             }
             else {
               $scope.chartSeries = [ "BM estimate", "Dealer" ];
