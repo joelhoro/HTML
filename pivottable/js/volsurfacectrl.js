@@ -1,6 +1,7 @@
 var app = angular.module('volmarker');
 
 app.controller("volSurfaceCtrl", function($scope,utils) {
+  return;
   utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
   var parent = $scope.$parent.$parent;
   $scope.underlier = $scope.$parent.underlier;
