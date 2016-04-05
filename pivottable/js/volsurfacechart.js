@@ -3,6 +3,10 @@ app.directive("volSurfaceChart", function() {
   function controller($scope,voldata, utils, analytics) {
         utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
+
+        if($scope.showdatesonaxis == undefined)
+          $scope.showdatesonaxis = 'true';
+
         var update = function(und) { 
             if(und != undefined)
               $scope.underlier = und;
@@ -10,7 +14,7 @@ app.directive("volSurfaceChart", function() {
               und = $scope.underlier;
             var newCurve = $scope.$parent.volsurfaces[und];
 
-            $scope.chartLabels = newCurve.map(r => r.tenor);
+            $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis === 'true' ? r.tenor : "");
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
               var fwdCurve = analytics.fwdVarCurve(newCurve, $scope.tenor);
@@ -67,7 +71,9 @@ app.directive("volSurfaceChart", function() {
   {
       var tmpl = '<div ng-transclude/><canvas  class="chart ' + 
         (attr.type=='basis' ? 'chart-bar' : 'chart-line') + '"' +
-      ` chart-data="chartData" chart-legend=true chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
+      ' chart-data="chartData" chart-legend='
+      + (attr.nolegend=='1' ? "false" : "true" )
+        + ` chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
        chart-hover="chartHover" >
         </canvas> 
       `;
@@ -80,12 +86,13 @@ app.directive("volSurfaceChart", function() {
     restrict: "E",
     transclude: true,
     scope: {
-       underlier : '@',
+       underlier : '=',
        listen: '@',
        name: '@',
        tooltip: '@',
        type: '@',
-       tenor: '@'
+       tenor: '=',
+       showdatesonaxis : '=',
      },
     template: templateFn,
     controller: controller

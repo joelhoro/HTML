@@ -63,7 +63,7 @@
              ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und) }">
               <div class='list-group-item-heading'><b>{{und}}
                 [{{points[und]}} maturities]</b></div>
-              <vol-surface-chart underlier='{{und}}'  />
+              <vol-surface-chart underlier='und' showdatesonaxis='false' nolegend=1 />
             </div>
           </div>
           
@@ -82,12 +82,12 @@
             </div>
             <div class="col-md-6">
               <div class=row>
-                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 type='' >
+                <vol-surface-chart underlier='activeUnderlier' listen=1 tooltip=1 type='' >
                 <b>BM estimate against dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
               <div class=row>                
-                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 type=basis /> 
+                <vol-surface-chart underlier='activeUnderlier' listen=1 tooltip=1 type=basis  /> 
              </div>
             </div>
           </div>
@@ -104,12 +104,12 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-md-6">
-                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 type='totalstdev'>
+                <vol-surface-chart underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev'>
                 <b>Total stdev</b>
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in fwdVarTenors" class="col-md-6">
-                <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 type=fwd tenor='{{tenor}}'>
+                <vol-surface-chart underlier='activeUnderlier' listen=1 tooltip=1 type=fwd tenor='tenor'>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>
