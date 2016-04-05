@@ -32,6 +32,15 @@
 <script src="js/volsurfacechart.js"></script>
 
 <style>
+.list-group-item:hover {
+  background-color: darkturquoise;
+}
+.leader {
+  background-color: lightyellow;
+}
+.follower {
+  background-color: lightgreen;
+}
 
 </style>
 
@@ -42,18 +51,19 @@
 
 <!-- <span>Started at: {{ startTime }}</span> -->
 
-      <div class="col-md-1">
+      <div class="col-md-2">
         <div class="panel panel-primary">
           <div class="panel-heading"><h1>Underliers 
              <button class="btn" ng-click="reloadSurfaces()">reload</button>
-             <button class="btn" ng-click="next(1)">next</button>
  
           </h1></div>
           <div class="panel-body list-group">
-            <div ng-repeat="und in underliers" class="list-group-item" ng-class="{'active': und == $parent.activeUnderlier }">
+            <div ng-repeat="und in underliers" class="list-group-item"
+            ng-click='updateUnderlier(und)' 
+             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und) }">
               <div class='list-group-item-heading'><b>{{und}}
                 [{{points[und]}} maturities]</b></div>
-              <vol-surface-chart underlier='{{und}}'  />
+              <!-- <vol-surface-chart underlier='{{und}}'  /> -->
             </div>
           </div>
           
@@ -83,15 +93,15 @@
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-5">
         <div class="panel panel-primary" >
           <div class="panel-heading">
-            <h1>Fwd Var surfaces for  {{activeUnderlier}}</h1>
+            <h1>FwdVar surfaces for  {{activeUnderlier}}</h1>
           </div>
 
           <div class="panel-body">
             <div class="row">
-              <div ng-repeat="tenor in ['1m','3m','6m','1y']" class="col-md-6">
+              <div ng-repeat="tenor in fwdVarTenors" class="col-md-6">
                 <vol-surface-chart underlier='{{activeUnderlier}}' listen=1 tooltip=1 tenor='{{tenor}}'>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
