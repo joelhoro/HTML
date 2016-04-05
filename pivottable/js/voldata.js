@@ -25,7 +25,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
     r => ( { 
         underlying:   r.Underlying,
         tenor:        date(r["End Date"]), 
-        theovar:      double(r["Var from Surface (0 Basis)"]),
+        theovar:      double(r["Var from Surface (0 Basis) \nToday"]),
         markedvar:    double(r["Marked Var"]),
         newtheovar:   double(r["New Market Var Fn"]),//+Math.random()-0.5).round(2),
         basis:        double(r["Marked Basis\nYesterday"]),
