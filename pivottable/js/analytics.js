@@ -48,7 +48,7 @@ angular.module('utilsService')
 
   function stdevCurve(curve,dateKey,valueKey,today) {
     return curve.map(r => 
-      r[valueKey]*Math.sqrt(utils.yearFrac(today,r[dateKey])));
+      (r[valueKey]*Math.sqrt(utils.yearFrac(today,r[dateKey]))).round(2));
   }
 
   return { fwdVarCurve: fwdVarCurve, stdevCurve : stdevCurve };
