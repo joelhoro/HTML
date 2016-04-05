@@ -3,7 +3,6 @@ app.directive("volSurfaceChart", function() {
   function controller($scope,voldata, utils, analytics) {
         utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
-        $scope.basis = $scope.type === 'basis';
         var update = function(und) { 
             if(und != undefined)
               $scope.underlier = und;
@@ -12,38 +11,46 @@ app.directive("volSurfaceChart", function() {
             var newCurve = $scope.$parent.volsurfaces[und];
 
             $scope.chartLabels = newCurve.map(r => r.tenor);
-            if($scope.tenor != undefined) {
+            if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
               var fwdCurve = analytics.fwdVarCurve(newCurve, $scope.tenor);
               $scope.chartData = [ 
                   fwdCurve, 
                   ];                            
             }
-            else {
-              if($scope.basis)  {
+            else if($scope.type == 'basis')  {
                 $scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
                 $scope.chartData = [ 
                     newCurve.map(r => r.basis), 
                     newCurve.map(r => r.newbasis), 
                     ];              
-              }
-              else {
-                $scope.chartSeries = [ "BM estimate", "Dealer" ];
-                $scope.chartData = [ 
-                    // newCurve.map(r => r.theovar), 
-                    // newCurve.map(r => r.markedvar), 
-                    // newCurve.map(r => r.newtheovar),
-                    newCurve.map(r => r.newmarkedvar),
-                    newCurve.map(r => r.dealervar),
-                    ];              
-              }
             }
-              $scope.chartOptions = { 
-                scaleLabel : "<%=value%>%", 
-                showTooltips: $scope.tooltip == "1",
-                legendTemplate: 
-             "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-              };
+            else if($scope.type == 'totalstdev')  {
+                var today = new Date();
+                $scope.chartSeries = [ "Total stdev"  ];
+                $scope.chartData = [ 
+                    newCurve.map(r => 
+                      r.newmarkedvar*Math.sqrt(utils.yearFrac(today,r.maturity))), 
+                    ];              
+
+            }
+            else {
+              $scope.chartSeries = [ "BM estimate", "Dealer" ];
+              $scope.chartData = [ 
+                  // newCurve.map(r => r.theovar), 
+                  // newCurve.map(r => r.markedvar), 
+                  // newCurve.map(r => r.newtheovar),
+                  newCurve.map(r => r.newmarkedvar),
+                  newCurve.map(r => r.dealervar),
+                  ];              
+            }
+
+            $scope.chartOptions = { 
+              scaleLabel : "<%=value%>%", 
+              showTooltips: $scope.tooltip == "1",
+              legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            };
 
             if(!$scope.listen)
               $scope.chartHover = () => parent.updateUnderlier(und);

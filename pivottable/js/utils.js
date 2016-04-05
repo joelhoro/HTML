@@ -105,12 +105,17 @@ angular.module('utilsService',[])
     	}
     }
 
+    function yearFrac(d1,d2) {
+    	return (d2-d1) / (1000*3600*24) / 365;
+    }
+
 	return { 
 		FieldExtractor	: fieldName => obj => obj[fieldName], 
 		ObjectFn		: obj => fieldName => obj[fieldName],
 		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">",
 		log				: log,
-		toggleConsole	: window._.throttle(toggleConsole,200)
+		toggleConsole	: window._.throttle(toggleConsole,200),
+		yearFrac 		: yearFrac
 	};	
 })
 
