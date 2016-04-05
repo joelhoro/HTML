@@ -118,5 +118,75 @@ angular.module('utilsService',[])
 		yearFrac 		: yearFrac
 	};	
 })
+.service('misc', function() {
+	  var svgFlags = _.template("http://lipis.github.io/flag-icon-css/flags/4x3/<%= flag %>.svg" );
+	  var regionFlag = function(und) { 
 
-	
+
+	  	var cme = "https://s3.amazonaws.com/media.agricharts.com/sites/658/New%20Stories/CME%20Group%20Story/Chicago%20Mer%20Logo%20Picture.jpg";
+	  	var specialFlags = {
+
+	  		"CLM6": cme,
+			"CLZ7": cme,
+   	      "GLD UP": cme,
+			"GDX UP": cme,
+
+	  	}
+
+	  	var flag = specialFlags[und];
+	  	if(flag != undefined)
+	  		return flag;
+
+	    var flags = {
+	      "AS51": "us",
+	      "HSI": "cn",
+	      "KOSPI2": "kr", 
+	      "SPX": "us",
+	      "SX5E": "eu",
+	      "UKX": "gb",
+	      "AUDUSD WMCO": "au",
+	      "CLM6": "us",
+	      "DEDZ6": "us",
+	      "DEDZ7": "us",
+	      "DEDZ8": "us",
+	      "EURUSD WMCO": "eu",
+	      "FTSEMIB": "gb",
+	      "GBPUSD WMCO": "gb",
+	      "HYG UP": "us",
+	      "IEF UP": "us",
+	      "NIZ6": "us",
+	      "NIZ7": "us",
+	      "NKY": "jp",
+	      "USDJPY": "jp",
+	      "UVXYIV": "us",
+	      "XIVIV": "us",
+	      "SMI": "ch",
+	      "TPX": "jp",
+	      "CAC": "fr",
+	      "DAX": "de",
+	      "EEM UP": "us",
+	      "EWJ UP": "us",
+	      "HSCEI": "cn",
+	      "IBEX": "es",
+	      "NDX": "us",
+	      "RTY": "us",
+	      "SPY UP": "us",
+	      "SX7E": "eu",
+	      "TWSE": "tw",
+	      "XLB UP": "us",
+	      "XLE UP": "us",
+	      "XLF UP": "us",
+	      "XLI UP": "us",
+	      "XLK UP": "us",
+	      "XLP UP": "us",
+	      "XLU UP": "us",
+	      "XLV UP": "us",
+	      "XLY UP": "us",
+	      "XME UP": "us"
+	    };
+
+	    return svgFlags({flag: flags[und]}); 
+	  }
+
+	  return { regionFlag: regionFlag };
+	} )

@@ -2,7 +2,7 @@ var app = angular.module('volmarker',
       ['utilsService','ngGrid','chart.js','dataService'] 
       );
 
-app.controller("volmarkerCtrl", function($scope,voldata,utils) {
+app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
   $scope.startTime = new Date();
@@ -10,11 +10,13 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils) {
   $scope.mode = 'browse';
 
   $scope.fwdVarTenors = ['1m','2m', '3m','6m','1y'];
+  $scope.regionFlag = misc.regionFlag;
 
   $scope.isLeader = function(und) {
     var pt = $scope.volsurfaces[und][0];
     return pt.leader;
   }
+
   $scope.updateUnderlier = function(und) {
       if(und == undefined)
         und = $scope.activeUnderlier;
@@ -58,6 +60,7 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils) {
     else if(search.contains("full")) {
       utils.log("Starting in full mode");
       $scope.underliers = voldata.underliers;
+      debugger;
     }
     else {
       utils.log("Starting in extended test mode");
