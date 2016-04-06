@@ -73,7 +73,7 @@
                   [{{points[und]}} maturities]</b></div>
                   <img class=flag ng-src='{{regionFlag(und)}}'/>
                 </span>
-              <vol-surface-chart underlier='und' showdatesonaxis='false' nolegend=1>
+              <vol-surface-chart ng-if='initialized' underlier='und' showdatesonaxis=0 nolegend=1>
             </vol-surface-chart>
             </div>
           </div>
@@ -81,7 +81,7 @@
         </div>
       </div>
       
-      <div class="col-md-5" id='markingPane'>
+      <div ng-show='initialized' class="col-md-5" id='markingPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
             <h1>Var surface for  {{activeUnderlier}}</h1>
@@ -89,7 +89,7 @@
 
           <div class="panel-body">
             <div class="col-md-6">
-                <div class="gridStyle" ng-grid="gridConfig"></div>
+                <div class="gridStyle" ng-if='initialized' ng-grid="gridConfig"></div>
             </div>
             <div class="col-md-6">
               <div class=row>
@@ -106,7 +106,7 @@
         </div>
       </div>
 
-      <div class="col-md-5" id='fwdVarPane'>
+      <div ng-show='initialized' class="col-md-5" id='fwdVarPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
             <h1>FwdVar surfaces for  {{activeUnderlier}}</h1>

@@ -5,7 +5,9 @@ app.directive("volSurfaceChart", function() {
         var underlier = $scope.underlier;
 
         if($scope.showdatesonaxis == undefined)
-          $scope.showdatesonaxis = 'true';
+          $scope.showdatesonaxis = true;
+        if($scope.showdatesonaxis == 0)
+          $scope.showdatesonaxis = false;
 
         var update = function(und) { 
             if(und != undefined)
@@ -13,8 +15,9 @@ app.directive("volSurfaceChart", function() {
             else
               und = $scope.underlier;
             var newCurve = $scope.$parent.volsurfaces[und];
-
-            $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis === 'true' ? r.tenor : "");
+            if(newCurve == undefined)
+              return;
+            $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis  ? r.tenor : "");
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
               var fwdCurve = analytics.fwdVarCurve(newCurve, $scope.tenor);
@@ -58,11 +61,11 @@ app.directive("volSurfaceChart", function() {
 
           update(underlier);
           var parent = $scope.$parent;
-          parent.$watch('data',(n,o) => { 
-            var newUnderlier = n[0].underlying;
-            if(newUnderlier == underlier)
-              update(newUnderlier);
-          }, true);
+          // parent.$watch('data',(n,o) => { 
+          //   var newUnderlier = n[0].underlying;
+          //   if(newUnderlier == underlier)
+          //     update(newUnderlier);
+          // }, true);
           if($scope.listen=="1")
             parent.$on('underlierChanged', (evt,und) => update(und))
   }
@@ -92,7 +95,7 @@ app.directive("volSurfaceChart", function() {
        tooltip: '@',
        type: '@',
        tenor: '=',
-       showdatesonaxis : '=',
+       showdatesonaxis : '@',
      },
     template: templateFn,
     controller: controller

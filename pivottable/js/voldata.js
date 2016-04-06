@@ -3,7 +3,8 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
-  var data = dataWarehouse.data;
+  var dataMode = 'local';
+  //dataMode = 'ajax';
 
   var double = x => { 
     if(x == "#VALUE!" || x == undefined || x === 0)
@@ -21,8 +22,9 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
   var getTime = x => x.substr(0,x.indexOf("M")+1);
 
-  var cleanData = () => data.map(function(r)
-    {
+  var cleanData = downloadedData =>
+   downloadedData.map(function(r)
+   {
       var dealer = double(r["SGVS"]);
       var newbasis;
       if(dealer == null)
@@ -44,14 +46,24 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
           surfacetime:  getTime(r["SurfaceDateTime(local)"]),
           leader:       r["Leader/Follower"] == "Leader"
         } 
-    }
-    );
+    })
 
-  function getVol(underlier) {
-      var result = _.filter(cleanData(),{underlying:underlier});
-      utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
-      return result;
-  }
+ var cleanDataAsync = successFn => {
+    var totalFn = d => successFn(cleanData(d));
+    if(dataMode == 'ajax')
+      dataWarehouse.getAjaxData(totalFn);
+    else {
+      totalFn(dataWarehouse.data);
+    }
+ }
+
+  function getVol(underlier,successFn) {
+      cleanDataAsync(data => {
+        var result = _.filter(data,{underlying:underlier});
+        utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
+        successFn(result);
+      })
+    }
 
   var gridConfig = function(dataField) {
         var config = {
@@ -77,10 +89,15 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
         return config;
     };
 
-  var underliers = _.uniq(data.map(r => r.Underlying));
+  var getUnderliers = function(successFn) {
+    cleanDataAsync(data => {
+      var underliers = _.uniq(data.map(r => r.Underlying));
+      successFn(underliers);
+    });
+  }
 
 return { 
-    underliers : underliers,
+    getUnderliers: getUnderliers,
     getVol: getVol, 
     gridConfig : gridConfig
 };

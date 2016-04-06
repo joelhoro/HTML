@@ -1,9 +1,25 @@
 var app = angular.module('dataWarehouse',['utilsService'])
 .service("dataWarehouse", function(utils) { 
 
+var $ = window.$;
 utils.log("Initializing datawareHouse service");
 
-return { data: 
+function getAjaxData(successFn) {
+    $.ajax({
+    type            : "POST",
+    contentType     : "application/json; charset=utf-8",
+    url             : "http://localhost:17041/services/DBAccessor.asmx/RetrieveVolSurfaces",
+    data            : {},
+    success         : successFn,
+    error           : result =>{ debugger}
+    }); 
+
+}
+
+return { 
+
+    getAjaxData : getAjaxData,
+    data: 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////// COPY PASTE DUMMY DATA HERE

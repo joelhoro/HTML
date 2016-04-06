@@ -4,6 +4,7 @@ var app = angular.module('volmarker',
 
 app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
+  $scope.initialized = false;
 
   $scope.startTime = new Date();
 
@@ -11,8 +12,11 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
 
   $scope.fwdVarTenors = ['1m','2m', '3m','6m','1y'];
   $scope.regionFlag = misc.regionFlag;
+  $scope.gridConfig = voldata.gridConfig('');
 
   $scope.isLeader = function(und) {
+    if($scope.volsurfaces[und] == undefined)
+        return false;
     var pt = $scope.volsurfaces[und][0];
     return pt.leader;
   }
@@ -21,15 +25,23 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
       if(und == undefined)
         und = $scope.activeUnderlier;
       $scope.data = $scope.volsurfaces[und];
+      $scope.gridConfig = voldata.gridConfig('data');
       $scope.activeUnderlier = und;
       utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
       $scope.$broadcast("underlierChanged",und);
   }
 
-  $scope.reloadSurfaces = function() {
-    $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
-    $scope.points = _.keys($scope.volsurfaces).toObject(und => $scope.volsurfaces[und].length)
-    $scope.$broadcast("underlierChanged");
+  $scope.reloadSurfaces = function(underliers, successFn) {
+    underliers.map(und => 
+      voldata.getVol(und,result => {
+        $scope.volsurfaces[und] = result;
+        $scope.points[und] = result.length;
+        //$scope.$apply();
+        $scope.$broadcast("underlierChanged");
+        successFn();
+      }) );
+    //$scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
+//    $scope.points = _.keys($scope.volsurfaces).toObject(und => $scope.volsurfaces[und].length)
   }
 
   // user interaction
@@ -51,37 +63,52 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
-  function getUnderliers() {
+  function getUnderliers(successFn) {
+    var ultimateFn = u => {
+      successFn(u);
+      utils.log("Using {0} underliers", u.length);
+    }
+
     var search = location.search;
     if(search.contains("test")) {
       utils.log("Starting in test mode");
-      $scope.underliers = ["SPX","NKY"];
+      var u = ["SPX","NKY"];
+      ultimateFn(u);
     }
     else if(search.contains("full")) {
       utils.log("Starting in full mode");
-      $scope.underliers = voldata.underliers;
-      debugger;
+      voldata.getUnderliers(ultimateFn);
     }
     else {
       utils.log("Starting in extended test mode");
-      $scope.underliers = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
+      var u = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
+      ultimateFn(u);
     }
-    utils.log("Using {0} underliers", $scope.underliers.length);
   }
 
   $scope.activeUnderlierIndex = function() {
     return $scope.underliers.indexOf($scope.activeUnderlier);
   }
 
-  $scope.gridConfig = voldata.gridConfig('data');
   //$scope.gridConfig.onRegisterApi = function(g) {
   //   debugger;
   // }
 
+
   $scope.initialize = function() {
-    getUnderliers();
-    $scope.reloadSurfaces();
-    $scope.updateUnderlier($scope.underliers[0]);
+    $scope.volsurfaces = {}
+    $scope.underliers = [];
+    $scope.points = {}
+    getUnderliers(u => {
+      $scope.reloadSurfaces(u, () => {
+        if(u.length == _.keys($scope.volsurfaces).length)
+          $scope.underliers = u;    
+          $scope.updateUnderlier(u[0]);
+          $scope.initialized = true;
+          $scope.$apply();
+      } );
+
+      });
   }
 
   $scope.initialize();
