@@ -14,6 +14,14 @@ app.directive("volSurfaceChart", function() {
               und = $scope.underlier;
             var newCurve = $scope.$parent.volsurfaces[und];
 
+
+            var chartOptions = { 
+              scaleLabel : "<%=value%>%", 
+              showTooltips: $scope.tooltip == "1",
+              legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+            }
+
             $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis === 'true' ? r.tenor : "");
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
@@ -27,6 +35,14 @@ app.directive("volSurfaceChart", function() {
                 $scope.chartData = [ 
                     newCurve.map(r => r.basis), 
                     newCurve.map(r => r.newbasis), 
+                    ];              
+            }
+            else if($scope.type == 'ratio')  {
+                $scope.chartSeries = [ "Ratio to SPX"  ];
+
+                var spxCurve = new analytics.interpolator($scope.$parent.volsurfaces['SPX'],'maturity','newmarkedvar');
+                $scope.chartData = [ 
+                    newCurve.map(r => 100* r.newmarkedvar / spxCurve.at(r.maturity))
                     ];              
             }
             else if($scope.type == 'totalstdev')  {
@@ -43,14 +59,17 @@ app.directive("volSurfaceChart", function() {
                   newCurve.map(r => r.newmarkedvar),
                   newCurve.map(r => r.dealervar),
                   ];              
+
+              var min = $scope.chartData.map(x => x.min()).min();
+              min = min - (min%2);
+              var max = $scope.chartData.map(x => x.max()).max();
+              chartOptions.scaleOverride = true;
+              chartOptions.scaleSteps = (max-min)/2;
+              chartOptions.scaleStepWidth = 2;
+              chartOptions.scaleStartValue = min;
             }
 
-            $scope.chartOptions = { 
-              scaleLabel : "<%=value%>%", 
-              showTooltips: $scope.tooltip == "1",
-              legendTemplate: 
-           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-            };
+            $scope.chartOptions = chartOptions;
 
             if(!$scope.listen)
               $scope.chartHover = () => parent.updateUnderlier(und);
@@ -92,7 +111,8 @@ app.directive("volSurfaceChart", function() {
        tooltip: '@',
        type: '@',
        tenor: '=',
-       showdatesonaxis : '=',
+       showdatesonaxis : '@',
+       scale: '@',
      },
     template: templateFn,
     controller: controller

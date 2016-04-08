@@ -46,6 +46,17 @@ angular.module('utilsService',[])
 	      return obj;
 	}
 
+    Array.prototype.max = function() {
+      var max = this[0];
+      this.map(x => { if(x != null)  max = Math.max(max,x) });
+      return max;
+    }
+    Array.prototype.min = function() {
+      var min = this[0];
+      this.map(x => { if(x != null) min = Math.min(min,x) });
+      return min;
+    }
+
 	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
 	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); }
 
@@ -122,7 +133,13 @@ angular.module('utilsService',[])
 	  var svgFlags = _.template("http://lipis.github.io/flag-icon-css/flags/4x3/<%= flag %>.svg" );
 	  var regionFlag = function(und) { 
 
-
+	  	if(und == 'SPX')
+	  		return "http://masterofcharts.com/wp-content/uploads/2015/11/SPXlogo.jpg";
+	  	if(und == 'NDX')
+	  		return "http://onematchventures.com/wp-content/uploads/2014/03/nasdaq_logo-660.jpg";
+		if(und == "NIZ6" || und == "NIZ7")	  	
+			return "http://www.fxmarker.com/sites/all/themes/fxmarker/uploads/commodities_icon.png";
+		
 	  	var cme = "https://s3.amazonaws.com/media.agricharts.com/sites/658/New%20Stories/CME%20Group%20Story/Chicago%20Mer%20Logo%20Picture.jpg";
 	  	var specialFlags = {
 
@@ -188,5 +205,66 @@ angular.module('utilsService',[])
 	    return svgFlags({flag: flags[und]}); 
 	  }
 
-	  return { regionFlag: regionFlag };
+	  var categories = [
+	    	
+	    	[ "Majors", [
+		      "SPX",
+		      "SX5E",
+		      "HSI",
+		      "NKY",
+	    	] ],
+
+	    [ "Minors", [
+	      "AS51",
+	      "KOSPI2", 
+	      "UKX",
+	      "FTSEMIB",
+	      "HYG UP",
+	      "IEF UP",
+	      "UVXYIV",
+	      "XIVIV",
+	      "SMI",
+	      "TPX",
+	      "CAC",
+	      "DAX",
+	      "EEM UP",
+	      "EWJ UP",
+	      "HSCEI",
+	      "IBEX",
+	      "NDX",
+	      "RTY",
+	      "SPY UP",
+	      "SX7E",
+	      "TWSE"
+	      ] ],
+
+		[	"FX",  [
+		  "AUDUSD WMCO",
+	      "EURUSD WMCO",
+	      "GBPUSD WMCO",
+	      "USDJPY",
+				] ],
+
+	      [ "ETFs", [ 
+	      "NIZ6",
+	      "NIZ7",
+		      "CLM6",
+		      "DEDZ6",
+		      "DEDZ7",
+		      "DEDZ8",
+		      "XLB UP",
+		      "XLE UP",
+		      "XLF UP",
+		      "XLI UP",
+		      "XLK UP",
+		      "XLP UP",
+		      "XLU UP",
+		      "XLV UP",
+		      "XLY UP",
+		      "XME UP"
+	      ] ]
+	];	
+
+
+	  return { regionFlag: regionFlag, categories : categories };
 	} )

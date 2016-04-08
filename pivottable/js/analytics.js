@@ -39,8 +39,8 @@ angular.module('utilsService')
         front = iCurve.at(start);
         back = iCurve.at(end);
         var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
-        fwdVar = isNaN(fwdVar) ? null : fwdVar;
-        return fwdVar.round(2);
+        fwdVar = isNaN(fwdVar) ? null : fwdVar.round(2);
+        return fwdVar;
       })
 
     return fwdVars;
@@ -51,5 +51,20 @@ angular.module('utilsService')
       (r[valueKey]*Math.sqrt(utils.yearFrac(today,r[dateKey]))).round(2));
   }
 
-  return { fwdVarCurve: fwdVarCurve, stdevCurve : stdevCurve };
+  Array.prototype.getScaleAndUnits = function() {
+    var max = this.map(Math.abs).max();
+    var scale1000 = Math.floor(Math.log10(max)/3);
+    fixedScale1000 = Math.max(Math.min(3,scale1000),0)
+    var scale = Math.pow(1000,fixedScale1000);
+    var unit = { 0 : '', 1 : 'k', 2 : 'M', 3 : 'B' }[fixedScale1000];
+    var template = "<%=value / " + scale+"%>" + unit;
+    return { scale: scale, unit: unit, template: template };
+  }
+
+
+  return { 
+      fwdVarCurve: fwdVarCurve, 
+      stdevCurve : stdevCurve, 
+      interpolator : interpolator,
+       };
 } );

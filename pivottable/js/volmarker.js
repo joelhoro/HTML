@@ -9,7 +9,7 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
 
   $scope.mode = 'browse';
 
-  $scope.fwdVarTenors = ['1m','2m', '3m','6m','1y'];
+  $scope.fwdVarTenors = ['1m','3m'];
   $scope.regionFlag = misc.regionFlag;
 
   $scope.isLeader = function(und) {
