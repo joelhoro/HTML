@@ -1,9 +1,13 @@
-app.directive("volSurfaceChart", function() {
+angular.module('volmarker')
+  .directive("volSurfaceChart", function(utils) {
 
+  utils.log("Defining volsurface controller");
   function controller($scope,voldata, utils, analytics) {
-        utils.log("Initializing volsurface controller - scope=" + $scope.$id);  
+
+        utils.log("Running volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
 
+<<<<<<< HEAD
         if($scope.showdatesonaxis == undefined)
           $scope.showdatesonaxis = true;
         if($scope.showdatesonaxis == 0)
@@ -18,8 +22,40 @@ app.directive("volSurfaceChart", function() {
             if(newCurve == undefined)
               return;
             $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis  ? r.tenor : "");
+=======
+        var showdatesonaxis = ($scope.showdatesonaxis == undefined) || ($scope.showdatesonaxis == '1');
+
+        function adjustScale(scope) {
+          var min = scope.chartData.map(x => x.min()).min();
+          var width = 5;
+          min = min - (min%width);
+          var max = scope.chartData.map(x => x.max()).max();
+          $scope.chartOptions.scaleOverride = true;
+          $scope.chartOptions.scaleSteps = (max-min)/width;
+          $scope.chartOptions.scaleStepWidth = width;
+          $scope.chartOptions.scaleStartValue = min;
+        }
+
+        var update = function(und) { 
+            $scope.underlier = und;
+            var surface = $scope.volsurfaces[und];
+            if(surface == undefined)
+              return;
+
+            $scope.chartOptions = { 
+              scaleLabel : "<%=value%>%", 
+              datasetFill: false,
+              showTooltips: $scope.tooltip == "1",
+              legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+            }
+
+            $scope.chartLabels = surface.TenorLabels(showdatesonaxis);
+
+>>>>>>> master
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
+              var newCurve = surface.Curve('BM@T');
               var fwdCurve = analytics.fwdVarCurve(newCurve, $scope.tenor);
               $scope.chartData = [ 
                   fwdCurve, 
@@ -27,47 +63,65 @@ app.directive("volSurfaceChart", function() {
             }
             else if($scope.type == 'basis')  {
                 $scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
-                $scope.chartData = [ 
-                    newCurve.map(r => r.basis), 
-                    newCurve.map(r => r.newbasis), 
-                    ];              
+                $scope.chartData = surface.ExtractMany('basis','newbasis'); 
+            }
+            else if($scope.type == 'ratio')  {
+                $scope.chartSeries = [ "Ratio to SPX"  ];
+
+                var spxCurveFn = $scope.volsurfaces['SPX'].CurveFn("BM@T");
+                var thisCurve = surface.Extract("BM@T");
+                var tenors = surface.Tenors();
+                var i = 0;
+                $scope.chartData = [
+                  tenors.map(t => thisCurve[i++] / spxCurveFn(t) * 100)
+                ]
             }
             else if($scope.type == 'totalstdev')  {
                 var today = new Date();
                 $scope.chartSeries = [ "Total stdev"  ];
-                $scope.chartData = [ analytics.stdevCurve(newCurve,'maturity','newmarkedvar',today) ];
+                var curve = surface.Curve("BM@T");
+                $scope.chartData = [ analytics.stdevCurve(curve,today) ];
             }
             else {
-              $scope.chartSeries = [ "BM estimate", "Dealer" ];
-              $scope.chartData = [ 
-                  // newCurve.map(r => r.theovar), 
-                  // newCurve.map(r => r.markedvar), 
-                  // newCurve.map(r => r.newtheovar),
-                  newCurve.map(r => r.newmarkedvar),
-                  newCurve.map(r => r.dealervar),
-                  ];              
+              $scope.chartSeries = [ "MS", "SocGen", "BM", "Dealer average" ];
+              $scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "Dealer.avg", "BM@T");
+              adjustScale($scope);
             }
 
-            $scope.chartOptions = { 
-              scaleLabel : "<%=value%>%", 
-              showTooltips: $scope.tooltip == "1",
-              legendTemplate: 
-           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-            };
-
             if(!$scope.listen)
-              $scope.chartHover = () => parent.updateUnderlier(und);
+              $scope.chartHover = () => update(underlier);
           };
 
           update(underlier);
+
           var parent = $scope.$parent;
-          // parent.$watch('data',(n,o) => { 
-          //   var newUnderlier = n[0].underlying;
-          //   if(newUnderlier == underlier)
-          //     update(newUnderlier);
-          // }, true);
-          if($scope.listen=="1")
-            parent.$on('underlierChanged', (evt,und) => update(und))
+
+          parent.$watch('data',(newdata,o) => {  
+            var surfaces = $scope.volsurfaces;
+            var refresh = false;
+            var idx = 0;
+            var underlier = newdata[0].underlier;
+            newdata.map(row => {
+              var obs = surfaces[underlier].volSurface.Observables[idx++];
+              var oldValue = obs.Quotes["BM@T"].round(4);
+              var newValue = (row.BM / 100);
+              if(newValue<0.1) return;
+              var tolerance = 1e-6;
+              if(Math.abs(oldValue-newValue)>tolerance) {
+                utils.log("Changing mark for {1}: {2}->{3}", underlier, obs.Name, oldValue, newValue);
+                obs.Quotes["BM@T"] = newValue;
+                refresh = true;
+              }
+            });
+            if(refresh) 
+              $scope.$parent.$broadcast("DataChanged", underlier);
+
+          }, true);
+
+          if($scope.listen=="1") {
+             $scope.$watch('underlier', newUnd => update(newUnd));
+             $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und); update(und) });            
+          }
   }
 
   function templateFn(elt,attr)     
@@ -89,13 +143,18 @@ app.directive("volSurfaceChart", function() {
     restrict: "E",
     transclude: true,
     scope: {
+       //// variables
        underlier : '=',
+       volsurfaces: '=',
+       tenor: '=',
+       //// settings
        listen: '@',
        name: '@',
        tooltip: '@',
        type: '@',
-       tenor: '=',
        showdatesonaxis : '@',
+       //volsurface: '@',
+       scale: '@',
      },
     template: templateFn,
     controller: controller

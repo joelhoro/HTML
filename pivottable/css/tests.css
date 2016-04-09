@@ -1,0 +1,24 @@
+body {
+  font-family: monospace;
+  font-size: 24;
+}
+.success {
+  color: green;
+  padding: 3px;
+}
+.fail {
+  background: red;
+  color: white;
+}
+
+h1.success {
+  padding: 10px;
+  color: white;
+  background: green;
+}
+
+h1.fail {
+  padding: 10px;
+  color: white;
+  background: red;
+}

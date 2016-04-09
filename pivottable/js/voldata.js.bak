@@ -74,14 +74,16 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
         return config;
     };
 
-
+<<<<<<< HEAD
   var getUnderliers = function(successFn) {
     cleanDataAsync(data => {
       var underliers = _.uniq(data.map(r => r.Underlying));
       successFn(underliers);
     });
   }
-
+=======
+  var underliers = dataWarehouse.dataFn().map(r => r.Index);
+>>>>>>> master
 
 return { 
     getUnderliers: getUnderliers,

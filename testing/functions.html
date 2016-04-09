@@ -1,0 +1,38 @@
+<HTML>
+<body>
+</body>
+
+</HTML>	
+<script src="..\pivottable\lib\jquery.js"></script>
+
+<script>
+
+	table = "<table><thead><tr><th>X</th><th>Y</th></tr></thead><tbody>\n";
+	for( i = 0; i < 10; i++) {
+		x = i / 10;
+		y = x*x;
+		table += "<tr><td>" + x + "</td><td>" + y + "</td></tr>\n";
+	}
+	table += "</tbody></table>";
+debugger;
+	$("body").append(table);
+
+
+
+	function doOnce(fn,n) {
+
+		var _counter = n;
+		return function(args) {
+			if(_counter-->0)
+				fn(args);
+		}
+	}
+
+	console.debug(new Date());
+	originalF = x => { $("body").append("<p>Executing with " + x ) };
+	var f = doOnce(originalF,2);
+	f(1);
+	f(2);
+	f(3);
+
+</script>

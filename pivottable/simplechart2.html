@@ -1,0 +1,138 @@
+<link rel="stylesheet" href="css/angular-chart.css">
+
+
+<script src="lib/angular.min.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="lib/underscore.js"></script>
+
+<script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+
+<script type='text/javascript' src='js/utils.js'></script>
+<script type='text/javascript' src='js/analytics.js'></script>
+
+
+<style>
+.c {
+
+  max-height : 200,
+  max-width : 200,
+
+}
+
+</style>
+
+<title>Chart test</title>
+<html ng-app="app">
+
+  <div class=c ng-controller="LineCtrl">
+<button ng-click='next()'>Next</button>
+<span ng-repeat='name in choices'>
+  <a href='#' ng-click='select($index)' style="{{ $index==index ? 'font-weight: bold' : ''}}">
+{{name}}    
+  </a> 
+  {{$index < choices.length-1 ? "| " : "" }} 
+
+</span>
+<canvas id="line" class="chart chart-line" chart-data="chartData.data" chart-labels="chartData.labels" chart-legend="true" chart-series="chartData.series" chart-options="chartData.options">
+</canvas>
+  </div>
+
+<!-- <span>Started at: {{ startTime }}</span> -->
+
+
+</html>
+
+<script>
+
+
+angular.module("app", ["chart.js","utilsService"]).controller("LineCtrl", function ($scope,$http,analytics) {
+
+  $scope.index = 0;
+  $scope.data = {}
+  $scope.choices = [];
+
+  function getAllRows(rows) {
+    if(rows.group == undefined || !rows.group)
+      return rows.data;
+    else
+      return rows.children.map(c => getAllRows(c));
+  }
+
+  $scope.select = function(idx) {
+    $scope.index = idx;
+    processData($scope.data, idx);
+  }
+
+  $scope.next = function() {
+    $scope.index++;
+    processData($scope.data,$scope.index)
+  }
+
+  function processData(data,idx) {
+$scope.data = data;
+    $scope.choices = data.rowData.map(x => x.data.name);
+    var labels = data.columnDefs.slice(1).map(r => r.displayName);
+    var fields = data.columnDefs.slice(1).map(r => r.field);
+    var dataObject = data.rowData[idx].data;
+    var name = dataObject.name;
+    var allRows = getAllRows(dataObject);
+    var series = ["Risks for "+ name];
+    var dataPoints = [
+      fields.map(f => Number(dataObject[f].replace(/,/g,""))) 
+    ]
+
+
+    var scaleAndUnits = dataPoints[0].getScaleAndUnits();
+
+    $scope.chartData = {
+      labels: labels,
+      series: series,
+      data: dataPoints,
+      options: {
+        scaleLabel : scaleAndUnits.template,
+      legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+
+      }
+    }
+  };
+
+  $http({
+                    method: "GET",
+                    url: "data/risks.json",
+                    data: {},
+                  }).then(result => {
+
+                        processData(result.data,$scope.index);
+                  }); 
+
+
+});
+        
+// angular.module("app", ["chart.js"]).controller("BarCtrl", function ($scope) {
+//   $scope.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+//   $scope.series = ['Series A', 'Series B'];
+
+//   $scope.data = [
+//     [65, 59, 80, 81, 56, 55, 40],
+//     [28, 48, 40, 19, 86, 27, 90]
+//   ];
+
+
+
+// $scope.chartData = {
+//     labels: ["January", "February", "March", "April", "May", "June", "July"],
+//     series: ['Foo', 'Baz', 'Bar'],
+//     data: [
+//         [65, 59, 80, 81, 56, 55, 40],
+//         [28, 48, 40, 19, 86, 27, 90],
+//         [42, 17, 28, 73, 50, 12, 68]
+//     ]
+// };
+// });
+
+</script>

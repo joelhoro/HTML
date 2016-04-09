@@ -1,0 +1,69 @@
+<link href="css/tests.css" rel="stylesheet" type="text/css" />
+
+<script src="lib/jquery-1.10.2.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/jquery.treetable.js"></script>
+<script src="lib/angular.min.js"></script>
+<script src="lib/underscore.js"></script>
+
+<script type='text/javascript' src='lib/d3.min.js'></script> 
+
+<script type='text/javascript' src='lib/chart.js'></script> 
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<script type="text/javascript" src="lib/ng-grid.debug.js"></script>
+<script type="text/javascript" src="lib/ng-grid-layout.js"></script>
+
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<!-- Project specific libs -->
+<script src="js/utils.js"></script>
+<script src="js/dateUtils.js"></script>
+
+<script src="js/analytics.js"></script>
+
+<script src="data/datawarehouse.js"></script>
+
+<script src="js/voldata.js"></script>
+<script src="js/volmarker.js"></script>
+<script src="js/volsurfacectrl.js"></script>
+<script src="js/volsurfacechart.js"></script>
+<script src='js/tests.js'></script>
+
+
+<title>Unit tests</title>
+<html ng-app="test">
+  <div ng-controller="testCtrl">
+
+  <h1 ng-class="failures <= 1 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
+  <span style='text-align: right; display: block'>{{failures-1}} failures (excl. dummy failure)</span></h1>
+    <div ng-repeat="(name,group) in groupedResults()" >
+    <b>Test group: {{name}} - {{group.length}} tests</b>
+    <ul>
+      <li ng-repeat="result in group" ng-class="result.success ? 'success' : 'fail'"><b>[{{result.success ? 'PASS' : 'FAIL'}}]</b> {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}</li>
+    </ul>
+    </div>
+  <div>
+
+
+</html>
+
+<script>
+
+var app = angular.module('test',['tests','utilsService']);
+app.controller("testCtrl", function($scope,tests,utils) {
+
+  $scope.groupedResults = function() {
+    console.debug("X");
+      return $scope.testresults.groupBy(r => r.category);
+  }
+
+  $scope.testresults = tests.RunTests();
+  $scope.failures = $scope.testresults.where({success: false}).length;
+
+});
+
+
+</script>

@@ -1,5 +1,5 @@
 angular.module('utilsService',[])
-.service('_', function() { var _ = window._; return _; })
+.service('underscore', function() { var _ = window._; return _; })
 .service('jquery', function() { 
 	var $ = window.$; 
 
@@ -31,11 +31,13 @@ angular.module('utilsService',[])
 
 	return $; 
 })
-.service('utils', function(_,jquery) {
+.service('utils', function(underscore,jquery) {
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
 	      return this.map(fn).reduce((a,b) => a+b) 
 	}
+
+	var _ = window._;
 
 	Array.prototype.where = function(values) { return _.where(this,values); }
 	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
@@ -45,6 +47,21 @@ angular.module('utilsService',[])
 	      this.forEach(field => obj[field] = fn(field));
 	      return obj;
 	}
+
+    Array.prototype.max = function() {
+      var max = this[0];
+      this.map(x => { if(x != null)  max = Math.max(max,x) });
+      return max;
+    }
+    Array.prototype.min = function() {
+      var min = this[0];
+      this.map(x => { if(x != null) min = Math.min(min,x) });
+      return min;
+    }
+    Array.prototype.avg = function(ignorenulls=true) {
+    	var length = ignorenulls ? this.filter(x => x != null).length : this.length;
+    	return this.sum() / length;
+    }
 
 	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
 	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); }
@@ -119,10 +136,17 @@ angular.module('utilsService',[])
 	};	
 })
 .service('misc', function() {
-	  var svgFlags = _.template("http://lipis.github.io/flag-icon-css/flags/4x3/<%= flag %>.svg" );
+	  var path = "assets/flags/";
+	  var svgFlags = _.template(path + "<%= flag %>.svg" );
 	  var regionFlag = function(und) { 
 
-
+	  	if(und == 'SPX')
+	  		return path + "SPXlogo.jpg";
+	  	if(und == 'NDX')
+	  		return path + "nasdaq_logo-660.jpg";
+		if(und == "NIZ6" || und == "NIZ7")	  	
+			return "http://www.fxmarker.com/sites/all/themes/fxmarker/uploads/commodities_icon.png";
+		
 	  	var cme = "https://s3.amazonaws.com/media.agricharts.com/sites/658/New%20Stories/CME%20Group%20Story/Chicago%20Mer%20Logo%20Picture.jpg";
 	  	var specialFlags = {
 
@@ -188,5 +212,66 @@ angular.module('utilsService',[])
 	    return svgFlags({flag: flags[und]}); 
 	  }
 
-	  return { regionFlag: regionFlag };
+	  var categories = [
+	    	
+	    	[ "Majors", [
+		      "SPX",
+		      "SX5E",
+		      "HSI",
+		      "NKY",
+	    	] ],
+
+	    [ "Minors", [
+	      "AS51",
+	      "KOSPI2", 
+	      "UKX",
+	      "FTSEMIB",
+	      "HYG UP",
+	      "IEF UP",
+	      "UVXYIV",
+	      "XIVIV",
+	      "SMI",
+	      "TPX",
+	      "CAC",
+	      "DAX",
+	      "EEM UP",
+	      "EWJ UP",
+	      "HSCEI",
+	      "IBEX",
+	      "NDX",
+	      "RTY",
+	      "SPY UP",
+	      "SX7E",
+	      "TWSE"
+	      ] ],
+
+		[	"FX",  [
+		  "AUDUSD WMCO",
+	      "EURUSD WMCO",
+	      "GBPUSD WMCO",
+	      "USDJPY",
+				] ],
+
+	      [ "ETFs", [ 
+	      "NIZ6",
+	      "NIZ7",
+		      "CLM6",
+		      "DEDZ6",
+		      "DEDZ7",
+		      "DEDZ8",
+		      "XLB UP",
+		      "XLE UP",
+		      "XLF UP",
+		      "XLI UP",
+		      "XLK UP",
+		      "XLP UP",
+		      "XLU UP",
+		      "XLV UP",
+		      "XLY UP",
+		      "XME UP"
+	      ] ]
+	];	
+
+
+	  return { regionFlag: regionFlag, categories : categories };
 	} )

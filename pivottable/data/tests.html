@@ -8,7 +8,9 @@
 
 <script src="lib/angular.min.js"></script>
 
-<script type='text/javascript' src='lib/chart.js'></script> 
+<script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
+<script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
 
 <script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
@@ -56,13 +58,10 @@
 
 <!-- <span>Started at: {{ startTime }}</span> -->
 
-      <!----    UNDERLIERS PANE -->
-
-
       <div class="col-md-2" id='underliersPane'>
         <div class="panel panel-primary">
-          <div class="panel-heading"><h1> 
-             <button class="btn btn-primary" ng-click="reloadSurfaces()">Reload</button>
+          <div class="panel-heading"><h1>Underliers 
+             <button class="btn" ng-click="reloadSurfaces()">reload</button>
  
           </h1></div>
           <div class="panel-body list-group">
@@ -71,21 +70,18 @@
              ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und) }">
               <div class='list-group-item-heading'>
                 <span><b>{{und}}
-                  [{{points[und]}}]</b></div>
-                  <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
+                  [{{points[und]}} maturities]</b></div>
+                  <img class=flag ng-src='{{regionFlag(und)}}'/>
                 </span>
-                <div ng-if='settings.showThumbnails'>
-                <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1 />
-                </div>
+              <vol-surface-chart volsurface='volsurfaces[und]' showdatesonaxis='false' nolegend=1>
+            </vol-surface-chart>
             </div>
           </div>
           
         </div>
       </div>
-
-      <!----    MARKING PANE -->
       
-      <div ng-show='initialized' class="col-md-5" id='markingPane'>
+      <div class="col-md-5" id='markingPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
             <h1>Var surface for  {{activeUnderlier}}</h1>
@@ -93,7 +89,7 @@
 
           <div class="panel-body">
             <div class="col-md-6">
-                <div class="gridStyle" ng-if='initialized' ng-grid="gridConfig"></div>
+                <div class="gridStyle" ng-grid="gridConfig"></div>
             </div>
             <div class="col-md-6">
               <div class=row>   
@@ -102,33 +98,28 @@
                   <b>Highlights</b>
                 </div>
                   <div class=row>
-                  <p>Reference spot: <b>{{surface().Spot()}}</b>
-                    <p class='lastupdate'>Last update: <b>{{surface().Time()}} ({{surfaceAge()}}h ago)</b></p>
-
-<!--                   <button class='btn btn-small' ng-class='dataisfresh ? btn-primary : btn-secondary'>
-                    {{ dataisfresh ? "OK" : "Old!" }}
-                  </button>
- -->                </div>
+                  VolSurface last updated on {{data[0].surfacetime}} 
+                  <button class='btn btn-small' ng-class='dataisfresh ? btn-primary : btn-secondary'>
+                  {{ dataisfresh ? "OK" : "Old!" }}
+                </div>
+              </button>
                 </div>
               
                 <hr>
              </div>
               <div class=row>
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
+                <vol-surface-chart volsurface='volsurfaces[activeUnderlier]' listen=1 tooltip=1 type='' showdatesonaxis='true' >
                 <b>BM estimate against dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
               <div class=row>                
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 /> 
+                <vol-surface-chart volsurface='volsurfaces[activeUnderlier]' listen=1 tooltip=1 type=basis  showdatesonaxis='true' /> 
              </div>
             </div>
           </div>
 
         </div>
       </div>
-
-      <!----    FWD VARIANCE PANE -->
-
 
       <div class="col-md-5" id='fwdVarPane'>
         <div class="panel panel-primary" >
@@ -138,25 +129,18 @@
 
           <div class="panel-body">
             <div class="row">
-              <div class="col-md-12">
-                      <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
-                <b>BM estimate against dealer for {{activeUnderlier}}</b>
-                </vol-surface-chart>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-6">
-                  <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1>
+                  <vol-surface-chart volsurface='volsurfaces[activeUnderlier]' listen=1 tooltip=1 type='totalstdev' showdatesonaxis='true'>
                 <b>Total stdev</b>
                 </vol-surface-chart>
               </div>
               <div  class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1>
+                <vol-surface-chart volsurface='volsurfaces[activeUnderlier]' listen=1 tooltip=1 type=ratio showdatesonaxis='true'>
                 <b>Ratio to SPX</b>
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in fwdVarTenors" class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1>
+                <vol-surface-chart volsurface='volsurfaces[activeUnderlier]' listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis='true'>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>
@@ -168,7 +152,7 @@
         </div>
       </div>
 
-<div ng-if='settings.console' id='console'></div>
+<!-- <div id='console'></div> -->
 
 </html>
 
