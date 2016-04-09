@@ -56,10 +56,13 @@
 
 <!-- <span>Started at: {{ startTime }}</span> -->
 
+      <!----    UNDERLIERS PANE -->
+
+
       <div class="col-md-2" id='underliersPane'>
         <div class="panel panel-primary">
-          <div class="panel-heading"><h1>Underliers 
-             <button class="btn" ng-click="reloadSurfaces()">reload</button>
+          <div class="panel-heading"><h1> 
+             <button class="btn btn-primary" ng-click="reloadSurfaces()">Reload</button>
  
           </h1></div>
           <div class="panel-body list-group">
@@ -79,6 +82,8 @@
           
         </div>
       </div>
+
+      <!----    MARKING PANE -->
       
       <div class="col-md-5" id='markingPane'>
         <div class="panel panel-primary" >
@@ -122,6 +127,9 @@
         </div>
       </div>
 
+      <!----    FWD VARIANCE PANE -->
+
+
       <div class="col-md-5" id='fwdVarPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
@@ -160,7 +168,7 @@
         </div>
       </div>
 
-<!-- <div id='console'></div> -->
+<div ng-if='settings.console' id='console'></div>
 
 </html>
 

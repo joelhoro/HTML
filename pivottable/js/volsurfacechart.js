@@ -21,14 +21,11 @@ angular.module('volmarker')
         }
 
         var update = function(und) { 
-            if(und != undefined)
-              $scope.underlier = und;
-            else
-              und = $scope.underlier;
+            $scope.underlier = und;
             var surface = $scope.volsurfaces[und];
             if(surface == undefined)
               return;
-            
+
             $scope.chartOptions = { 
               scaleLabel : "<%=value%>%", 
               datasetFill: false,
@@ -39,7 +36,6 @@ angular.module('volmarker')
 
             $scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
-            //newCurve.map(r => $scope.showdatesonaxis === 'true' ? r.tenor : "");
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
               var newCurve = surface.Curve('BM@T');
@@ -82,30 +78,31 @@ angular.module('volmarker')
           update(underlier);
 
           var parent = $scope.$parent;
-          parent.$watch('data',(n,o) => {  
+          parent.$watch('data',(newdata,o) => {  
             var surfaces = $scope.volsurfaces;
             var refresh = false;
             var idx = 0;
-            var underlier = n[0].underlier;
-            n.map(row => {
+            var underlier = newdata[0].underlier;
+            newdata.map(row => {
               var obs = surfaces[underlier].volSurface.Observables[idx++];
               var oldValue = obs.Quotes["BM@T"].round(4);
               var newValue = (row.BM / 100);
+              if(newValue<0.1) return;
               var tolerance = 1e-6;
               if(Math.abs(oldValue-newValue)>tolerance) {
+                utils.log("Changing mark for {1}: {2}->{3}", underlier, obs.Name, oldValue, newValue);
                 obs.Quotes["BM@T"] = newValue;
                 refresh = true;
               }
             });
-            if(refresh) {
-              //update(underlier);
-              $scope.$emit("DataChanged", underlier);
-            }
+            if(refresh) 
+              $scope.$parent.$broadcast("DataChanged", underlier);
+
           }, true);
 
           if($scope.listen=="1") {
-             $scope.$watch('underlier',newUnd => update(newUnd));
-             $scope.$on("DataChanged", (_,und) => { update(und) });            
+             $scope.$watch('underlier', newUnd => update(newUnd));
+             $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und); update(und) });            
           }
   }
 

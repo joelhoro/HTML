@@ -1,5 +1,5 @@
 angular.module('utilsService',[])
-.service('_', function() { var _ = window._; return _; })
+.service('underscore', function() { var _ = window._; return _; })
 .service('jquery', function() { 
 	var $ = window.$; 
 
@@ -31,11 +31,13 @@ angular.module('utilsService',[])
 
 	return $; 
 })
-.service('utils', function(_,jquery) {
+.service('utils', function(underscore,jquery) {
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
 	      return this.map(fn).reduce((a,b) => a+b) 
 	}
+
+	var _ = window._;
 
 	Array.prototype.where = function(values) { return _.where(this,values); }
 	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }

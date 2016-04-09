@@ -3,7 +3,7 @@ var app = angular.module('dataWarehouse',['utilsService'])
 
 utils.log("Initializing datawareHouse service");
 
-return { data: 
+return { dataFn: () => 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////// COPY PASTE DUMMY DATA HERE

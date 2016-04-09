@@ -8,6 +8,7 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
   $scope.settings = {
     showThumbnails : false,
     showFlags: true,
+    console: false,
   }
 
   $scope.startTime = new Date();
@@ -44,6 +45,8 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
     $scope.points = $scope.underliers.toObject(und => $scope.volsurfaces[und].Points())
     //$scope.$broadcast("underlierChanged");
+    $scope.setActiveUnderlier($scope.underliers[0]);
+    $scope.$broadcast("DataChanged", $scope.activeUnderlier);
   }
 
   // user interaction

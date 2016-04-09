@@ -2,8 +2,6 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 .service("voldata", function(utils,dataWarehouse,analytics) { 
 
   utils.log("Initializing voldata service");
-  // just so it's available in the lambdas;
-  var data = dataWarehouse.data;
 
   var double = x => { 
     if(x == "#VALUE!" || x == undefined || x === 0)
@@ -22,6 +20,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
   var getTime = x => x.substr(0,x.indexOf("M")+1);
 
   function getVol(underlier) {
+      var data = dataWarehouse.dataFn();
       return new analytics.VolSurface(_.filter(data, { Index: underlier})[0]);
       utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
       return result;
@@ -53,7 +52,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
         return config;
     };
 
-  var underliers = data.map(r => r.Index);
+  var underliers = dataWarehouse.dataFn().map(r => r.Index);
 
 return { 
     underliers : underliers,
