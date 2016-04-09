@@ -3,18 +3,16 @@
 
 <script src="lib/jquery-1.10.2.js"></script>
 <script src="lib/underscore.js"></script>
-
+<script src="lib/jquery.treetable.js"></script>
 <script src="lib/angular.min.js"></script>
+<script src="lib/underscore.js"></script>
 
 <script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
 <script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
 <script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
 
-<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
 
-<script type="text/javascript" src="lib/ng-grid.debug.js"></script>
-<script type="text/javascript" src="lib/ng-grid-layout.js"></script>
 
 <!-- Project specific libs -->
 <script src="js/utils.js"></script>
@@ -28,33 +26,38 @@
 <script src="js/volmarker.js"></script>
 <script src="js/volsurfacectrl.js"></script>
 <script src="js/volsurfacechart.js"></script>
+<script src='js/tests.js'></script>
+
+<style>
+.c {
+
+  height : 200,
+  width : 200,
+
+}
+
+</style>
 
 <title>Chart test</title>
-<html ng-app="volmarker">
+<html ng-app="app">
 
   <div class=c ng-controller="LineCtrl">
-  <button ng-click='update()'>CLICK</button>
-  Active: {{activeUnderlier}}
-
-      <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis='true' >
-      <b>BM estimate against dealer for {{activeUnderlier}}</b>
-      </vol-surface-chart>
-      <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis='true' >
-      <b>BM estimate against dealer for {{activeUnderlier}}</b>
-      </vol-surface-chart>
-
+<button ng-click='update()'>CLICK</button>
+{{underlier}}
+<canvas id="line" class="chart chart-line" chart-data="chartData.data" chart-labels="chartData.labels" chart-legend="true" chart-series="chartData.series" chart-options="chartData.options"  >
+</canvas>
   </div>
+
+<!-- <span>Started at: {{ startTime }}</span> -->
+
+
 </html>
 
 <script>
 
 
-angular.module("volmarker")
-.controller("LineCtrl", function ($scope,voldata) {
+angular.module("app", ["chart.js","dataService"]).controller("LineCtrl", function ($scope,voldata) {
   var i = 0;
-  $scope.underliers = ["SPX","SX5E","NKY", "SMI"];
-  $scope.volsurfaces = $scope.underliers.toObject(u => voldata.getVol(u));
-
   $scope.update = function() {
 
     var size = Math.round(Math.random()*5)+1;
@@ -63,10 +66,32 @@ angular.module("volmarker")
       for(var i = 0; i < size; i++) a[i] = 0;
       return a;
     }
-    var underliers = $scope.underliers;
+
+    var underliers = ["SPX","SX5E","NKY", "SMI"];
     i = (i+1)%underliers.length;
-    $scope.activeUnderlier = underliers[i]
+    $scope.underlier = underliers[i]
+    var surface = voldata.getVol(underliers[i]);
+
+    var series = [ "MS", "SocGen", "BM" ];
+    var data = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen","BM@T");
+    var options = { 
+              scaleLabel : "<%=value%>%", 
+              datasetFill: false,
+              legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+            }
+
+    var labels = surface.TenorLabels();
+
+    $scope.chartData = {
+        labels: labels,
+        series: series,
+        data: data,
+        options: options,
+    };
+
   }
+
 
   $scope.update();
 
