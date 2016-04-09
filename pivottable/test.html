@@ -17,8 +17,16 @@
 <!-- Project specific libs -->
 <script src="js/utils.js"></script>
 <script src="js/dateUtils.js"></script>
+
 <script src="js/analytics.js"></script>
-<script src="js/tests.js"></script>
+
+<script src="data/datawarehouse.js"></script>
+
+<script src="js/voldata.js"></script>
+<script src="js/volmarker.js"></script>
+<script src="js/volsurfacectrl.js"></script>
+<script src="js/volsurfacechart.js"></script>
+<script src='js/tests.js'></script>
 
 <style>
 body {
@@ -63,8 +71,8 @@ h1.fail {
 
 <script>
 
-var app = angular.module('test',['utilsService','tests']);
-app.controller("testCtrl", function($scope,utils, analytics,tests) {
+var app = angular.module('test',['tests']);
+app.controller("testCtrl", function($scope,tests) {
 
   $scope.testresults = [];
   tests.RunTests($scope.testresults);

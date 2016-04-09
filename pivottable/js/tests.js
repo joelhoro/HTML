@@ -1,5 +1,5 @@
-var app = angular.module('tests',['utilsService'])
-.service("tests", function(utils,analytics) { 
+var app = angular.module('tests',['utilsService','dataService'])
+.service("tests", function(utils,analytics,voldata) { 
 
   var testResults = [];
 
@@ -9,18 +9,24 @@ var app = angular.module('tests',['utilsService'])
   }
 
   function AssertEqual(expected, actual, description) {
-    var tolerance = 1e-5;
-    var diff = Math.abs(expected-actual) < tolerance;
-    if(!diff) {
-      var details = 'Expected=' + expected + ' vs actual=' + actual;
+    if(typeof(expected)=="string")
+      var diff = expected === actual;
+    else {
+      var tolerance = 1e-5;
+      var diff = Math.abs(expected-actual) < tolerance;
     }
-    AssertTrue(diff,description,details);
+
+   if(!diff)
+      var details = 'Expected=' + expected + ' vs actual=' + actual;
+
+    AssertTrue(diff,description + " to be=" + expected + " - actual=" + actual,details);
   }
 
   function RunTests(scope) {
     testResults = scope;
     TestBasic();
     TestInterpolation();
+    TestVolSurface();
   }
 
   function TestBasic() {
@@ -51,12 +57,24 @@ var app = angular.module('tests',['utilsService'])
     AssertEqual(2,interpolator.at(m2),"Testing interpolation at sample point");
     AssertEqual(1.5,interpolator.at(m3),"Testing interpolation at non-sample point");
     
-    var interpolator = new analytics.interpolator(curve, [(t,v) => v*v*(t-today), (t,v) => Math.sqrt(v/(t-today))]);
+    var msPerYear = 1000*3600*24*365;
+    var convertor = [
+      (t,v)       => v*v*(t-today)/msPerYear,
+      (t,totalv)  => Math.sqrt(totalv / (t - today)*msPerYear)
+    ];
+
+    var interpolator = new analytics.interpolator(curve, convertor);
     AssertEqual(1,interpolator.at(m1),"Testing interpolation at sample point, using convertors");
     AssertEqual(2,interpolator.at(m2),"Testing interpolation at sample point, using convertors");
-    AssertEqual(1.22474487139159,interpolator.at(m3),"Testing interpolation at non-sample point, using convertors");
+    AssertEqual(1.7320510835475713,interpolator.at(m3),"Testing interpolation at non-sample point, using convertors");
   }
 
+  function TestVolSurface() {
+    AssertTrue(true,"Starting TestVolSurface");
+    var volSurface = voldata.getVol("SPX");
+    AssertEqual(21, volSurface.Points(), "Testing the number of points on the surface");
+    AssertEqual("Aug16", volSurface.TenorLabels()[4], "Testing the tenor labels")
+  }
 
   return { RunTests : RunTests };
 } );
