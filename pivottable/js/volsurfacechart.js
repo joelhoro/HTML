@@ -7,22 +7,6 @@ angular.module('volmarker')
         utils.log("Running volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
 
-<<<<<<< HEAD
-        if($scope.showdatesonaxis == undefined)
-          $scope.showdatesonaxis = true;
-        if($scope.showdatesonaxis == 0)
-          $scope.showdatesonaxis = false;
-
-        var update = function(und) { 
-            if(und != undefined)
-              $scope.underlier = und;
-            else
-              und = $scope.underlier;
-            var newCurve = $scope.$parent.volsurfaces[und];
-            if(newCurve == undefined)
-              return;
-            $scope.chartLabels = newCurve.map(r => $scope.showdatesonaxis  ? r.tenor : "");
-=======
         var showdatesonaxis = ($scope.showdatesonaxis == undefined) || ($scope.showdatesonaxis == '1');
 
         function adjustScale(scope) {
@@ -52,7 +36,6 @@ angular.module('volmarker')
 
             $scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
->>>>>>> master
             if($scope.type == 'fwd') {
               $scope.chartSeries = [ "Fwd variance"  ];
               var newCurve = surface.Curve('BM@T');
@@ -96,7 +79,8 @@ angular.module('volmarker')
 
           var parent = $scope.$parent;
 
-          parent.$watch('data',(newdata,o) => {  
+          parent.$watch('data',(newdata,o) => { 
+            if(newdata == undefined) return;
             var surfaces = $scope.volsurfaces;
             var refresh = false;
             var idx = 0;

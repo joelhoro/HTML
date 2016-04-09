@@ -24,28 +24,29 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
 
  var cleanDataAsync = successFn => {
-    var totalFn = d => successFn(cleanData(d));
+    var totalFn = d => successFn(d);
     if(dataMode == 'ajax')
       dataWarehouse.getAjaxData(totalFn);
     else {
-      totalFn(dataWarehouse.data);
+      totalFn(dataWarehouse.dataFn());
     }
  }
 
   function getVol(underlier,successFn) {
       cleanDataAsync(data => {
-        var result = _.filter(data,{underlying:underlier});
+        var result = _.filter(data,{Index:underlier})[0];
+        var surface = new analytics.VolSurface(result);
         utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
-        successFn(result);
+        successFn(surface);
       })
     }
 
-  function getVol(underlier) {
-      var data = dataWarehouse.dataFn();
-      return new analytics.VolSurface(_.filter(data, { Index: underlier})[0]);
-      utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
-      return result;
-  }
+  // function getVol(underlier) {
+  //     var data = dataWarehouse.dataFn();
+  //     return new analytics.VolSurface(_.filter(data, { Index: underlier})[0]);
+  //     utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
+  //     return result;
+  // }
 
 
   var gridConfig = function(dataField) {
@@ -60,10 +61,10 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
                          //{field:'basis',        displayName: 'Basis',       enableCellEdit: false,  width: 40   },
                          // {field:'newtheovar',   displayName: 'NewTheo',        enableCellEdit: false,  width: 50   },
                          {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
-                         {field:'BM', displayName: 'BM tday',               enableCellEdit: true,   width: 55    },
-                         {field:'D3', displayName: 'D-avg',            enableCellEdit: false,   width: 55   },
-                         {field:'D1', displayName: 'D-MS',                    enableCellEdit: false,   width: 55   },
-                         {field:'D2', displayName: 'D-SG',                enableCellEdit: false,   width: 55   },
+                         {field:'BM', displayName: 'BM tday',               enableCellEdit: true,    width: 55    },
+                         {field:'D3', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   },
+                         {field:'D1', displayName: 'D-MS',                  enableCellEdit: false,   width: 55   },
+                         {field:'D2', displayName: 'D-SG',                  enableCellEdit: false,   width: 55   },
                         ]
                 };
         // set all readonly to a given class
@@ -77,7 +78,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
   var getUnderliers = function(successFn) {
     cleanDataAsync(data => {
-      var underliers = _.uniq(data.map(r => r.Underlying));
+      var underliers = _.uniq(data.map(r => r.Index));
       successFn(underliers);
     });
   }
