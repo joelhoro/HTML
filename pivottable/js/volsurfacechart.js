@@ -26,7 +26,9 @@ angular.module('volmarker')
             else
               und = $scope.underlier;
             var surface = $scope.volsurfaces[und];
-
+            if(surface == undefined)
+              return;
+            
             $scope.chartOptions = { 
               scaleLabel : "<%=value%>%", 
               datasetFill: false,
