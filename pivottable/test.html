@@ -1,3 +1,5 @@
+<link href="css/tests.css" rel="stylesheet" type="text/css" />
+
 <script src="lib/jquery-1.10.2.js"></script>
 <script src="lib/underscore.js"></script>
 <script src="lib/jquery.treetable.js"></script>
@@ -28,40 +30,16 @@
 <script src="js/volsurfacechart.js"></script>
 <script src='js/tests.js'></script>
 
-<style>
-body {
-  font-size: 24;
-  font-weight: bold;
-}
-.success {
-  color: green;
-}
-.fail {
-  color: red;
-}
-
-h1.success {
-  padding: 10px;
-  color: white;
-  background: green;
-}
-
-h1.fail {
-  padding: 10px;
-  color: white;
-  background: red;
-}
-
-</style>
 
 <title>Unit tests</title>
 <html ng-app="test">
   <div ng-controller="testCtrl">
 
-  <h1 ng-class="failures == 0 ? 'success' : 'fail'">Total tests = {{testresults.length}} | {{failures}} failures</h1>
+  <h1 ng-class="failures == 0 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
+  <span style='text-align: right; display: block'>{{failures}} failures</span></h1>
   <ul>
     <div ng-repeat="result in testresults" ng-class="result.success ? 'success' : 'fail'">
-    <li>[{{result.success ? 'OK' : 'Fail'}}] {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}
+    <li><b>[{{result.success ? 'PASS' : 'FAIL'}}]</b> {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}
     </div>
   </ul>
   <div>
@@ -76,7 +54,7 @@ app.controller("testCtrl", function($scope,tests) {
 
   $scope.testresults = [];
   tests.RunTests($scope.testresults);
-
+  $scope.failures = $scope.testresults.where({success: false}).length;
 
 });
 

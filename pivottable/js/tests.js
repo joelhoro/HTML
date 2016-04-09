@@ -32,6 +32,7 @@ var app = angular.module('tests',['utilsService','dataService'])
   function TestBasic() {
     AssertTrue(true,"Starting Basic Test");
     AssertTrue(1+1==2, "Test that 1+1 = 2");
+    AssertTrue(1+1==3, "Test that 1+1 = 3");
   }
 
   function TestInterpolation() {
