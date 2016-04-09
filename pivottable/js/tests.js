@@ -2,10 +2,16 @@ var app = angular.module('tests',['utilsService','dataService'])
 .service("tests", function(utils,analytics,voldata) { 
 
   var testResults = [];
+  var activeCategory = "Tests";
+
+  function SetActiveCategory(category) {
+    activeCategory = category;
+  }
 
   function AssertTrue(success, description,details='') {
-    testResults.push({description: description, success: success, details: details});
-    //$scope.failures = $scope.testresults.where({success: false}).length;
+    var details = {category: activeCategory, description: description, success: success, details: details};
+  //  console.debug("Test with success=", success, details);
+    testResults.push(details);
   }
 
   function AssertEqual(expected, actual, description) {
@@ -22,27 +28,42 @@ var app = angular.module('tests',['utilsService','dataService'])
     AssertTrue(diff,description + " to be=" + expected + " - actual=" + actual,details);
   }
 
-  function RunTests(scope) {
-    testResults = scope;
+  function RunTests() {
+    testResults = [];
     TestBasic();
+    TestArray();
     TestInterpolation();
     TestVolSurface();
+    return testResults;
   }
 
   function TestBasic() {
-    AssertTrue(true,"Starting Basic Test");
+    SetActiveCategory("Basic tests");
     AssertTrue(1+1==2, "Test that 1+1 = 2");
     AssertTrue(1+1==3, "Test that 1+1 = 3");
 
+    AssertEqual(1.23,1.23456.round(2), "Test rounding");
+
+    AssertEqual(3, [ x = 1, x.capfloor(3,8) ][1], "Test capfloor");
+    AssertEqual(5, [ x = 5, x.capfloor(3,8) ][1], "Test capfloor");
+    AssertEqual(8, [ x = 12, x.capfloor(3,8) ][1], "Test capfloor");
+
+  }
+
+  function TestArray() {
+    SetActiveCategory("Basic tests");
     AssertEqual(6, [1,2,3].sum(), "Test the sum of an array");
     AssertEqual(2, [1,2,3].avg(), "Test the average of an array");
     AssertEqual(2, [2,null].avg(), "Test the average of an array with null values (ignored)");
-    AssertEqual(1, [2,null].avg(false), "Test the average of an array with null values (considered as zeros)");    
+    AssertEqual(1, [2,null].avg(false), "Test the average of an array with null values (considered as zeros)"); 
+    AssertEqual(3, [6,3,9].min(), "Test the minimum of an array");
+    AssertEqual(9, [6,3,9].max(), "Test the maximum of an array");
+
   }
 
   function TestInterpolation() {
+    SetActiveCategory("Interpolation tests");
     // interpolator
-    AssertTrue(true,"Starting TestInterpolation");
     var flatCurve = {};
     var today = new Date();
     flatCurve[m1=today.addDays(30)] = 1;
@@ -76,7 +97,7 @@ var app = angular.module('tests',['utilsService','dataService'])
   }
 
   function TestVolSurface() {
-    AssertTrue(true,"Starting TestVolSurface");
+    SetActiveCategory("VolSurface tests");
     var volSurface = voldata.getVol("SPX");
     AssertEqual(21, volSurface.Points(), "Testing the number of points on the surface");
     AssertEqual("Aug16", volSurface.TenorLabels()[4], "Testing the tenor labels")
