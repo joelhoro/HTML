@@ -1,12 +1,32 @@
 <link rel="stylesheet" href="css/angular-chart.css">
 
 
+<script src="lib/jquery-1.10.2.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/jquery.treetable.js"></script>
 <script src="lib/angular.min.js"></script>
+<script src="lib/underscore.js"></script>
 
 <script type='text/javascript' src='lib/Chart/Chart.Core.js'></script>
 <script type='text/javascript' src='lib/Chart/Chart.Bar.js'></script>
 <script type='text/javascript' src='lib/Chart/Chart.Line.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
+
+
+
+<!-- Project specific libs -->
+<script src="js/utils.js"></script>
+<script src="js/dateUtils.js"></script>
+
+<script src="js/analytics.js"></script>
+
+<script src="data/datawarehouse.js"></script>
+
+<script src="js/voldata.js"></script>
+<script src="js/volmarker.js"></script>
+<script src="js/volsurfacectrl.js"></script>
+<script src="js/volsurfacechart.js"></script>
+<script src='js/tests.js'></script>
 
 <style>
 .c {
@@ -23,7 +43,8 @@
 
   <div class=c ng-controller="LineCtrl">
 <button ng-click='update()'>CLICK</button>
-<canvas id="line" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series">
+{{underlier}}
+<canvas id="line" class="chart chart-line" chart-data="chartData.data" chart-labels="chartData.labels" chart-legend="true" chart-series="chartData.series" chart-options="chartData.options"  >
 </canvas>
   </div>
 
@@ -35,39 +56,45 @@
 <script>
 
 
-angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
-
+angular.module("app", ["chart.js","dataService"]).controller("LineCtrl", function ($scope,voldata) {
+  var i = 0;
   $scope.update = function() {
 
-    var size = Math.round(Math.random()*5);
+    var size = Math.round(Math.random()*5)+1;
     var array = size => {
       var a = Array(size);
-      for(i = 0; i < size; i++) a[i] = 0;
+      for(var i = 0; i < size; i++) a[i] = 0;
       return a;
     }
 
-    $scope.labels = array(size).map(i => "Label"+Math.random())   //["January", "February", "March", "April", "May", "June", "July"];
-    $scope.series = ['Series A', 'Series B'];
-    $scope.data = [
-      array(size).map(() => Math.random()*100),
-      [28, 48, 40, 19, 86, 27, 90]
-    ];
+    var underliers = ["SPX","SX5E","NKY", "SMI"];
+    i = (i+1)%underliers.length;
+    $scope.underlier = underliers[i]
+    var surface = voldata.getVol(underliers[i]);
+
+    var series = [ "MS", "SocGen", "BM" ];
+    var data = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen","BM@T");
+    var options = { 
+              scaleLabel : "<%=value%>%", 
+              datasetFill: false,
+              legendTemplate: 
+           "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+            }
+
+    var labels = surface.TenorLabels();
+
+    $scope.chartData = {
+        labels: labels,
+        series: series,
+        data: data,
+        options: options,
+    };
 
   }
-    $scope.update();
-  // $scope.onClick = function (points, evt) {
-  //   console.log(points, evt);
-  // };
-        
-// $scope.chartData = {
-//     labels: ["January", "February", "March", "April", "May", "June", "July"],
-//     series: ['Foo', 'Baz', 'Bar'],
-//     data: [
-//         [65, 59, 80, 81, 56, 55, 40],
-//         [28, 48, 40, 19, 86, 27, 90],
-//         [42, 17, 28, 73, 50, 12, 68]
-//     ]
-// };
+
+
+  $scope.update();
+
 });
 
 </script>
