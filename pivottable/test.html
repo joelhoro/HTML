@@ -35,8 +35,8 @@
 <html ng-app="test">
   <div ng-controller="testCtrl">
 
-  <h1 ng-class="failures == 0 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
-  <span style='text-align: right; display: block'>{{failures}} failures</span></h1>
+  <h1 ng-class="failures <= 1 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
+  <span style='text-align: right; display: block'>{{failures-1}} failures (excl. dummy failure)</span></h1>
   <ul>
     <div ng-repeat="result in testresults" ng-class="result.success ? 'success' : 'fail'">
     <li><b>[{{result.success ? 'PASS' : 'FAIL'}}]</b> {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}

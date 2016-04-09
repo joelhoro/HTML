@@ -4,40 +4,37 @@ angular.module('utilsService')
   utils.log("Initializing analytics service");
   // just so it's available in the lambdas;
 
-  function interpolator(curve,dateKey,valueKey, conversion) {
+  function interpolator(curve, conversion) {
     if(conversion == undefined)
-      conversion = [x=>x[valueKey],x=>x[valueKey]];
+      conversion = [(t,v) => v, (t,v) => v];
 
-    var dates = curve.map(r => r[dateKey].valueOf());
-    var values = curve.map(r => conversion[0](r));
+    var dates = _.keys(curve).map(t => new Date(t).valueOf());
+    var values = _.keys(curve).map(t => conversion[0](new Date(t),curve[t]));
 
     var spline = numeric.spline(dates,values);
-    this.at = function(d) {
-      var result = {};
-      result[dateKey] = d;
-      result[valueKey] = spline.at(d.valueOf());
-      return conversion[1](result);
-    }
+    return d => conversion[1](d,spline.at(d.valueOf()));
   }
 
   Date.prototype.addDays = function(d) {return new Date(this.valueOf()+d*1000*3600*24); }
 
   function fwdVarCurve(termCurve, tenor) {
     var today = new Date();
+    var msPerYear = 1000*3600*365;
     var convertor = [
-      x => x.newmarkedvar*x.newmarkedvar*(x.maturity-today),
-      x => Math.sqrt(x.newmarkedvar/(x.maturity-today))
+      (t,v)       => v*v*(t-today)/msPerYear,
+      (t,totalv)  => Math.sqrt(totalv / (t - today)*msPerYear)
     ];
-    var iCurve = new interpolator(termCurve,'maturity','newmarkedvar',convertor);
-    var tenors = termCurve.map(r => r.tenor);
+
+    var iCurve = interpolator(termCurve,convertor);
+    var tenors = _.keys(termCurve).map(r => new Date(r));
 
     var interval = {'1m':30, '2m' : 60, '3m':90, '6m': 180, '1y':360}[tenor];
-    var fwdVars = termCurve
-      .map(r => {
-        start = r.maturity;
-        end = r.maturity.addDays(interval);
-        front = iCurve.at(start);
-        back = iCurve.at(end);
+    var fwdVars = tenors
+      .map(maturity => {
+        start = maturity;
+        end = maturity.addDays(interval);
+        front = iCurve(start);
+        back = iCurve(end);
         var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
         fwdVar = isNaN(fwdVar) ? null : fwdVar.round(2);
         return fwdVar;
@@ -46,9 +43,9 @@ angular.module('utilsService')
     return fwdVars;
   }
 
-  function stdevCurve(curve,dateKey,valueKey,today) {
-    return curve.map(r => 
-      (r[valueKey]*Math.sqrt(utils.yearFrac(today,r[dateKey]))).round(2));
+  function stdevCurve(curve,today) {
+    return _.keys(curve).map(t => 
+      (curve[t]*Math.sqrt(utils.yearFrac(today,t))).round(2));
   }
 
   Array.prototype.getScaleAndUnits = function() {
@@ -61,10 +58,88 @@ angular.module('utilsService')
     return { scale: scale, unit: unit, template: template };
   }
 
+  class VolSurface {
+    constructor(volSurface) {
+      this.volSurface = volSurface;
+      this.Underlier = function() {
+        return this.volSurface.Index;
+      }
+      this.Time = function() {
+        return this.volSurface.VolSurfaceTime;
+      }
+      this.Spot = function() {
+        return this.volSurface.Spot;
+      }      
+
+      this.Points = function() {
+        return this.volSurface.Observables.length;
+      }
+      this.Tenors = function() {
+        return this.volSurface.Observables.map(o => new Date(o.Maturity))
+      }
+      this.TenorLabels = function(visible = true) {
+        return this.Tenors().map(t => !visible ? "" : t.getMonthAbbr()+(t.getYear()-100));
+      }
+      this.ExtractMany = function(...columns) {
+        return columns.map(col => this.Extract(col));
+      }
+
+      this.GetQuote = function(obs,col) {
+        var fn = CalculateColumns[col];
+        if(fn != undefined)
+          return fn(obs);
+
+        if(obs == undefined) debugger;
+        var val = obs.Quotes[col];
+        if(val == undefined || val == 0)
+          return null;
+        return (val * 100).round(2);
+      }
+
+      var CalculateColumns = {
+        basis : o => 0,
+        'Dealer.avg' : o => [ this.GetQuote(o,'Dealer.SocGen'), this.GetQuote(o,'Dealer.MS') ].avg().round(2)
+      };
+
+      // returns the list of values (without dates)
+      this.Extract = function(col) {
+        var fn = o => this.GetQuote(o,col);
+
+        return this.volSurface.Observables.map(fn);
+      }
+
+      // returns a dictionary date->value
+      this.Curve = function(col) {
+        var extract = this.Extract(col);
+        var i = 0;
+        return this.Tenors().toObject(t => extract[i++]);
+      }
+      this.CurveFn = function(col) {
+        return interpolator(this.Curve(col));
+      }
+      this.toDataTable = function() {
+        var tenors = this.TenorLabels();
+        var i = 0;
+        return tenors.map(t => {
+          // need to renname coz ng-grid doesn't like fancy names
+          var names = { "BM":"BM@T", "BMY": "BM@T-1", "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.avg" }
+          var result = _.keys(names).toObject(f => {
+            return this.GetQuote(this.volSurface.Observables[i], names[f]);
+          } );
+          i++;
+          result.tenor = t;
+          result.underlier = this.Underlier();
+          return result;
+        })
+      }
+    }
+  }
 
   return { 
       fwdVarCurve: fwdVarCurve, 
       stdevCurve : stdevCurve, 
       interpolator : interpolator,
+      VolSurface: VolSurface,
        };
 } );
+

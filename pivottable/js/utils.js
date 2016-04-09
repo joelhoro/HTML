@@ -56,6 +56,10 @@ angular.module('utilsService',[])
       this.map(x => { if(x != null) min = Math.min(min,x) });
       return min;
     }
+    Array.prototype.avg = function(ignorenulls=true) {
+    	var length = ignorenulls ? this.filter(x => x != null).length : this.length;
+    	return this.sum() / length;
+    }
 
 	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
 	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); }
@@ -130,13 +134,14 @@ angular.module('utilsService',[])
 	};	
 })
 .service('misc', function() {
-	  var svgFlags = _.template("http://lipis.github.io/flag-icon-css/flags/4x3/<%= flag %>.svg" );
+	  var path = "assets/flags/";
+	  var svgFlags = _.template(path + "<%= flag %>.svg" );
 	  var regionFlag = function(und) { 
 
 	  	if(und == 'SPX')
-	  		return "http://masterofcharts.com/wp-content/uploads/2015/11/SPXlogo.jpg";
+	  		return path + "SPXlogo.jpg";
 	  	if(und == 'NDX')
-	  		return "http://onematchventures.com/wp-content/uploads/2014/03/nasdaq_logo-660.jpg";
+	  		return path + "nasdaq_logo-660.jpg";
 		if(und == "NIZ6" || und == "NIZ7")	  	
 			return "http://www.fxmarker.com/sites/all/themes/fxmarker/uploads/commodities_icon.png";
 		

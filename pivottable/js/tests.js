@@ -33,6 +33,11 @@ var app = angular.module('tests',['utilsService','dataService'])
     AssertTrue(true,"Starting Basic Test");
     AssertTrue(1+1==2, "Test that 1+1 = 2");
     AssertTrue(1+1==3, "Test that 1+1 = 3");
+
+    AssertEqual(6, [1,2,3].sum(), "Test the sum of an array");
+    AssertEqual(2, [1,2,3].avg(), "Test the average of an array");
+    AssertEqual(2, [2,null].avg(), "Test the average of an array with null values (ignored)");
+    AssertEqual(1, [2,null].avg(false), "Test the average of an array with null values (considered as zeros)");    
   }
 
   function TestInterpolation() {
@@ -45,18 +50,18 @@ var app = angular.module('tests',['utilsService','dataService'])
     m3 = today.addDays(45);
 
     var interpolator = new analytics.interpolator(flatCurve);
-    AssertEqual(1,interpolator.at(m1),"Testing interpolation on constant curve at sample point");
-    AssertEqual(1,interpolator.at(m2),"Testing interpolation on constant curve at sample point");
-    AssertEqual(1,interpolator.at(m3),"Testing interpolation on constant curve at non-sample point");
+    AssertEqual(1,interpolator(m1),"Testing interpolation on constant curve at sample point");
+    AssertEqual(1,interpolator(m2),"Testing interpolation on constant curve at sample point");
+    AssertEqual(1,interpolator(m3),"Testing interpolation on constant curve at non-sample point");
     
     var curve = {};
     curve[m1] = 1;
     curve[m2] = 2;
 
     var interpolator = new analytics.interpolator(curve);
-    AssertEqual(1,interpolator.at(m1),"Testing interpolation at sample point");
-    AssertEqual(2,interpolator.at(m2),"Testing interpolation at sample point");
-    AssertEqual(1.5,interpolator.at(m3),"Testing interpolation at non-sample point");
+    AssertEqual(1,interpolator(m1),"Testing interpolation at sample point");
+    AssertEqual(2,interpolator(m2),"Testing interpolation at sample point");
+    AssertEqual(1.5,interpolator(m3),"Testing interpolation at non-sample point");
     
     var msPerYear = 1000*3600*24*365;
     var convertor = [
@@ -65,9 +70,9 @@ var app = angular.module('tests',['utilsService','dataService'])
     ];
 
     var interpolator = new analytics.interpolator(curve, convertor);
-    AssertEqual(1,interpolator.at(m1),"Testing interpolation at sample point, using convertors");
-    AssertEqual(2,interpolator.at(m2),"Testing interpolation at sample point, using convertors");
-    AssertEqual(1.7320510835475713,interpolator.at(m3),"Testing interpolation at non-sample point, using convertors");
+    AssertEqual(1,interpolator(m1),"Testing interpolation at sample point, using convertors");
+    AssertEqual(2,interpolator(m2),"Testing interpolation at sample point, using convertors");
+    AssertEqual(1.7320510835475713,interpolator(m3),"Testing interpolation at non-sample point, using convertors");
   }
 
   function TestVolSurface() {
