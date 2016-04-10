@@ -42,6 +42,8 @@ angular.module('utilsService',[])
 	var areEqual = function(obj1,obj2) {
 
 	    // Create arrays of property names
+	    if(obj1 == undefined && obj2 == undefined) return true;
+	    if(obj1 == undefined || obj2 == undefined) return false;
 	    var aProps = Object.getOwnPropertyNames(obj1);
 	    var bProps = Object.getOwnPropertyNames(obj2);
 

@@ -71,6 +71,10 @@ angular.module('utilsService')
         return this.volSurface.Spot;
       }      
 
+      this.Age = function() {
+          return ( ( new Date() - new Date(this.Time() ) ) /1000/3600).round(0);
+      }
+
       this.Points = function() {
         return this.volSurface.Observables.length;
       }
