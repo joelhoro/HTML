@@ -14,7 +14,11 @@ angular.module('tests',['utilities','dataService'])
     testResults.push(details);
   }
 
-  function AssertEqual(expected, actual, description) {
+  function AssertNotEqual(expected, actual, description) {
+  	return AssertEqual(expected, actual, description, true);
+  }
+
+  function AssertEqual(expected, actual, description,flip=false) {
     if(typeof(expected)!="number" && typeof(expected) != "Date")
       var diff = utils.areEqual(expected,actual);
     else {
@@ -26,6 +30,7 @@ angular.module('tests',['utilities','dataService'])
    var s = JSON.stringify;
    if(!diff)
       var details = 'Expected=' + s(expected) + ' vs actual=' + s(actual);
+  	if(flip) diff = !diff;
 
     AssertTrue(diff,description + " to be=" + s(expected) + " - actual=" + s(actual),details);
   }
@@ -50,7 +55,10 @@ angular.module('tests',['utilities','dataService'])
     AssertEqual(3, [ x = 1, x.capfloor(3,8) ][1], "Test capfloor");
     AssertEqual(5, [ x = 5, x.capfloor(3,8) ][1], "Test capfloor");
     AssertEqual(8, [ x = 12, x.capfloor(3,8) ][1], "Test capfloor");
-
+    var a = {a:{b:[1,2,3], c: [1, { d : [2,3]}]}};
+    var b = {a:{b:[1,2,3], c: [1, { d : [2,5]}]}};
+    AssertEqual(a, utils.clone(a), "Test cloning object");
+	AssertNotEqual(a, utils.clone(b), "Test cloning object");
   }
 
   function TestDates() {

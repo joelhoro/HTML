@@ -2,7 +2,6 @@ angular.module('utilities')
 .service("analytics", function(utils,dates) { 
 
   utils.log("Initializing analytics service");
-  // just so it's available in the lambdas;
 
   function interpolator(curve, conversion) {
     if(conversion == undefined)

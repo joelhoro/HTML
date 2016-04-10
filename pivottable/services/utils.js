@@ -40,6 +40,7 @@ angular.module('utilities',[])
 	var _ = window._;
 
 	var areEqual = function(obj1,obj2) {
+		return JSON.stringify(obj1) == JSON.stringify(obj2);
 
 		if(obj1 instanceof Date && obj2 instanceof Date)
 			return (obj1-obj2)==0;
@@ -164,6 +165,10 @@ angular.module('utilities',[])
     	return (d2-d1) / (1000*3600*24) / 365;
     }
 
+    function clone(obj) {
+    	return JSON.parse(JSON.stringify(obj));
+    }
+
 	return { 
 		FieldExtractor	: fieldName => obj => obj[fieldName], 
 		ObjectFn		: obj => fieldName => obj[fieldName],
@@ -172,6 +177,7 @@ angular.module('utilities',[])
 		toggleConsole	: window._.throttle(toggleConsole,200),
 		yearFrac 		: yearFrac,
 		areEqual        : areEqual,
+		clone			: clone,
 	};	
 })
 .service('misc', function() {

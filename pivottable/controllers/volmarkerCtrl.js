@@ -30,16 +30,40 @@ angular.module("volmarker")
       utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
   }
 
+  $scope.surfaceChanges = function() {
+    if($scope.volsurfaces == undefined) return;
+    var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
+    var diff = $scope.underliers.toObject(function(und) { 
+      var obs1 = mapIt($scope.volsurfaces[und]);
+      var obs2 = mapIt($scope.volsurfaceOriginal[und]);
+      var observables = _.keys(obs1);
+      var allDiffs = {};
+      observables.map(k => { if(obs1[k] != obs2[k]) allDiffs[k] = obs2[k]+"->"+obs1[k] });
+      return allDiffs;
+    } );
+    for(und in diff)
+      if(diff[und].length == 0)
+        delete(diff[und]);
+    return diff;
+    // need to implement diff better
+  }
+
   // initialization
-  $scope.update = function(initialize=true) {
+  $scope.update = function(initialize=true, underlier) {
+      console.debug("Changes: ", $scope.surfaceChanges());  
       if(initialize) {
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
-          $scope.volsurfaces = result;
+          if(underlier != undefined)
+            $scope.volsurfaces[underlier] = result[underlier];
+          else
+            $scope.volsurfaces = result;
+          $scope.volsurfaceOriginal = JSON.parse(JSON.stringify($scope.volsurfaces));
           var allUnderliers = _.keys(result);
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
           $scope.points = $scope.underliers.toObject(und => result[und].Points());
-          $scope.setActiveUnderlier($scope.underliers[0]);
+          var underlier = ($scope.activeUnderlier == undefined) ? $scope.underliers[0] : $scope.activeUnderlier;
+          $scope.setActiveUnderlier(underlier);
           $scope.initialized = true;
         }, $scope.settings.dataMode) 
       }
@@ -63,6 +87,11 @@ angular.module("volmarker")
     var und = $scope.underliers[idx];
     $scope.setActiveUnderlier(und);
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
+  }
+
+
+  $scope.save = function() {
+    alert("Not yet implemented");
   }
 
 
