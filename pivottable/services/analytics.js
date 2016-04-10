@@ -35,7 +35,7 @@ angular.module('utilities')
         front = iCurve(start);
         back = iCurve(end);
         var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
-        fwdVar = isNaN(fwdVar) ? null : fwdVar.round(2);
+        fwdVar = isNaN(fwdVar) ? 0 : fwdVar.round(2);
         return fwdVar;
       })
 
@@ -44,7 +44,7 @@ angular.module('utilities')
 
   function stdevCurve(curve,today) {
     return _.keys(curve).map(t => 
-      (curve[t]*Math.sqrt(utils.yearFrac(today,t))).round(2));
+      (curve[t]*Math.sqrt(utils.yearFrac(today,new Date(t)))).round(2));
   }
 
   Array.prototype.getScaleAndUnits = function() {
