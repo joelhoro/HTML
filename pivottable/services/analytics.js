@@ -1,11 +1,14 @@
+"use strict";
+
 angular.module('utilities')
 .service("analytics", function(utils,dates,_) { 
 
   utils.log("Initializing analytics service");
 
   function interpolator(curve, conversion) {
-    if(conversion == undefined)
+    if(conversion === undefined) {
       conversion = [(t,v) => v, (t,v) => v];
+    }
 
     var dates = _.keys(curve).map(t => new Date(t).valueOf());
     var values = _.keys(curve).map(t => conversion[0](new Date(t),curve[t]));

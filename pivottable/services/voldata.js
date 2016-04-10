@@ -1,22 +1,10 @@
-var app = angular.module('dataService',['utilities','dataWarehouse'])
+"use strict";
+
+angular.module('dataService',['utilities','dataWarehouse'])
 .service("voldata", function(utils,dataWarehouse,analytics,_) { 
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
-
-  var double = x => { 
-    if(x == "#VALUE!" || x == undefined || x === 0)
-      return null;
-    if(typeof(x)=="number")
-      return x;
-    var number = Number(x.replace("%",""));
-    return number.round(2);
-  };
-
-  var date = x => {
-    var d = new Date(x);
-    return d.getMonthAbbr() + (d.getYear()-100);
-  } 
 
   function retrieveVolSurfaces(successFn,dataMode) {
     var convertSurface = data =>
@@ -25,8 +13,9 @@ var app = angular.module('dataService',['utilities','dataWarehouse'])
         utils.log("Getting volsurfaces - found {1} underliers", _.keys(surface).length);
         successFn(surface);
       };
-    if(dataMode == 'ajax')
+    if(dataMode === 'ajax') {
       dataWarehouse.getAjaxData(convertSurface);
+    }
     else {
       convertSurface(dataWarehouse.dataFn());   
     }
@@ -48,7 +37,7 @@ var app = angular.module('dataService',['utilities','dataWarehouse'])
                 };
         // set all readonly to a given class
         config.columnDefs
-            .map(row => { if(!row.enableCellEdit) row.cellClass="bold"; })
+            .map(row => { if(!row.enableCellEdit) {row.cellClass="bold"; } });
 
         utils.log("Configuring grid: {0}", config);
         return config;

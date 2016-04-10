@@ -1,3 +1,5 @@
+"use strict";
+
 angular.module('volmarker')
   .service("chartService", function(analytics) {
     function adjustScale(scope) {
@@ -12,18 +14,18 @@ angular.module('volmarker')
         }
 
     function getChartSpecs(volsurfaces, surface, showdatesonaxis, tenor, type, tooltip) {
-      scope = {};
+      var scope = {};
       scope.chartOptions = { 
         scaleLabel : "<%=value%>%", 
         datasetFill: false,
-        showTooltips: tooltip == "1",
+        showTooltips: tooltip === "1",
         legendTemplate: 
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      }
+      };
 
       scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
-      if(type == 'fwd') {
+      if(type === 'fwd') {
         scope.chartSeries = [ "Fwd variance"  ];
         var newCurve = surface.Curve('BM@T');
         var fwdCurve = analytics.fwdVarCurve(newCurve, tenor);
@@ -31,22 +33,22 @@ angular.module('volmarker')
             fwdCurve, 
             ];                            
       }
-      else if(type == 'basis')  {
+      else if(type === 'basis')  {
           scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
           scope.chartData = surface.ExtractMany('basis','newbasis'); 
       }
-      else if(type == 'ratio')  {
+      else if(type === 'ratio')  {
           scope.chartSeries = [ "Ratio to SPX"  ];
 
-          var spxCurveFn = volsurfaces['SPX'].CurveFn("BM@T");
+          var spxCurveFn = volsurfaces.SPX.CurveFn("BM@T");
           var thisCurve = surface.Extract("BM@T");
           var tenors = surface.Tenors();
           var i = 0;
           scope.chartData = [
             tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2))
-          ]
+          ];
       }
-      else if(type == 'totalstdev')  {
+      else if(type === 'totalstdev')  {
           var today = new Date().addDays(-2);
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
@@ -61,21 +63,22 @@ angular.module('volmarker')
       return scope;
     }
 
-    return { adjustScale: adjustScale, getChartSpecs: getChartSpecs }
+    return { adjustScale: adjustScale, getChartSpecs: getChartSpecs };
   })
   .directive("volSurfaceChart", function(utils, chartService) {
 
-  function controller($scope,voldata, utils, analytics) {
+  function controller($scope,voldata, utils) {
 
         utils.log("Running volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
-        var showdatesonaxis = ($scope.showdatesonaxis == undefined) || ($scope.showdatesonaxis == '1');
+        var showdatesonaxis = ($scope.showdatesonaxis === undefined) || ($scope.showdatesonaxis === '1');
 
         var update = function(und) { 
             $scope.underlier = und;
             var surface = $scope.volsurfaces[und];
-            if(surface == undefined)
+            if(surface === undefined) {
               return;
+            }
 
             var config = chartService.getChartSpecs($scope.volsurfaces, surface, 
               showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip);
@@ -83,24 +86,22 @@ angular.module('volmarker')
 //            _.extend($scope, config);
             ["Data","Series","Labels","Options"].map(t => {
               var field = "chart" + t;
-              if(!utils.areEqual($scope[field],config[field]))
+              if(!utils.areEqual($scope[field],config[field])) {
                 $scope[field] = config[field];
+              }
             });
-            // $scope.chartData = config.chartData;
-            // $scope.chartSeries = config.chartSeries;
-            // $scope.chartLabels = config.chartLabels;
-            // $scope.chartOptions = config.chartOptions;
 
-            if(!$scope.listen)
+            if(!$scope.listen) {
               $scope.chartHover = () => update(underlier);
+            }
           };
 
         update(underlier);
 
         var parent = $scope.$parent;
 
-        parent.$watch('data',(newdata,o) => { 
-          if(newdata == undefined) return;
+        parent.$watch('data', newdata => { 
+          if(newdata === undefined) { return; }
           var surfaces = $scope.volsurfaces;
           var refresh = false;
           var idx = 0;
@@ -124,25 +125,25 @@ angular.module('volmarker')
 
         }, true);
 
-        if($scope.listen=="1") {
+        if($scope.listen === "1") {
            $scope.$watch('underlier', newUnd => update(newUnd));
-           $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und); update(und) });            
+           $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und); update(und); });
         }
   }
 
   function templateFn(elt,attr)     
   {
       var tmpl = '<div ng-transclude/><canvas  class="chart ' + 
-        (attr.type=='basis' ? 'chart-bar' : 'chart-line') + '"' +
-      ' chart-data="chartData" chart-legend='
-      + (attr.nolegend=='1' ? "false" : "true" )
-        + ` chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
+        (attr.type === 'basis' ? 'chart-bar' : 'chart-line') + '"' +
+      ' chart-data="chartData" chart-legend=' +
+        (attr.nolegend === '1' ? "false" : "true" ) +
+        ` chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
        chart-hover="chartHover" >
         </canvas> 
       `;
 
      return tmpl;
-  };
+  }
 
 
   return {
@@ -164,7 +165,7 @@ angular.module('volmarker')
      },
     template: templateFn,
     controller: controller
-  } 
+  };
 
 }
 );

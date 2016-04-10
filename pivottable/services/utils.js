@@ -1,5 +1,6 @@
 angular.module('utilities',[])
 .factory('_', function($window) { var _ = $window._; delete($window._); return _; })
+.factory('numeric', function($window) { var numeric = $window.numeric; delete($window.numeric); return numeric; })
 .service('jquery', function() { 
 	var $ = window.$; 
 

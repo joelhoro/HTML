@@ -2,168 +2,141 @@
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="css/angular-chart.css">
 <link rel="stylesheet" href="css/volmarker.css">
-
 <script src="lib/jquery-1.10.2.js"></script>
 <script src="lib/underscore.js"></script>
-
 <script src="lib/angular.min.js"></script>
-
-<script type='text/javascript' src='lib/chart.js'></script> 
+<script type='text/javascript' src='lib/chart.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
-
 <script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
-
 <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
 <script type="text/javascript" src="lib/ng-grid-layout.js"></script>
-
 <!-- Project specific libs -->
 <script src="services/utils.js"></script>
 <script src="services/dateUtils.js"></script>
-
 <script src="services/analytics.js"></script>
-
 <script src="data/datawarehouse.js"></script>
-
 <script src="services/voldata.js"></script>
 <script src="apps/volmarker.js"></script>
 <script src="services/volmarkerUtils.js"></script>
 <script src="controllers/volmarkerCtrl.js"></script>
 <script src="directives/volsurfacechart.js"></script>
-
-
 <title>VolMarker</title>
 <html ng-app="volmarker">
-
-<div ng-controller="volmarkerCtrl">
-
-<!-- <span>Started at: {{ startTime }}</span> -->
-
-      <!-- 'LOADING' PANE -->
-      <div ng-if='!initialized' class="col-md-12">
+  <div ng-controller="volmarkerCtrl">
+    <!-- <span>Started at: {{ startTime }}</span> -->
+    <!-- 'LOADING' PANE -->
+    <div ng-if='!initialized' class="col-md-12">
+      
+      <div class="panel panel-primary">
+        <div class="panel-heading"><h1>
+          Loading volsurfaces...
           
-        <div class="panel panel-primary">
-          <div class="panel-heading"><h1> 
-            Loading volsurfaces...
- 
-          </h1></div>
-          <div class="panel-body list-group">
+        </h1></div>
+        <div class="panel-body list-group">
           <h1><img src='assets/gears.gif' height=350></h1>
-          </div>
         </div>
       </div>
-
-
-      <!----    UNDERLIERS PANE -->
-      <div ng-if='initialized' class="col-md-2" id='underliersPane'>
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            Indices
-             <button class="btn btn-danger" ng-click="update()">Reload all</button>
-          </div>
-          <div class="panel-body list-group">
-            <div ng-repeat="und in underliers" class="list-group-item"
-            ng-click='setActiveUnderlier(und)' 
-             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
-              <div class='list-group-item-heading'>
-                <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
-                  [{{points[und]}}]</b>
-                  <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
-                </span>
-                <div ng-if='settings.showThumbnails'>
+    </div>
+    <!----    UNDERLIERS PANE -->
+    <div ng-if='initialized' class="col-md-2" id='underliersPane'>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Indices
+          <button class="btn btn-danger" ng-click="update()">Reload all</button>
+        </div>
+        <div class="panel-body list-group">
+          <div ng-repeat="und in underliers" class="list-group-item"
+            ng-click='setActiveUnderlier(und)'
+            ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
+            <div class='list-group-item-heading'>
+              <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
+                [{{points[und]}}]</b>
+                <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
+              </span>
+              <div ng-if='settings.showThumbnails'>
                 <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
-                </div>
               </div>
             </div>
           </div>
-          
         </div>
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            Changes
-             <button class="btn btn-danger" ng-click="update()">Reload all</button>
-          </div>
-
-          <div class="panel-body list-group">
-            <div ng-repeat="und2 in underliers | filter: !hasChanges(und2)" class="panel-body list-group-item">
-              {{und}}
-              <ul>
-                <li ng-repeat="(obs,change) in changesForUnderlier(und2)">{{obs}}: {{change}}</li>
-              </ul>
-            </div>
+        
+      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Changes
+          <button class="btn btn-danger" ng-click="update()">Reload all</button>
+        </div>
+        <div class="panel-body list-group">
+          <div ng-repeat="und2 in underliers | filter: !hasChanges(und2)" class="panel-body list-group-item">
+            {{und}}
+            <ul>
+              <li ng-repeat="(obs,change) in changesForUnderlier(und2)">{{obs}}: {{change}}</li>
+            </ul>
           </div>
         </div>
       </div>
-
-      <!----    MARKING PANE -->
-      
-      <div ng-if='initialized' class="col-md-5" id='markingPane'>
-        <div class="panel panel-primary" >
-          <div class="panel-heading">
-            Var surface for  {{activeUnderlier}}
-            <span>
-              <button class="btn btn-danger" ng-if='hasChanges()' ng-click="save()">Save changes</button>
-              <button class="btn btn-danger" ng-click="update(true,activeUnderlier)">Reload</button>
-            </span>
-          </div>
-
-          <div class="panel-body">
+    </div>
+    <!----    MARKING PANE -->
+    
+    <div ng-if='initialized' class="col-md-5" id='markingPane'>
+      <div class="panel panel-primary" >
+        <div class="panel-heading">
+          Var surface for  {{activeUnderlier}}
+          <span>
+            <button class="btn btn-danger" ng-if='hasChanges()' ng-click="save()">Save changes</button>
+            <button class="btn btn-danger" ng-click="update(true,activeUnderlier)">Reload</button>
+          </span>
+        </div>
+        <div class="panel-body">
           <!-- THE DATA GRID -->
-            <div class="col-md-6"> 
-                <div class="gridStyle" ng-if='initialized' ng-grid="gridConfig"></div>
-            </div>
-            <div class="col-md-6">
-              <div class=row>   
-                <div class="col-lg-12">             
-                  <div class=row>
+          <div class="col-md-6">
+            <div class="gridStyle" ng-if='initialized' ng-grid="gridConfig"></div>
+          </div>
+          <div class="col-md-6">
+            <div class=row>
+              <div class="col-lg-12">
+                <div class=row>
                 </div>
-                  <div class=row>
+                <div class=row>
                   <p>Reference spot: <b>{{surface().Spot()}}</b>
                     <p class='lastupdate'>Last update: <b>{{surface().Time()}} ({{surface().Age()}}h ago)</b></p>
-
-<!--                   <button class='btn btn-small' ng-class='dataisfresh ? btn-primary : btn-secondary'>
+                    <!--                   <button class='btn btn-small' ng-class='dataisfresh ? btn-primary : btn-secondary'>
                     {{ dataisfresh ? "OK" : "Old!" }}
-                  </button>
- -->                </div>
+                    </button>
+                  -->                </div>
                 </div>
-              
+                
                 <hr>
-             </div>
+              </div>
               <div class=row>
                 <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
                 <b>BM estimate vs. dealers for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
-              <div class=row>                
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='basis' showdatesonaxis=1 /> 
-             </div>
+              <div class=row>
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='basis' showdatesonaxis=1 />
+              </div>
+            </div>
           </div>
-
-
-          </div>
-
         </div>
       </div>
-
       <!----    FWD VARIANCE PANE -->
-
-
       <div ng-if='initialized' class="col-md-5" id='fwdVarPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
             FwdVar surfaces for  {{activeUnderlier}}
           </div>
-
           <div class="panel-body">
             <div class="row">
               <div class="col-md-12">
-                      <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
                 <b>BM estimate vs. dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
-                  <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
                 <b>Total StdDev (Var * sqrt(t))</b>
                 </vol-surface-chart>
               </div>
@@ -177,21 +150,14 @@
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>
-
-
             </div>
           </div>
-
         </div>
       </div>
-
-<div ng-if='settings.console' id='console'></div>
-
-</html>
-
-<script>
-
-  $("#underlier").focus();
-$(".gridStyle").css("height","85%");
-//$(".gridStyle").css("width","100%");
-</script>
+      <div ng-if='settings.console' id='console'></div>
+    </html>
+    <script>
+    $("#underlier").focus();
+    $(".gridStyle").css("height","85%");
+    //$(".gridStyle").css("width","100%");
+    </script>
