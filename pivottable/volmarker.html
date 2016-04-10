@@ -61,9 +61,9 @@
           <div class="panel-body list-group">
             <div ng-repeat="und in underliers" class="list-group-item"
             ng-click='setActiveUnderlier(und)' 
-             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und) }">
+             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
               <div class='list-group-item-heading'>
-                <span><b>{{und}}
+                <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
                   [{{points[und]}}]</b></div>
                   <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
                 </span>
@@ -83,7 +83,7 @@
           <div class="panel-heading">
             Var surface for  {{activeUnderlier}}
             <span>
-              <button class="btn btn-danger" ng-click="save()">Save changes</button>
+              <button class="btn btn-danger" ng-if='hasChanges()' ng-click="save()">Save changes</button>
               <button class="btn btn-danger" ng-click="update(true,activeUnderlier)">Reload</button>
             </span>
           </div>
@@ -112,7 +112,7 @@
              </div>
               <div class=row>
                 <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
-                <b>BM estimate against dealers for {{activeUnderlier}}</b>
+                <b>BM estimate vs. dealers for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
               <div class=row>                
@@ -139,7 +139,7 @@
             <div class="row">
               <div class="col-md-12">
                       <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
-                <b>BM estimate against dealer for {{activeUnderlier}}</b>
+                <b>BM estimate vs. dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
             </div>

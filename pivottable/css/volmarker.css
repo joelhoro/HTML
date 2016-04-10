@@ -84,3 +84,8 @@ h1 {
   top: 10px;
   right: 10px;
   }
+
+.haschanges {
+  font-size: 1.1em;
+  color: darkblue;
+}
