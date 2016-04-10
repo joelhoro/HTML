@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('utilities')
-.service("analytics", function(utils,dates,_) { 
+.service("analytics", function(utils,dates,_, numeric) { 
 
   utils.log("Initializing analytics service");
 
@@ -32,10 +32,10 @@ angular.module('utilities')
     var interval = {'1m':30, '2m' : 60, '3m':90, '6m': 180, '1y':360}[tenor];
     var fwdVars = tenors
       .map(maturity => {
-        start = maturity;
-        end = maturity.addDays(interval);
-        front = iCurve(start);
-        back = iCurve(end);
+        var start = maturity;
+        var end = maturity.addDays(interval);
+        var front = iCurve(start);
+        var back = iCurve(end);
         var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
         fwdVar = isNaN(fwdVar) ? 0 : fwdVar.round(2);
         return fwdVar;
@@ -52,7 +52,7 @@ angular.module('utilities')
   Array.prototype.getScaleAndUnits = function() {
     var max = this.map(Math.abs).max();
     var scale1000 = Math.floor(Math.log10(max)/3);
-    fixedScale1000 = Math.max(Math.min(3,scale1000),0)
+    var fixedScale1000 = Math.max(Math.min(3,scale1000),0)
     var scale = Math.pow(1000,fixedScale1000);
     var unit = { 0 : '', 1 : 'k', 2 : 'M', 3 : 'B' }[fixedScale1000];
     var template = "<%=value / " + scale+"%>" + unit;

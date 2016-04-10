@@ -1,19 +1,18 @@
 angular.module('utilities',[])
 .factory('_', function($window) { var _ = $window._; delete($window._); return _; })
 .factory('numeric', function($window) { var numeric = $window.numeric; delete($window.numeric); return numeric; })
-.service('jquery', function() { 
-	var $ = window.$; 
-
+.factory('$', function($window) { 
+	var $ = $window.$;
 	$.fn.goTo = function(parent) {
 	  parent.animate({
 	      scrollTop: ($(this).offset().top - parent.offset().top )+ 'px'
 	  }, 'slow');
 	  return this; // for chaining...
-	}
+	};
 
 
 	$.fn.scrollTo = function( target, options, callback ){
-	  if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
+	  if(typeof options === 'function' && arguments.length === 2){ callback = options; options = target; }
 	  var settings = $.extend({
 	    scrollTarget  : target,
 	    offsetTop     : 50,
@@ -22,39 +21,38 @@ angular.module('utilities',[])
 	  }, options);
 	  return this.each(function(){
 	    var scrollPane = $(this);
-	    var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-	    var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+	    var scrollTarget = (typeof settings.scrollTarget === "number") ? settings.scrollTarget : $(settings.scrollTarget);
+	    var scrollY = (typeof scrollTarget === "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
 	    scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
-	      if (typeof callback == 'function') { callback.call(this); }
+	      if (typeof callback === 'function') { callback.call(this); }
 	    });
 	  });
-	}
+	};
 
 	return $; 
 })
-.service('utils', function(_,jquery) {
+.service('utils', function(_, $) { 
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
-	      return this.map(fn).reduce((a,b) => a+b) 
-	}
-
-	//var _ = window._;
+	      return this.map(fn).reduce((a,b) => a+b);
+	};
 
 	var areEqual = function(obj1,obj2) {
-		return JSON.stringify(obj1) == JSON.stringify(obj2);
+		return JSON.stringify(obj1) === JSON.stringify(obj2);
 
-		if(obj1 instanceof Date && obj2 instanceof Date)
-			return (obj1-obj2)==0;
+		if(obj1 instanceof Date && obj2 instanceof Date) {
+			return (obj1-obj2)===0;
+		}
 
 	    // Create arrays of property names
-	    if(obj1 == undefined && obj2 == undefined) return true;
-	    if(obj1 == undefined || obj2 == undefined) return false;
+	    if(obj1 === undefined && obj2 === undefined) { return true; }
+	    if(obj1 === undefined || obj2 === undefined) { return false; }
 	    var aProps = Object.getOwnPropertyNames(obj1);
 	    var bProps = Object.getOwnPropertyNames(obj2);
 
 	    // If number of properties is different,
 	    // objects are not equivalent
-	    if (aProps.length != bProps.length) {
+	    if (aProps.length !== bProps.length) {
 	        return false;
 	    }
 
@@ -73,38 +71,38 @@ angular.module('utilities',[])
 	    return true;
 	}
 
-	Array.prototype.where = function(values) { return _.where(this,values); }
-	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
-	Array.prototype.sortBy = function(fn) { return _.sortBy(this,fn); }
+	Array.prototype.where = function(values) { return _.where(this,values); };
+	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); };
+	Array.prototype.sortBy = function(fn) { return _.sortBy(this,fn); };
 	Array.prototype.toObject = function(valueFn,fieldFn) { 
-		  if(fieldFn == undefined) fieldFn = f => f;
+		  if(fieldFn === undefined) { fieldFn = f => f; }
 	      var obj = {}; 
 	      this.forEach(field => obj[fieldFn(field)] = valueFn(field));
 	      return obj;
-	}
+	};
 
 	Array.prototype.toObjectWithValues = function(values) {
 		var idx = 0;
-		return this.toObject(r => values[idx++]);
-	}
+		return this.toObject(() => values[idx++]);
+	};
 
     Array.prototype.max = function() {
       var max = this[0];
-      this.map(x => { if(x != null)  max = Math.max(max,x) });
+      this.map(x => { if(x !== null)  { max = Math.max(max,x) } });
       return max;
-    }
+    };
     Array.prototype.min = function() {
       var min = this[0];
-      this.map(x => { if(x != null) min = Math.min(min,x) });
+      this.map(x => { if(x !== null) { min = Math.min(min,x) } });
       return min;
-    }
+    };
     Array.prototype.avg = function(ignorenulls=true) {
-    	var length = ignorenulls ? this.filter(x => x != null).length : this.length;
+    	var length = ignorenulls ? this.filter(x => x !== null).length : this.length;
     	return this.sum() / length;
-    }
+    };
 
-	Number.prototype.round = function(n) { base = Math.pow(10,n); return Math.round(this*base)/base; }
-	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); }
+	Number.prototype.round = function(n) { var base = Math.pow(10,n); return Math.round(this*base)/base; };
+	Number.prototype.capfloor = function(floor,cap) { return Math.max(floor,Math.min(cap,this)); };
 
 	String.prototype.contains = function(substr) { return this.indexOf(substr)>-1 };
     String.prototype.format = function(...arguments) {
@@ -112,15 +110,15 @@ angular.module('utilities',[])
         if (!arguments.length)
             return str;
         var args = typeof arguments[0],
-            args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-        for (arg in args)
+            args = (("string" === args || "number" === args) ? arguments : arguments[0]);
+        for (var arg in args)
             str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), JSON.stringify(args[arg]));
         return str;
-    }
+    };
 
     var id = 0;
 
-	scrollTo = _.throttle(spanId => $("#console").scrollTo($("#"+spanId)));
+	var scrollTo = _.throttle(spanId => $("#console").scrollTo($("#"+spanId)));
 
 	// console stuff
     function log(message,...arg) {
@@ -137,11 +135,12 @@ angular.module('utilities',[])
 	var maxConsoleWidth = 1000;
 	var consoleWidthIncrement = 200;
 	var consoleOn = true;
+	var consoleWidth;
 
     var setConsoleWidth = w => {
     	consoleWidth = w;
 		consoleElt.animate({ width : consoleWidth+"px" });    		
-    }
+    };
 
    	setConsoleWidth(originalConsoleWidth);
 
@@ -157,8 +156,9 @@ angular.module('utilities',[])
 				consoleElt.animate({bottom:-300, width: originalConsoleWidth+"px"});
 				consoleOn = false;
     		}
-    		else
+    		else {
 				setConsoleWidth(consoleWidth);
+    		}
     	}
     }
 
@@ -186,12 +186,15 @@ angular.module('utilities',[])
 	  var svgFlags = _.template(path + "<%= flag %>.svg" );
 	  var regionFlag = function(und) { 
 
-	  	if(und == 'SPX')
+	  	if(und === 'SPX') {
 	  		return path + "SPXlogo.jpg";
-	  	if(und == 'NDX')
+	  	}
+	  	if(und === 'NDX') {
 	  		return path + "nasdaq_logo-660.jpg";
-		if(und == "NIZ6" || und == "NIZ7")	  	
+	  	}
+		if(und === "NIZ6" || und === "NIZ7")	  	 {
 			return "http://www.fxmarker.com/sites/all/themes/fxmarker/uploads/commodities_icon.png";
+		}
 		
 	  	var cme = "https://s3.amazonaws.com/media.agricharts.com/sites/658/New%20Stories/CME%20Group%20Story/Chicago%20Mer%20Logo%20Picture.jpg";
 	  	var specialFlags = {
@@ -204,8 +207,9 @@ angular.module('utilities',[])
 	  	}
 
 	  	var flag = specialFlags[und];
-	  	if(flag != undefined)
+	  	if(flag !== undefined) {
 	  		return flag;
+	  	}
 
 	    var flags = {
 	      "AS51": "us",
@@ -256,7 +260,7 @@ angular.module('utilities',[])
 	    };
 
 	    return svgFlags({flag: flags[und]}); 
-	  }
+	  };
 
 	  var categories = [
 	    	
@@ -318,6 +322,5 @@ angular.module('utilities',[])
 	      ] ]
 	];	
 
-
 	  return { regionFlag: regionFlag, categories : categories };
-	} )
+	} );
