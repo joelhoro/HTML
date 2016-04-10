@@ -7,6 +7,7 @@ angular.module("volmarker")
     showFlags: true,
     console: false,
     fwdVarTenors: ['1m','3m'],
+    dataMode: 'local'
   }
 
   $scope.initialized = false;
@@ -30,16 +31,20 @@ angular.module("volmarker")
   }
 
   // initialization
-  $scope.initialize = function() {
-      voldata.retrieveVolSurfaces(result => {
-        $scope.volsurfaces = result;
-        var allUnderliers = _.keys(result);
-        $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
-        $scope.points = $scope.underliers.toObject(und => result[und].Points());
-        $scope.setActiveUnderlier($scope.underliers[0]);
-        $scope.initialized = true;
-        $scope.$broadcast("DataChanged", $scope.activeUnderlier);
-      }) 
+  $scope.update = function(initialize=true) {
+      if(initialize) {
+        $scope.initialized = false;        
+        voldata.retrieveVolSurfaces(result => {
+          $scope.volsurfaces = result;
+          var allUnderliers = _.keys(result);
+          $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
+          $scope.points = $scope.underliers.toObject(und => result[und].Points());
+          $scope.setActiveUnderlier($scope.underliers[0]);
+          $scope.initialized = true;
+        }, $scope.settings.dataMode) 
+      }
+
+      $scope.$broadcast("DataChanged", $scope.activeUnderlier);
   }
 
   // user interaction
@@ -61,6 +66,6 @@ angular.module("volmarker")
   }
 
 
-  $scope.initialize();
+  $scope.update();
 } );
   

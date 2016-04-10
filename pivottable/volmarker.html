@@ -30,25 +30,6 @@
 <script src="controllers/volmarkerCtrl.js"></script>
 <script src="directives/volsurfacechart.js"></script>
 
-<style>
-.list-group-item:hover {
-  background-color: darkturquoise;
-}
-.leader {
-  background-color: lightyellow;
-}
-.follower {
-  background-color: lightgreen;
-}
-.flag {
-  height:24;
-  width: 37;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  }
-
-</style>
 
 <title>VolMarker</title>
 <html ng-app="volmarker">
@@ -58,15 +39,25 @@
 <!-- <span>Started at: {{ startTime }}</span> -->
 
       <!----    UNDERLIERS PANE -->
-      <div ng-if='!initialized'>
-          Loading volsurfaces - {{underliers.length}} so far
+      <div ng-if='!initialized' class="col-md-12">
+          
+        <div class="panel panel-primary">
+          <div class="panel-heading"><h1> 
+            Loading volsurfaces...
+ 
+          </h1></div>
+          <div class="panel-body list-group">
+          <h1><img src='assets/gears.gif' height=350></h1>
+          </div>
+        </div>
       </div>
       <div ng-if='initialized' class="col-md-2" id='underliersPane'>
         <div class="panel panel-primary">
-          <div class="panel-heading"><h1> 
-             <button class="btn btn-primary" ng-click="initialize()">Reload</button>
+          <div class="panel-heading">
+            Indices
+             <button class="btn btn-danger" ng-click="update()">Reload all</button>
  
-          </h1></div>
+          </div>
           <div class="panel-body list-group">
             <div ng-repeat="und in underliers" class="list-group-item"
             ng-click='setActiveUnderlier(und)' 
@@ -90,11 +81,16 @@
       <div ng-if='initialized' class="col-md-5" id='markingPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
-            <h1>Var surface for  {{activeUnderlier}}</h1>
+            Var surface for  {{activeUnderlier}}
+            <span>
+              <button class="btn btn-danger" ng-click="save()">Save changes</button>
+              <button class="btn btn-danger" ng-click="update()">Reload</button>
+            </span>
           </div>
 
           <div class="panel-body">
-            <div class="col-md-6">
+          <!-- THE DATA GRID -->
+            <div class="col-md-6"> 
                 <div class="gridStyle" ng-if='initialized' ng-grid="gridConfig"></div>
             </div>
             <div class="col-md-6">
@@ -117,13 +113,15 @@
              </div>
               <div class=row>
                 <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
-                <b>BM estimate against dealer for {{activeUnderlier}}</b>
+                <b>BM estimate against dealers for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
               <div class=row>                
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 /> 
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='basis' showdatesonaxis=1 /> 
              </div>
-            </div>
+          </div>
+
+
           </div>
 
         </div>
@@ -135,7 +133,7 @@
       <div ng-if='initialized' class="col-md-5" id='fwdVarPane'>
         <div class="panel panel-primary" >
           <div class="panel-heading">
-            <h1>FwdVar surfaces for  {{activeUnderlier}}</h1>
+            FwdVar surfaces for  {{activeUnderlier}}
           </div>
 
           <div class="panel-body">
@@ -148,17 +146,17 @@
             </div>
             <div class="row">
               <div class="col-md-6">
-                  <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1>
+                  <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
                 <b>Total stdev</b>
                 </vol-surface-chart>
               </div>
               <div  class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1>
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
                 <b>Ratio to SPX</b>
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in settings.fwdVarTenors" class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1>
+                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>

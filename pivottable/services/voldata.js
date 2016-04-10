@@ -3,8 +3,6 @@ var app = angular.module('dataService',['utilities','dataWarehouse'])
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
-  var dataMode = 'local';
-  //dataMode = 'ajax';
 
   var double = x => { 
     if(x == "#VALUE!" || x == undefined || x === 0)
@@ -20,13 +18,11 @@ var app = angular.module('dataService',['utilities','dataWarehouse'])
     return d.getMonthAbbr() + (d.getYear()-100);
   } 
 
-  var getTime = x => x.substr(0,x.indexOf("M")+1);
-
-  function retrieveVolSurfaces(successFn) {
+  function retrieveVolSurfaces(successFn,dataMode) {
     var convertSurface = data =>
       {
         var surface = data.toObject(row => new analytics.VolSurface(row), row => row.Index);
-        utils.log("Getting volsurfaces - found {1} underliers", surface.length);
+        utils.log("Getting volsurfaces - found {1} underliers", _.keys(surface).length);
         successFn(surface);
       };
     if(dataMode == 'ajax')
@@ -43,10 +39,6 @@ var app = angular.module('dataService',['utilities','dataWarehouse'])
             enableRowSelection: false,
             columnDefs: [
                          {field: 'tenor',       displayName: 'Expiry',      enableCellEdit: false,  width: 50   }, 
-                         // {field:'theovar',      displayName: 'Theo',            enableCellEdit: false,  width: 40   },
-                         // {field:'markedvar',    displayName: 'Marked',          enableCellEdit: true,   width: 40   },
-                         //{field:'basis',        displayName: 'Basis',       enableCellEdit: false,  width: 40   },
-                         // {field:'newtheovar',   displayName: 'NewTheo',        enableCellEdit: false,  width: 50   },
                          {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
                          {field:'BM', displayName: 'BM tday',               enableCellEdit: true,    width: 55    },
                          {field:'D3', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   },

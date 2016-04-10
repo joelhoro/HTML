@@ -104,6 +104,7 @@ angular.module('volmarker')
           var surfaces = $scope.volsurfaces;
           var refresh = false;
           var idx = 0;
+
           var underlier = newdata[0].underlier;
           newdata.map(row => {
             var obs = surfaces[underlier].volSurface.Observables[idx++];
@@ -117,8 +118,9 @@ angular.module('volmarker')
               refresh = true;
             }
           });
-          if(refresh) 
-            parent.$broadcast("DataChanged", underlier);
+          if(refresh) {
+            parent.update(false);
+          }
 
         }, true);
 
