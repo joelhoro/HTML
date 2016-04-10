@@ -4,7 +4,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
   var dataMode = 'local';
-  //dataMode = 'ajax';
+  dataMode = 'ajax';
 
   var double = x => { 
     if(x == "#VALUE!" || x == undefined || x === 0)
@@ -32,23 +32,14 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
     }
  }
 
-  function getVol(underlier,successFn) {
+  function retrieveVolSurfaces(successFn) {
       cleanDataAsync(data => {
-        var result = _.filter(data,{Index:underlier})[0];
-        var surface = new analytics.VolSurface(result);
-        utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
+        var underliers = data.map(r => r.Index);
+        var surface = data.toObject(row => new analytics.VolSurface(row), row => row.Index);
+        utils.log("Getting volsurfaces - found {1} underliers", surface.length);
         successFn(surface);
       })
     }
-
-  // function getVol(underlier) {
-  //     var data = dataWarehouse.dataFn();
-  //     return new analytics.VolSurface(_.filter(data, { Index: underlier})[0]);
-  //     utils.log("Getting volsurface for {0} - found {1} points", underlier, result.length);
-  //     return result;
-  // }
-
-
   var gridConfig = function(dataField) {
         var config = {
             data: dataField,
@@ -86,7 +77,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
 return { 
     getUnderliers: getUnderliers,
-    getVol: getVol, 
+    retrieveVolSurfaces: retrieveVolSurfaces, 
     gridConfig : gridConfig
 };
 

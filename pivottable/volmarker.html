@@ -156,7 +156,7 @@
                 <b>Ratio to SPX</b>
                 </vol-surface-chart>
               </div>
-              <div ng-repeat="tenor in fwdVarTenors" class="col-md-6">
+              <div ng-repeat="tenor in settings.fwdVarTenors" class="col-md-6">
                 <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>

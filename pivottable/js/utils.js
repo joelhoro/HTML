@@ -39,10 +39,10 @@ angular.module('utilsService',[])
 
 	var _ = window._;
 
-	Object.prototype.equals = function(obj2) {
+	var areEqual = function(obj1,obj2) {
 
 	    // Create arrays of property names
-	    var aProps = Object.getOwnPropertyNames(this);
+	    var aProps = Object.getOwnPropertyNames(obj1);
 	    var bProps = Object.getOwnPropertyNames(obj2);
 
 	    // If number of properties is different,
@@ -56,7 +56,7 @@ angular.module('utilsService',[])
 
 	        // If values of same property are not equal,
 	        // objects are not equivalent
-	        if (this[propName] !== obj2[propName]) {
+	        if (obj1[propName] !== obj2[propName]) {
 	            return false;
 	        }
 	    }
@@ -165,7 +165,8 @@ angular.module('utilsService',[])
 		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">",
 		log				: log,
 		toggleConsole	: window._.throttle(toggleConsole,200),
-		yearFrac 		: yearFrac
+		yearFrac 		: yearFrac,
+		areEqual        : areEqual,
 	};	
 })
 .service('misc', function() {

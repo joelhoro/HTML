@@ -10,13 +10,13 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     showThumbnails : false,
     showFlags: true,
     console: false,
+    fwdVarTenors: ['1m','3m'],
   }
 
   $scope.startTime = new Date();
 
   $scope.mode = 'browse';
 
-  $scope.fwdVarTenors = ['1m','3m'];
   $scope.regionFlag = misc.regionFlag;
   $scope.gridConfig = voldata.gridConfig('data');
 
@@ -33,29 +33,23 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
   }
 
   $scope.setActiveUnderlier = function(und) {
-
-      if(und == undefined)
+    if(und == undefined)
         und = $scope.activeUnderlier;
 
       $scope.data = $scope.volsurfaces[und].toDataTable();
       $scope.activeUnderlier = und;
-  //    $scope.surface = $scope.volsurfaces[und];
       utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
-      //$scope.$broadcast("underlierChanged",und);
   }
 
-  $scope.reloadSurfaces = function(underliers, successFn) {
-    underliers.map(und => 
-    {
-      voldata.getVol(und,result => {
-        $scope.volsurfaces[und] = result;
-        $scope.points[und] = result.Points();
-        successFn();
+  $scope.initialize = function() {
+      voldata.retrieveVolSurfaces(result => {
+        $scope.volsurfaces = result;
+        $scope.underliers = _.keys(result);
+        $scope.points = $scope.underliers.toObject(und => result[und].Points());
+        $scope.setActiveUnderlier($scope.underliers[0]);
+        $scope.initialized = true;
+        $scope.$broadcast("DataChanged", $scope.activeUnderlier);
       }) 
-      // $scope.setActiveUnderlier($scope.underliers[0]);
-      // $scope.$broadcast("DataChanged", $scope.activeUnderlier);
-    }
-    );
   }
 
   // user interaction
@@ -84,7 +78,7 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     }
 
     var search = location.search;
-    search = 'full';
+    search = 'test';
     if(search.contains("test")) {
       utils.log("Starting in test mode");
       var u = ["SPX","NKY"];
@@ -105,25 +99,6 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     return $scope.underliers.indexOf($scope.activeUnderlier);
   }
 
-
-  $scope.initialize = function() {
-    $scope.volsurfaces = {}
-    $scope.underliers = [];
-    $scope.points = {}
-    getUnderliers(u => {
-      $scope.reloadSurfaces(u, () => {
-        if(u.length == _.keys($scope.volsurfaces).length) {
-          $scope.underliers = u;    
-          $scope.setActiveUnderlier(u[0]);
-          $scope.initialized = true;
-          $scope.$broadcast("DataChanged", $scope.activeUnderlier);
-        }
-          //$scope.$apply();
-      } );
-
-    });
-  }
-//$scope.done();
   $scope.initialize();
 } );
   

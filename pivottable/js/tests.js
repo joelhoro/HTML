@@ -16,7 +16,7 @@ var app = angular.module('tests',['utilsService','dataService'])
 
   function AssertEqual(expected, actual, description) {
     if(typeof(expected)!="number")
-      var diff = expected.equals(actual);
+      var diff = utils.areEqual(expected,actual);
     else {
       var tolerance = 1e-5;
       var diff = Math.abs(expected-actual) < tolerance;
@@ -34,7 +34,7 @@ var app = angular.module('tests',['utilsService','dataService'])
     TestBasic();
     TestArray();
     TestInterpolation();
-    TestVolSurface();
+    //TestVolSurface();
     return testResults;
   }
 
