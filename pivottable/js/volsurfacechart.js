@@ -65,12 +65,10 @@ angular.module('volmarker')
   })
   .directive("volSurfaceChart", function(utils, chartService) {
 
-  utils.log("Defining volsurface controller");
   function controller($scope,voldata, utils, analytics) {
 
         utils.log("Running volsurface controller - scope=" + $scope.$id);  
         var underlier = $scope.underlier;
-
         var showdatesonaxis = ($scope.showdatesonaxis == undefined) || ($scope.showdatesonaxis == '1');
 
         var update = function(und) { 

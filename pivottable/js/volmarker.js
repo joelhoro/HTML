@@ -36,7 +36,8 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
   $scope.initialize = function() {
       voldata.retrieveVolSurfaces(result => {
         $scope.volsurfaces = result;
-        $scope.underliers = _.keys(result);
+        var allUnderliers = _.keys(result);
+        $scope.underliers = filterUnderliers(allUnderliers);
         $scope.points = $scope.underliers.toObject(und => result[und].Points());
         $scope.setActiveUnderlier($scope.underliers[0]);
         $scope.initialized = true;
@@ -62,30 +63,22 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
-  // function getUnderliers(successFn) {
-  //   var ultimateFn = u => {
-  //     successFn(u);
-  //     utils.log("Using {0} underliers", u.length);
-  //   }
+  function filterUnderliers(underliers) {
 
-  //   var search = location.search;
-  //   search = 'test';
-  //   if(search.contains("test")) {
-  //     utils.log("Starting in test mode");
-  //     var u = ["SPX","NKY"];
-  //     ultimateFn(u);
-  //   }
-  //   else if(search.contains("full")) {
-  //     utils.log("Starting in full mode");
-  //     voldata.getUnderliers(ultimateFn);
-  //   }
-  //   else {
-  //     utils.log("Starting in extended test mode");
-  //     var u = ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
-  //     ultimateFn(u);
-  //   }
-  // }
-
+    var search = location.search;
+    if(search.contains("test")) {
+      utils.log("Starting in test mode");
+      return ["SPX","NKY"];
+    }
+    else if(search.contains("full")) {
+      utils.log("Starting in full mode");
+      return underliers;
+    }
+    else {
+      utils.log("Starting in extended test mode");
+      return ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
+    }
+  }
 
   $scope.initialize();
 } );

@@ -22,24 +22,20 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
 
   var getTime = x => x.substr(0,x.indexOf("M")+1);
 
-
- var cleanDataAsync = successFn => {
-    var totalFn = d => successFn(d);
-    if(dataMode == 'ajax')
-      dataWarehouse.getAjaxData(totalFn);
-    else {
-      totalFn(dataWarehouse.dataFn());
-    }
- }
-
   function retrieveVolSurfaces(successFn) {
-      cleanDataAsync(data => {
-        var underliers = data.map(r => r.Index);
+    var convertSurface = data =>
+      {
         var surface = data.toObject(row => new analytics.VolSurface(row), row => row.Index);
         utils.log("Getting volsurfaces - found {1} underliers", surface.length);
         successFn(surface);
-      })
+      };
+    if(dataMode == 'ajax')
+      dataWarehouse.getAjaxData(convertSurface);
+    else {
+      convertSurface(dataWarehouse.dataFn());   
     }
+  }
+
   var gridConfig = function(dataField) {
         var config = {
             data: dataField,
@@ -66,17 +62,7 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
         return config;
     };
 
-
-  var getUnderliers = function(successFn) {
-    cleanDataAsync(data => {
-      var underliers = _.uniq(data.map(r => r.Index));
-      successFn(underliers);
-    });
-  }
-
-
 return { 
-    getUnderliers: getUnderliers,
     retrieveVolSurfaces: retrieveVolSurfaces, 
     gridConfig : gridConfig
 };
