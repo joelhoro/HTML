@@ -43,11 +43,11 @@ angular.module('volmarker')
           var tenors = surface.Tenors();
           var i = 0;
           scope.chartData = [
-            tenors.map(t => thisCurve[i++] / spxCurveFn(t) * 100)
+            tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2))
           ]
       }
       else if(type == 'totalstdev')  {
-          var today = new Date();
+          var today = new Date().addDays(-2);
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
           scope.chartData = [ analytics.stdevCurve(curve,today) ];
