@@ -1,4 +1,4 @@
-var app = angular.module('dataWarehouse',['utilsService'])
+angular.module('dataWarehouse',['utilities'])
 .service("dataWarehouse", function($http,utils) { 
 
 var $ = window.$;

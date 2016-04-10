@@ -1,5 +1,5 @@
-angular.module('utilsService')
-.service("analytics", function(utils) { 
+angular.module('utilities')
+.service("analytics", function(utils,dates) { 
 
   utils.log("Initializing analytics service");
   // just so it's available in the lambdas;
@@ -15,7 +15,6 @@ angular.module('utilsService')
     return d => conversion[1](d,spline.at(d.valueOf()));
   }
 
-  Date.prototype.addDays = function(d) {return new Date(this.valueOf()+d*1000*3600*24); }
 
   function fwdVarCurve(termCurve, tenor) {
     var today = new Date();

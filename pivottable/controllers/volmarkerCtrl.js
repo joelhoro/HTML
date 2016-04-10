@@ -1,8 +1,5 @@
-var app = angular.module('volmarker', 
-      ['utilsService','ngGrid','chart.js','dataService'] 
-      );
-
-app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
+angular.module("volmarker")
+.controller("volmarkerCtrl", function($scope,voldata,utils,misc,volmarkerUtils) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
   $scope.settings = {
@@ -37,7 +34,7 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
       voldata.retrieveVolSurfaces(result => {
         $scope.volsurfaces = result;
         var allUnderliers = _.keys(result);
-        $scope.underliers = filterUnderliers(allUnderliers);
+        $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
         $scope.points = $scope.underliers.toObject(und => result[und].Points());
         $scope.setActiveUnderlier($scope.underliers[0]);
         $scope.initialized = true;
@@ -63,22 +60,6 @@ app.controller("volmarkerCtrl", function($scope,voldata,utils,misc) {
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
-  function filterUnderliers(underliers) {
-
-    var search = location.search;
-    if(search.contains("test")) {
-      utils.log("Starting in test mode");
-      return ["SPX","NKY"];
-    }
-    else if(search.contains("full")) {
-      utils.log("Starting in full mode");
-      return underliers;
-    }
-    else {
-      utils.log("Starting in extended test mode");
-      return ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
-    }
-  }
 
   $scope.initialize();
 } );

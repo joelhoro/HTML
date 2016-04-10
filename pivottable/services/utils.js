@@ -1,4 +1,4 @@
-angular.module('utilsService',[])
+angular.module('utilities',[])
 .service('underscore', function() { var _ = window._; return _; })
 .service('jquery', function() { 
 	var $ = window.$; 
@@ -40,6 +40,9 @@ angular.module('utilsService',[])
 	var _ = window._;
 
 	var areEqual = function(obj1,obj2) {
+
+		if(obj1 instanceof Date && obj2 instanceof Date)
+			return (obj1-obj2)==0;
 
 	    // Create arrays of property names
 	    if(obj1 == undefined && obj2 == undefined) return true;

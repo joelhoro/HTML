@@ -1,5 +1,5 @@
-var app = angular.module('tests',['utilsService','dataService'])
-.service("tests", function(utils,analytics,voldata) { 
+angular.module('tests',['utilities','dataService'])
+.service("tests", function(utils,dates, analytics,voldata) { 
 
   var testResults = [];
   var activeCategory = "Tests";
@@ -15,10 +15,11 @@ var app = angular.module('tests',['utilsService','dataService'])
   }
 
   function AssertEqual(expected, actual, description) {
-    if(typeof(expected)!="number")
+    if(typeof(expected)!="number" && typeof(expected) != "Date")
       var diff = utils.areEqual(expected,actual);
     else {
       var tolerance = 1e-5;
+
       var diff = Math.abs(expected-actual) < tolerance;
     }
 
@@ -33,6 +34,7 @@ var app = angular.module('tests',['utilsService','dataService'])
     testResults = [];
     TestBasic();
     TestArray();
+    TestDates();
     TestInterpolation();
     //TestVolSurface();
     return testResults;
@@ -49,6 +51,13 @@ var app = angular.module('tests',['utilsService','dataService'])
     AssertEqual(5, [ x = 5, x.capfloor(3,8) ][1], "Test capfloor");
     AssertEqual(8, [ x = 12, x.capfloor(3,8) ][1], "Test capfloor");
 
+  }
+
+  function TestDates() {
+    SetActiveCategory("Dates tests");
+    AssertEqual("Apr", new Date("2016-4-9").getMonthAbbr(), "Test the month abbreviation");
+    AssertEqual(new Date(),new Date(), "Test date equality");
+    AssertEqual(new Date("2016-4-29"),new Date("2016-4-19").addDays(10), "Test addDays");
   }
 
   function TestArray() {

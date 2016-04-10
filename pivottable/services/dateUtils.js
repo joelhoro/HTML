@@ -1,3 +1,6 @@
+angular.module("utilities")
+.service("dates", function() {
+
 /**************************************
  * Date class extension
  * 
@@ -184,3 +187,7 @@
 
         return date_string;
     };
+
+    Date.prototype.addDays = function(d) {return new Date(this.valueOf()+d*1000*3600*24); }
+
+})

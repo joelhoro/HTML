@@ -80,7 +80,16 @@ angular.module('volmarker')
             var config = chartService.getChartSpecs($scope.volsurfaces, surface, 
               showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip);
 
-            _.extend($scope, config);
+//            _.extend($scope, config);
+            ["Data","Series","Labels","Options"].map(t => {
+              var field = "chart" + t;
+              if(!utils.areEqual($scope[field],config[field]))
+                $scope[field] = config[field];
+            });
+            // $scope.chartData = config.chartData;
+            // $scope.chartSeries = config.chartSeries;
+            // $scope.chartLabels = config.chartLabels;
+            // $scope.chartOptions = config.chartOptions;
 
             if(!$scope.listen)
               $scope.chartHover = () => update(underlier);
