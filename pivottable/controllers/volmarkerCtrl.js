@@ -42,7 +42,7 @@ angular.module("volmarker")
       var getQuote = v => (v*100).round(2) + "%";
       observables.map(k => { 
         if(obs1[k] !== obs2[k]) {
-          allDiffs[k] = getQuote(obs2[k])+"->"+getQuote(obs1[k]);
+          allDiffs[k.substr(k.length-5)] = getQuote(obs2[k])+"->"+getQuote(obs1[k]);
         }
       });
       return allDiffs;

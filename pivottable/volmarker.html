@@ -68,7 +68,7 @@
         </div>
         <div class="panel-body list-group">
           <div ng-repeat="und2 in underliers | filter: !hasChanges(und2)" class="panel-body list-group-item">
-            {{und}}
+            <b>{{und2}}</b>
             <ul>
               <li ng-repeat="(obs,change) in changesForUnderlier(und2)">{{obs}}: {{change}}</li>
             </ul>
