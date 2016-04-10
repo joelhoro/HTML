@@ -1,5 +1,5 @@
 angular.module('utilities',[])
-.service('underscore', function() { var _ = window._; return _; })
+.factory('_', function($window) { var _ = $window._; delete($window._); return _; })
 .service('jquery', function() { 
 	var $ = window.$; 
 
@@ -31,13 +31,13 @@ angular.module('utilities',[])
 
 	return $; 
 })
-.service('utils', function(underscore,jquery) {
+.service('utils', function(_,jquery) {
 	// Generic array functions
 	Array.prototype.sum = function(fn = x=>x) { 
 	      return this.map(fn).reduce((a,b) => a+b) 
 	}
 
-	var _ = window._;
+	//var _ = window._;
 
 	var areEqual = function(obj1,obj2) {
 		return JSON.stringify(obj1) == JSON.stringify(obj2);
@@ -119,7 +119,7 @@ angular.module('utilities',[])
 
     var id = 0;
 
-	scrollTo = window._.throttle(spanId => $("#console").scrollTo($("#"+spanId)));
+	scrollTo = _.throttle(spanId => $("#console").scrollTo($("#"+spanId)));
 
 	// console stuff
     function log(message,...arg) {
@@ -174,13 +174,13 @@ angular.module('utilities',[])
 		ObjectFn		: obj => fieldName => obj[fieldName],
 		HTMLWrapper		: (tagStyle,attributes="") => x => "<"+tagStyle+" " + attributes + ">"+x+"</"+tagStyle+">",
 		log				: log,
-		toggleConsole	: window._.throttle(toggleConsole,200),
+		toggleConsole	: _.throttle(toggleConsole,200),
 		yearFrac 		: yearFrac,
 		areEqual        : areEqual,
 		clone			: clone,
 	};	
 })
-.service('misc', function() {
+.service('misc', function(_) {
 	  var path = "assets/flags/";
 	  var svgFlags = _.template(path + "<%= flag %>.svg" );
 	  var regionFlag = function(und) { 

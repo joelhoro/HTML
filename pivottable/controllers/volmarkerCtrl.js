@@ -1,5 +1,7 @@
+"use strict";
+
 angular.module("volmarker")
-.controller("volmarkerCtrl", function($scope,voldata,utils,misc,volmarkerUtils) {
+.controller("volmarkerCtrl", function($scope,voldata,utils,misc,volmarkerUtils, _) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
   $scope.settings = {
@@ -8,7 +10,7 @@ angular.module("volmarker")
     console: false,
     fwdVarTenors: ['1m','3m'],
     dataMode: 'local'
-  }
+  };
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -22,13 +24,14 @@ angular.module("volmarker")
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
 
   $scope.setActiveUnderlier = function(und) {
-    if(und == undefined)
+    if(und === undefined) {
         und = $scope.activeUnderlier;
+    }
 
-      $scope.data = $scope.volsurfaces[und].toDataTable();
-      $scope.activeUnderlier = und;
-      utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
-  }
+    $scope.data = $scope.volsurfaces[und].toDataTable();
+    $scope.activeUnderlier = und;
+    utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
+  };
 
   $scope.changesForUnderlier = function(underlier) {
       var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
@@ -37,34 +40,41 @@ angular.module("volmarker")
       var observables = _.keys(obs1);
       var allDiffs = {};
       var getQuote = v => (v*100).round(2) + "%";
-      observables.map(k => { if(obs1[k] != obs2[k]) allDiffs[k] = getQuote(obs2[k])+"->"+getQuote(obs1[k]) });
+      observables.map(k => { 
+        if(obs1[k] !== obs2[k]) {
+          allDiffs[k] = getQuote(obs2[k])+"->"+getQuote(obs1[k]);
+        }
+      });
       return allDiffs;
-    }
+  };
 
   $scope.surfaceChanges = function() {
-    if($scope.volsurfaces == undefined) return;
+    if($scope.volsurfaces === undefined) { return; }
     var diff = $scope.underliers.toObject($scope.changesForUnderlier);
-    for(und in diff)
-      if(diff[und].length == 0)
+    for(var und in diff) {
+      if(diff[und].length === 0) {
         delete(diff[und]);
+      }
+    }
     return diff;
     // need to implement diff better
-  }
+  };
 
   $scope.hasChanges = function(underlier) {
-    if(underlier == undefined)
+    if(underlier === undefined) {
       underlier = $scope.activeUnderlier;
+    }
     var changes = $scope.changesForUnderlier(underlier);
     return _.keys(changes).length > 0;
-  }
+  };
 
   // initialization
-  $scope.update = function(initialize=true, underlier) {
+  $scope.update = function(initialize=true, underlier=null) {
       console.debug("Changes: ", $scope.surfaceChanges());  
       if(initialize) {
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
-          if(underlier != undefined)
+          if(underlier !== null && underlier !== undefined)
             $scope.volsurfaces[underlier] = result[underlier];
           else
             $scope.volsurfaces = result;

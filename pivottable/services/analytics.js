@@ -1,5 +1,5 @@
 angular.module('utilities')
-.service("analytics", function(utils,dates) { 
+.service("analytics", function(utils,dates,_) { 
 
   utils.log("Initializing analytics service");
 

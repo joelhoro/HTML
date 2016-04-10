@@ -1,5 +1,5 @@
 var app = angular.module('dataService',['utilities','dataWarehouse'])
-.service("voldata", function(utils,dataWarehouse,analytics) { 
+.service("voldata", function(utils,dataWarehouse,analytics,_) { 
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
