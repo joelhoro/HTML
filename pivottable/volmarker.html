@@ -38,7 +38,7 @@
 
 <!-- <span>Started at: {{ startTime }}</span> -->
 
-      <!----    UNDERLIERS PANE -->
+      <!-- 'LOADING' PANE -->
       <div ng-if='!initialized' class="col-md-12">
           
         <div class="panel panel-primary">
@@ -51,12 +51,14 @@
           </div>
         </div>
       </div>
+
+
+      <!----    UNDERLIERS PANE -->
       <div ng-if='initialized' class="col-md-2" id='underliersPane'>
         <div class="panel panel-primary">
           <div class="panel-heading">
             Indices
              <button class="btn btn-danger" ng-click="update()">Reload all</button>
- 
           </div>
           <div class="panel-body list-group">
             <div ng-repeat="und in underliers" class="list-group-item"
@@ -64,15 +66,31 @@
              ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
               <div class='list-group-item-heading'>
                 <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
-                  [{{points[und]}}]</b></div>
+                  [{{points[und]}}]</b>
                   <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
                 </span>
                 <div ng-if='settings.showThumbnails'>
-                <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1 />
+                <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
                 </div>
+              </div>
             </div>
           </div>
           
+        </div>
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            Changes
+             <button class="btn btn-danger" ng-click="update()">Reload all</button>
+          </div>
+
+          <div class="panel-body list-group">
+            <div ng-repeat="und2 in underliers | filter: !hasChanges(und2)" class="panel-body list-group-item">
+              {{und}}
+              <ul>
+                <li ng-repeat="(obs,change) in changesForUnderlier(und2)">{{obs}}: {{change}}</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 

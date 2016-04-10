@@ -30,19 +30,20 @@ angular.module("volmarker")
       utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
   }
 
-  function changesForUnderlier(underlier) {
+  $scope.changesForUnderlier = function(underlier) {
       var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
       var obs1 = mapIt($scope.volsurfaces[underlier]);
       var obs2 = mapIt($scope.volsurfaceOriginal[underlier]);
       var observables = _.keys(obs1);
       var allDiffs = {};
-      observables.map(k => { if(obs1[k] != obs2[k]) allDiffs[k] = obs2[k]+"->"+obs1[k] });
+      var getQuote = v => (v*100).round(2) + "%";
+      observables.map(k => { if(obs1[k] != obs2[k]) allDiffs[k] = getQuote(obs2[k])+"->"+getQuote(obs1[k]) });
       return allDiffs;
     }
 
   $scope.surfaceChanges = function() {
     if($scope.volsurfaces == undefined) return;
-    var diff = $scope.underliers.toObject(changesForUnderlier);
+    var diff = $scope.underliers.toObject($scope.changesForUnderlier);
     for(und in diff)
       if(diff[und].length == 0)
         delete(diff[und]);
@@ -53,7 +54,7 @@ angular.module("volmarker")
   $scope.hasChanges = function(underlier) {
     if(underlier == undefined)
       underlier = $scope.activeUnderlier;
-    var changes = changesForUnderlier(underlier);
+    var changes = $scope.changesForUnderlier(underlier);
     return _.keys(changes).length > 0;
   }
 
