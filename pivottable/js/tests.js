@@ -15,17 +15,18 @@ var app = angular.module('tests',['utilsService','dataService'])
   }
 
   function AssertEqual(expected, actual, description) {
-    if(typeof(expected)=="string")
-      var diff = expected === actual;
+    if(typeof(expected)!="number")
+      var diff = expected.equals(actual);
     else {
       var tolerance = 1e-5;
       var diff = Math.abs(expected-actual) < tolerance;
     }
 
+   var s = JSON.stringify;
    if(!diff)
-      var details = 'Expected=' + expected + ' vs actual=' + actual;
+      var details = 'Expected=' + s(expected) + ' vs actual=' + s(actual);
 
-    AssertTrue(diff,description + " to be=" + expected + " - actual=" + actual,details);
+    AssertTrue(diff,description + " to be=" + s(expected) + " - actual=" + s(actual),details);
   }
 
   function RunTests() {
@@ -58,6 +59,11 @@ var app = angular.module('tests',['utilsService','dataService'])
     AssertEqual(1, [2,null].avg(false), "Test the average of an array with null values (considered as zeros)"); 
     AssertEqual(3, [6,3,9].min(), "Test the minimum of an array");
     AssertEqual(9, [6,3,9].max(), "Test the maximum of an array");
+
+    AssertEqual({a: 123}, {a: 123}, "Test that 2 identical objects are equal");
+    AssertEqual({1: "Label1", 2: "Label2"}, [1,2].toObject(x => "Label"+x),"Test toObject with one argument");
+    AssertEqual({"Label1" : 1, "Label2" : 4}, [1,2].toObject(x => x*x, x => "Label"+x),"Test toObject with 2 arguments");
+    AssertEqual({"A" : 1, "B" : 2}, ["A","B"].toObjectWithValues([1,2]), "Test 'toObjectWithValues'");
 
   }
 

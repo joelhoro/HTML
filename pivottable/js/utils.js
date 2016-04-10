@@ -39,13 +39,46 @@ angular.module('utilsService',[])
 
 	var _ = window._;
 
+	Object.prototype.equals = function(obj2) {
+
+	    // Create arrays of property names
+	    var aProps = Object.getOwnPropertyNames(this);
+	    var bProps = Object.getOwnPropertyNames(obj2);
+
+	    // If number of properties is different,
+	    // objects are not equivalent
+	    if (aProps.length != bProps.length) {
+	        return false;
+	    }
+
+	    for (var i = 0; i < aProps.length; i++) {
+	        var propName = aProps[i];
+
+	        // If values of same property are not equal,
+	        // objects are not equivalent
+	        if (this[propName] !== obj2[propName]) {
+	            return false;
+	        }
+	    }
+
+	    // If we made it this far, objects
+	    // are considered equivalent
+	    return true;
+	}
+
 	Array.prototype.where = function(values) { return _.where(this,values); }
 	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); }
 	Array.prototype.sortBy = function(fn) { return _.sortBy(this,fn); }
-	Array.prototype.toObject = function(fn) { 
+	Array.prototype.toObject = function(valueFn,fieldFn) { 
+		  if(fieldFn == undefined) fieldFn = f => f;
 	      var obj = {}; 
-	      this.forEach(field => obj[field] = fn(field));
+	      this.forEach(field => obj[fieldFn(field)] = valueFn(field));
 	      return obj;
+	}
+
+	Array.prototype.toObjectWithValues = function(values) {
+		var idx = 0;
+		return this.toObject(r => values[idx++]);
 	}
 
     Array.prototype.max = function() {
