@@ -63,8 +63,8 @@ var app = angular.module('dataService',['utilsService','dataWarehouse'])
                          {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
                          {field:'BM', displayName: 'BM tday',               enableCellEdit: true,    width: 55    },
                          {field:'D3', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   },
-                         {field:'D1', displayName: 'D-MS',                  enableCellEdit: false,   width: 55   },
-                         {field:'D2', displayName: 'D-SG',                  enableCellEdit: false,   width: 55   },
+                         {field:'D1', displayName: 'MS',                  enableCellEdit: false,   width: 55   },
+                         {field:'D2', displayName: 'SG',                  enableCellEdit: false,   width: 55   },
                         ]
                 };
         // set all readonly to a given class
