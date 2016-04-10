@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module("volmarker")
-.controller("volmarkerCtrl", function($scope,voldata,utils,misc,volmarkerUtils, _) {
+.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
   $scope.settings = {

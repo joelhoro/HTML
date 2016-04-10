@@ -1,8 +1,15 @@
 angular.module('utilities',[])
-.factory('_', function($window) { var _ = $window._; delete($window._); return _; })
-.factory('numeric', function($window) { var numeric = $window.numeric; delete($window.numeric); return numeric; })
-.factory('$', function($window) { 
-	var $ = $window.$;
+.factory('makeLocal', function($window) { 
+	return function(key) { 
+		var value = $window[key]; 
+		delete($window[key]);
+		return value;
+	} 
+})
+.factory('_', function(makeLocal) { return makeLocal('_'); })
+.factory('numeric', function(makeLocal) { return makeLocal('numeric'); })
+.factory('$', function(makeLocal) { 
+	var $ = makeLocal('$');
 	$.fn.goTo = function(parent) {
 	  parent.animate({
 	      scrollTop: ($(this).offset().top - parent.offset().top )+ 'px'
