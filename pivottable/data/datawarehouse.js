@@ -4,21 +4,11 @@ angular.module('dataWarehouse',['utilities'])
 var $ = window.$;
 utils.log("Initializing datawareHouse service");
 
-function getAjaxData2(successFn) {
-    $.ajax({
-    type            : "GET",
-    contentType     : "application/json; charset=utf-8",
-    //url             : "http://localhost:17041/services/DBAccessor.asmx/RetrieveVolSurfaces",
-    url             : 'data/volsurfaces.json',
-    data            : {},
-    success         : r => successFn(JSON.parse(r)),
-    error           : result =>{ debugger}
-    }); 
-
-}
-
-function getAjaxData(successFn) {
-    $http.get('data/volsurfaces.json').success(successFn);
+function getAjaxData(successFn,full) {
+    var url = full ? 'http://localhost:17041/services/DBAccessor.asmx/RetrieveVolSurfaces' 
+      : 'data/volsurfaces.json';
+    var httpFn = full ? $http.post : $http.get;
+    httpFn(url).success(successFn);
 }
 
 return { 

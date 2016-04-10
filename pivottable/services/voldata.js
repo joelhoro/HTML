@@ -14,7 +14,10 @@ angular.module('dataService',['utilities','dataWarehouse'])
         successFn(surface);
       };
     if(dataMode === 'ajax') {
-      dataWarehouse.getAjaxData(convertSurface);
+      dataWarehouse.getAjaxData(convertSurface,false);
+    }
+    else if(dataMode === 'ajaxfull') {
+      dataWarehouse.getAjaxData(convertSurface,true);
     }
     else {
       convertSurface(dataWarehouse.dataFn());   
