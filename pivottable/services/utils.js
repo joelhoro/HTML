@@ -173,6 +173,23 @@ angular.module('utilities',[])
     	return (d2-d1) / (1000*3600*24) / 365;
     }
 
+    function toEnglish(qty, unit) {
+    	return qty + " " + unit + (qty > 1 ? "s" : "");
+    }
+
+    function toFriendlyTime(ms) {
+    	var inMinutes = ms / 1000 / 60;
+    	if(inMinutes < 60) {
+    		return toEnglish(inMinutes.round(0), "minute");
+    	}
+    	var inHours = inMinutes / 60;
+    	if(inHours < 24) {
+    		return toEnglish(inHours.round(0), "hour");
+    	}
+    	var inDays = inHours / 24;
+		return toEnglish(inDays.round(0), "day");
+    }
+
     function clone(obj) {
     	return JSON.parse(JSON.stringify(obj));
     }
@@ -186,6 +203,7 @@ angular.module('utilities',[])
 		yearFrac 		: yearFrac,
 		areEqual        : areEqual,
 		clone			: clone,
+		toFriendlyTime  : toFriendlyTime,
 	};	
 })
 .service('misc', function(_) {

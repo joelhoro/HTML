@@ -66,6 +66,13 @@ angular.module('tests',['utilities','dataService'])
     AssertEqual("Apr", new Date("2016-4-9").getMonthAbbr(), "Test the month abbreviation");
     AssertEqual(new Date(),new Date(), "Test date equality");
     AssertEqual(new Date("2016-4-29"),new Date("2016-4-19").addDays(10), "Test addDays");
+
+    var m = 1000 * 60;
+    AssertEqual( "1 minute", utils.toFriendlyTime(m), "Testing toFriendTime");
+    AssertEqual( "50 minutes", utils.toFriendlyTime(50*m), "Testing toFriendTime");
+    AssertEqual( "8 hours", utils.toFriendlyTime(60*m*8), "Testing toFriendTime");
+    AssertEqual( "1 day", utils.toFriendlyTime(60*m*27), "Testing toFriendTime");
+    AssertEqual( "4 days", utils.toFriendlyTime(60*m*24*4), "Testing toFriendTime");
   }
 
   function TestArray() {
