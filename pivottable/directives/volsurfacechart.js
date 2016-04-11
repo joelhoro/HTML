@@ -56,7 +56,7 @@ angular.module('volmarker')
       }
       else {
         scope.chartSeries = [ "MS", "SocGen", "BM", "Dealer average" ];
-        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "Dealer.avg", "BM@T");
+        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T", "Dealer.avg");
         adjustScale(scope);
       }
 
