@@ -237,7 +237,7 @@ angular.module('utilities',[])
 	  	}
 
 	    var flags = {
-	      "AS51": "us",
+	      "AS51": "au",
 	      "HSI": "cn",
 	      "KOSPI2": "kr", 
 	      "SPX": "us",
