@@ -53,6 +53,15 @@
                 [{{points[und]}}]</b>
                 <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
               </span>
+              <div ng-if='!hasChanges(und)'>
+                <b>No changes</b>
+              </div>
+              <div ng-if='hasChanges(und)'>
+                <b>{{numberOfChanges(und)}} changes</b>
+                <ul>
+                  <li ng-repeat="change in changesForUnderlier(und)">{{change.obs}}: {{change.diff}}</li>
+                </ul>
+              </div>
               <div ng-if='settings.showThumbnails'>
                 <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
               </div>
@@ -62,16 +71,8 @@
         
       </div>
       <div class="panel panel-primary">
-        <div class="panel-heading">
-          Changes
-          <button class="btn btn-danger" ng-click="update()">Reload all</button>
-        </div>
         <div class="panel-body list-group">
           <div ng-repeat="und2 in underliers | filter: !hasChanges(und2)" class="panel-body list-group-item">
-            <b>{{und2}}</b>
-            <ul>
-              <li ng-repeat="(obs,change) in changesForUnderlier(und2)">{{obs}}: {{change}}</li>
-            </ul>
           </div>
         </div>
       </div>

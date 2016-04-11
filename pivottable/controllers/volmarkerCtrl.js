@@ -38,11 +38,11 @@ angular.module("volmarker")
       var obs1 = mapIt($scope.volsurfaces[underlier]);
       var obs2 = mapIt($scope.volsurfaceOriginal[underlier]);
       var observables = _.keys(obs1);
-      var allDiffs = {};
+      var allDiffs = [];
       var getQuote = v => (v*100).round(2) + "%";
       observables.map(k => { 
         if(obs1[k] !== obs2[k]) {
-          allDiffs[k.substr(k.length-5)] = getQuote(obs2[k])+"->"+getQuote(obs1[k]);
+          allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
         }
       });
       return allDiffs;
@@ -57,28 +57,36 @@ angular.module("volmarker")
       }
     }
     return diff;
-    // need to implement diff better
   };
 
   $scope.hasChanges = function(underlier) {
+    return $scope.numberOfChanges(underlier) > 0;
+  }
+
+  $scope.numberOfChanges = function(underlier) {
     if(underlier === undefined) {
       underlier = $scope.activeUnderlier;
     }
     var changes = $scope.changesForUnderlier(underlier);
-    return _.keys(changes).length > 0;
+    return changes.length;
   };
 
   // initialization
-  $scope.update = function(initialize=true, underlier=null) {
+  $scope.update = function(initialize=true, underlier) {
+      var underlierCopy = underlier; // otherwise lambda does not see it
       console.debug("Changes: ", $scope.surfaceChanges());  
       if(initialize) {
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
-          if(underlier !== null && underlier !== undefined)
+          var underlier = underlierCopy;
+          if(underlier !== null && underlier !== undefined) {
             $scope.volsurfaces[underlier] = result[underlier];
-          else
+            $scope.volsurfaceOriginal[underlier] = JSON.parse(JSON.stringify($scope.volsurfaces[underlier]));
+          }
+          else {
             $scope.volsurfaces = result;
-          $scope.volsurfaceOriginal = JSON.parse(JSON.stringify($scope.volsurfaces));
+            $scope.volsurfaceOriginal = JSON.parse(JSON.stringify($scope.volsurfaces));
+          }
           var allUnderliers = _.keys(result);
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
           $scope.points = $scope.underliers.toObject(und => result[und].Points());
