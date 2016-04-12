@@ -7,7 +7,7 @@ utils.log("Initializing datawareHouse service");
 function getAjaxData(successFn,mode, date) {
     var url = { 'ajaxfull' : 'http://localhost:17041/services/DBAccessor.asmx/RetrieveVolSurfaces',
       'ajax' : 'data/volsurfaces.json',
-      'ajaxASP': 'http://localhost/Blink/EquityVol.asmx/RetrieveVolSurfaces?date=' + date }[mode];
+      'ajaxASP': '../../Blink/EquityVol.asmx/RetrieveVolSurfaces?date=' + date }[mode];
 
     var method = mode === 'ajaxfull' ? 'post' : 'get';
     var req = { method: method, url: url };
