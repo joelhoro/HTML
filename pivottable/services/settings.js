@@ -1,5 +1,5 @@
 "use strict";
-angular.module('volmarker')
+angular.module('utilities')
   .service("settings", function() {
 
   return {
@@ -7,7 +7,8 @@ angular.module('volmarker')
     showFlags: true,
     console: false,
     fwdVarTenors: ['1m','3m'],
-    dataMode: 'local'
+    dataMode: 'local',
+    today: new Date("2016-4-7"),
   };
 
 } );

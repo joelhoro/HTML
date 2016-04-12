@@ -1,5 +1,5 @@
 angular.module('volmarker')
-  .service("chartService", function(analytics, ChartJs) {
+  .service("chartService", function(analytics, ChartJs, settings) {
     function adjustScale(scope) {
           var min = scope.chartData.map(x => x.min()).min();
           var width = 5;
@@ -52,10 +52,9 @@ angular.module('volmarker')
           ];
       }
       else if(type === 'totalstdev')  {
-          var today = new Date().addDays(-2);
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
-          scope.chartData = [ analytics.stdevCurve(curve,today) ];
+          scope.chartData = [ analytics.stdevCurve(curve,settings.today) ];
           scope.chartColours = [ '#F7464A' ];
     }
       else {

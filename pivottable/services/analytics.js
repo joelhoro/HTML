@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('utilities')
-.service("analytics", function(utils,dates,_, numeric) { 
+.service("analytics", function(utils,dates,_, numeric, settings) { 
 
   utils.log("Initializing analytics service");
 
@@ -19,11 +19,10 @@ angular.module('utilities')
 
 
   function fwdVarCurve(termCurve, tenor) {
-    var today = new Date();
     var msPerYear = 1000*3600*365;
     var convertor = [
-      (t,v)       => v*v*(t-today)/msPerYear,
-      (t,totalv)  => Math.sqrt(totalv / (t - today)*msPerYear)
+      (t,v)       => v*v*(t-settings.today)/msPerYear,
+      (t,totalv)  => Math.sqrt(totalv / (t - settings.today)*msPerYear)
     ];
 
     var iCurve = interpolator(termCurve,convertor);
@@ -36,7 +35,7 @@ angular.module('utilities')
         var end = maturity.addDays(interval);
         var front = iCurve(start);
         var back = iCurve(end);
-        var fwdVar = Math.sqrt((back*back*(end-today)-front*front*(start-today))/(end-start));
+        var fwdVar = Math.sqrt((back*back*(end-settings.today)-front*front*(start-settings.today))/(end-start));
         fwdVar = isNaN(fwdVar) ? 0 : fwdVar.round(2);
         return fwdVar;
       })
@@ -44,9 +43,9 @@ angular.module('utilities')
     return fwdVars;
   }
 
-  function stdevCurve(curve,today) {
+  function stdevCurve(curve) {
     return _.keys(curve).map(t => 
-      (curve[t]*Math.sqrt(utils.yearFrac(today,new Date(t)))).round(2));
+      (curve[t]*Math.sqrt(utils.yearFrac(settings.today,new Date(t)))).round(2));
   }
 
   Array.prototype.getScaleAndUnits = function() {
