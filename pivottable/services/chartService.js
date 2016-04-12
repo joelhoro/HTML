@@ -1,5 +1,5 @@
 angular.module('volmarker')
-  .service("chartService", function(analytics) {
+  .service("chartService", function(analytics, ChartJs) {
     function adjustScale(scope) {
           var min = scope.chartData.map(x => x.min()).min();
           var width = 5;
@@ -13,14 +13,16 @@ angular.module('volmarker')
 
     function getChartSpecs(volsurfaces, surface, showdatesonaxis, tenor, type, tooltip) {
       var scope = {};
+      var doAdjustScale = false;
       scope.chartOptions = { 
-        scaleLabel : "<%=value%>%", 
+        //scaleLabel : "<%=value%>", 
         datasetFill: false,
         showTooltips: tooltip === "1",
         legendTemplate: 
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
       };
 
+      scope.chartColours = ChartJs.Chart.defaults.global.colours
       scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
       if(type === 'fwd') {
@@ -29,13 +31,16 @@ angular.module('volmarker')
         var fwdCurve = analytics.fwdVarCurve(newCurve, tenor);
         scope.chartData = [ 
             fwdCurve, 
-            ];                            
+            ];      
+        scope.chartColours = [ '#F7464A' ];
+        doAdjustScale = true;
       }
       else if(type === 'basis')  {
           scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
-          scope.chartData = surface.ExtractMany('basis','newbasis'); 
+          scope.chartData = surface.ExtractMany('Basis','New basis'); 
       }
       else if(type === 'ratio')  {
+          scope.chartColours = [ '#F7464A' ];
           scope.chartSeries = [ "Ratio to SPX"  ];
 
           var spxCurveFn = volsurfaces.SPX.CurveFn("BM@T");
@@ -51,13 +56,16 @@ angular.module('volmarker')
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
           scope.chartData = [ analytics.stdevCurve(curve,today) ];
-      }
+          scope.chartColours = [ '#F7464A' ];
+    }
       else {
         scope.chartSeries = [ "MS", "SocGen", "BM", "Dealer average" ];
-        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "Dealer.avg", "BM@T");
-        adjustScale(scope);
+        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T", "Dealer.avg");
+        doAdjustScale = true;
       }
 
+      if(doAdjustScale)
+        adjustScale(scope);
       return scope;
     }
 

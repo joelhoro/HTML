@@ -92,7 +92,7 @@ angular.module('utilities')
       this.GetQuote = function(obs,col) {
         var fn = CalculateColumns[col];
         if(fn != undefined)
-          return fn(obs);
+          return fn(obs).round(2);
 
         if(obs == undefined) debugger;
         var val = obs.Quotes[col];
@@ -102,7 +102,8 @@ angular.module('utilities')
       }
 
       var CalculateColumns = {
-        basis : o => 0,
+        Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
+        'New basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
         'Dealer.avg' : o => [ this.GetQuote(o,'Dealer.SocGen'), this.GetQuote(o,'Dealer.MS') ].avg().round(2)
       };
 
@@ -129,7 +130,12 @@ angular.module('utilities')
         utils.log("Running through tenors=", tenors);
         return tenors.map(t => {
           // need to renname coz ng-grid doesn't like fancy names
-          var names = { "BM":"BM@T", "BMY": "BM@T-1", "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.avg" }
+          var names = { 
+            "BM":"BM@T", "BMY": "BM@T-1", 
+            "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.avg",
+            "B1" : "Basis", "B2" : "New basis",
+            "Mark" : "Mark"
+             }
           var result = _.keys(names).toObject(f => {
             return this.GetQuote(this.volSurface.Observables[i], names[f]);
           } );
