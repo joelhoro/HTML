@@ -36,9 +36,9 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <select name="date" ng-model="pricingDate">
-              <option ng-repeat="date in ['2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
+              <option ng-repeat="date in ['2016-4-12', '2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
           </select>
-          <button class="btn btn-danger" ng-click="setDateAndLoad()">Load volsurfaces</button>
+          <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load volsurfaces" }}</button>
           <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
         </div>
         <div ng-if='initialized' class="panel-body list-group">
@@ -77,7 +77,7 @@
           Var surface for  {{activeUnderlier}}
           <span>
             <button class="btn btn-danger" ng-if='hasChanges()' ng-click="save()">Save changes</button>
-            <button class="btn btn-danger" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button>
+            <button class="btn btn-danger" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button>
           </span>
         </div>
         <div class="panel-body">

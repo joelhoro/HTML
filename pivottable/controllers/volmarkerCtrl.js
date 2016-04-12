@@ -2,8 +2,9 @@
 
 angular.module("volmarker")
 .controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, settings) {
-  utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
+  utils.log("Initializing volmarker controller - scope=" + $scope.$id);
 
+  $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
 
@@ -81,6 +82,7 @@ angular.module("volmarker")
 
   // initialization
   $scope.refreshVolSurfaces = function(initialize=true, underlier,broadcast) {
+      $scope.requestBusy = true;
       if(broadcast === undefined) broadcast = true;
 
       var underlierCopy = underlier; // otherwise lambda does not see it
@@ -105,6 +107,7 @@ angular.module("volmarker")
           var underlier = ($scope.activeUnderlier == undefined) ? $scope.underliers[0] : $scope.activeUnderlier;
           $scope.setActiveUnderlier(underlier,broadcast);
           $scope.initialized = true;
+          $scope.requestBusy = false;
         }, $scope.settings.dataMode) 
       }
 
