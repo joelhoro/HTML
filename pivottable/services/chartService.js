@@ -6,10 +6,10 @@ angular.module('volmarker')
     function adjustScale(scope) {
 
           var filter = x => x.filter(y => y > 10);
-          var min = scope.chartData.map(x => filter(x).min()).min();
+          var min = scope.chartData.map(x => filter(x).min()).filter(x => x!==undefined).min();
           var width = 5;
           min = min - (min%width);
-          var max = scope.chartData.map(x => filter(x).max()).max();
+          var max = scope.chartData.map(x => filter(x).max()).filter(x => x!==undefined).max();
           scope.chartOptions.scaleOverride = true;
           scope.chartOptions.scaleSteps = (max-min)/width;
           scope.chartOptions.scaleStepWidth = width;
