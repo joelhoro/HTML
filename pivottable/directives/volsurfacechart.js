@@ -38,7 +38,6 @@ angular.module('volmarker')
 
         setChartData(underlier);
 
-
         if($scope.listen === "1") {
            $scope.$watch('underlier', newUnd => setChartData(newUnd));
            $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und + " in " + description()); setChartData(und); });
