@@ -1,16 +1,10 @@
 "use strict";
 
 angular.module("volmarker")
-.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils) {
+.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, settings) {
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
-  $scope.settings = {
-    showThumbnails : false,
-    showFlags: true,
-    console: false,
-    fwdVarTenors: ['1m','3m'],
-    dataMode: 'local'
-  };
+  $scope.settings = settings;
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -61,8 +55,11 @@ angular.module("volmarker")
 
   $scope.calculateChanges = function() {
     if($scope.underliers === undefined) return;
-      $scope.underliers.map(underlier => 
-        $scope.changesStored[underlier] = changesForUnderlier(underlier) );
+      $scope.underliers.map(underlier => {
+        var changes = changesForUnderlier(underlier);
+        if(changes.length)
+          $scope.changesStored[underlier] = changes;
+      } )
   }
 
 

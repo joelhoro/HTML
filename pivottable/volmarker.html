@@ -19,6 +19,7 @@
 <script src="services/voldata.js"></script>
 <script src="services/volmarkerUtils.js"></script>
 <script src="services/chartService.js"></script>
+<script src="services/settings.js"></script>
 <script src="controllers/volmarkerCtrl.js"></script>
 <script src="directives/volsurfacechart.js"></script>
 
@@ -59,7 +60,7 @@
                 <b>No changes</b>
               </div>
               <div ng-if='hasChanges(und)'>
-                <b>{{numberOfChanges(und)}} changes</b>
+                <b>{{numberOfChanges(und)}} change{{numberOfChanges(und) > 1 ? "s" : ""}}</b>
                 <ul>
                   <li ng-repeat="change in changesStored[und]">{{change.obs}}: {{change.diff}}</li>
                 </ul>
