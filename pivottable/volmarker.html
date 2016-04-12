@@ -16,10 +16,10 @@
 <script src="services/utils.js"></script>
 <script src="services/dateUtils.js"></script>
 <script src="services/analytics.js"></script>
+<script src="services/settings.js"></script>
 <script src="services/voldata.js"></script>
 <script src="services/volmarkerUtils.js"></script>
 <script src="services/chartService.js"></script>
-<script src="services/settings.js"></script>
 <script src="controllers/volmarkerCtrl.js"></script>
 <script src="directives/volsurfacechart.js"></script>
 
@@ -27,27 +27,17 @@
 <html ng-app="volmarker">
   <div ng-controller="volmarkerCtrl">
     <!-- <span>Started at: {{ startTime }}</span> -->
-    <!-- 'LOADING' PANE -->
-    <div ng-if='!initialized' class="col-md-12">
-      
-      <div class="panel panel-primary">
-        <div class="panel-heading"><h1>
-          Loading volsurfaces...
-          
-        </h1></div>
-        <div class="panel-body list-group">
-          <h1><img src='assets/gears.gif' height=350></h1>
-        </div>
-      </div>
-    </div>
     <!----    UNDERLIERS PANE -->
-    <div ng-if='initialized' class="col-md-2" id='underliersPane'>
+    <div class="col-md-2" id='underliersPane'>
       <div class="panel panel-primary">
         <div class="panel-heading">
-          Indices
-          <button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>
+          <select name="date" ng-model="pricingDate">
+              <option ng-repeat="date in ['2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
+          </select>
+          <button class="btn btn-danger" ng-click="setDateAndLoad()">Load volsurfaces</button>
+          <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
         </div>
-        <div class="panel-body list-group">
+        <div ng-if='initialized' class="panel-body list-group">
           <div ng-repeat="und in underliers" class="list-group-item"
             ng-click='setActiveUnderlier(und)'
             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">

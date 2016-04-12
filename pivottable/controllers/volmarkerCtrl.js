@@ -5,6 +5,7 @@ angular.module("volmarker")
   utils.log("Initializing volmarker controller - scope=" + $scope.$id);  
 
   $scope.settings = settings;
+  $scope.pricingDate = '2016-4-11';
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -133,9 +134,12 @@ angular.module("volmarker")
     alert("Not yet implemented");
   }
 
-  var parent = $scope.$parent;
-
-
+  $scope.setDateAndLoad = function() {
+      var date = $scope.pricingDate;
+      settings.set('today', new Date(date));
+      settings.date = date;
+      $scope.refreshVolSurfaces();
+  }
 
   $scope.$watch('data', newdata => { 
     if(newdata === undefined) { return; }
@@ -160,10 +164,10 @@ angular.module("volmarker")
     if(refresh) {
       $scope.refreshVolSurfaces(false, undefined, false);
     }
-
+    
   }, true);
 
+  $scope.setDateAndLoad();
 
-  $scope.refreshVolSurfaces();
 } );
   

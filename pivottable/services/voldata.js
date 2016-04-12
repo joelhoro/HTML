@@ -1,27 +1,25 @@
 "use strict";
 
 angular.module('dataService',['utilities','dataWarehouse'])
-.service("voldata", function(utils,dataWarehouse,analytics,_) { 
+.service("voldata", function(utils,dataWarehouse,analytics,_, settings) { 
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
 
-  function retrieveVolSurfaces(successFn,dataMode) {
-    var convertSurface = data =>
-      {
+  function retrieveVolSurfaces(successFn, dataMode) {
+      utils.log("Date=", settings.date);
+    var convertSurface = data => {
+        if (data.status !== undefined) data = data.data;
         var surface = data.toObject(row => new analytics.VolSurface(row), row => row.Index);
         utils.log("Getting volsurfaces - found {1} underliers", _.keys(surface).length);
         successFn(surface);
       };
-    if(dataMode === 'ajax') {
-      dataWarehouse.getAjaxData(convertSurface,false);
-    }
-    else if(dataMode === 'ajaxfull') {
-      dataWarehouse.getAjaxData(convertSurface,true);
-    }
-    else {
+    if(dataMode === 'local') {
       convertSurface(dataWarehouse.dataFn());   
+      return;
     }
+    else
+      dataWarehouse.getAjaxData(convertSurface,dataMode,settings.date);
   }
 
   var gridConfig = function(dataField) {
