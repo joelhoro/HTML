@@ -1,10 +1,15 @@
 angular.module('volmarker')
   .service("chartService", function(analytics, ChartJs, settings) {
+
+    Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
+
     function adjustScale(scope) {
-          var min = scope.chartData.map(x => x.min()).min();
+
+          var filter = x => x.filter(y => y > 10);
+          var min = scope.chartData.map(x => filter(x).min()).min();
           var width = 5;
           min = min - (min%width);
-          var max = scope.chartData.map(x => x.max()).max();
+          var max = scope.chartData.map(x => filter(x).max()).max();
           scope.chartOptions.scaleOverride = true;
           scope.chartOptions.scaleSteps = (max-min)/width;
           scope.chartOptions.scaleStepWidth = width;

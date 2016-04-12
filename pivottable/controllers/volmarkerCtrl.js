@@ -36,7 +36,6 @@ angular.module("volmarker")
   $scope.changesStored = {};
 
   var changesForUnderlier = function(underlier) {
-      utils.log("Calculating changes for " + underlier);
       var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
       var obs1 = mapIt($scope.volsurfaces[underlier]);
       var obs2 = mapIt($scope.volsurfaceOriginal[underlier]);
@@ -49,6 +48,7 @@ angular.module("volmarker")
           allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
         }
       });
+      utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
       return allDiffs;
   };
 
@@ -59,6 +59,8 @@ angular.module("volmarker")
         var changes = changesForUnderlier(underlier);
         if(changes.length)
           $scope.changesStored[underlier] = changes;
+        else
+          delete($scope.changesStored[underlier]);
       } )
   }
 
