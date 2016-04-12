@@ -27,6 +27,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
   var gridConfig = function(dataField) {
         var config = {
             data: dataField,
+            enableSorting: false,
             enableCellSelection: true,
             enableRowSelection: false,
             columnDefs: [
