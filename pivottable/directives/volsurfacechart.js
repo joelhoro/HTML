@@ -72,7 +72,11 @@ angular.module('volmarker')
         var underlier = $scope.underlier;
         var showdatesonaxis = ($scope.showdatesonaxis === undefined) || ($scope.showdatesonaxis === '1');
 
-        var update = function(und) { 
+        var description = function() {
+          return "VolSurfaceChart[type="+$scope.type+"|tenor="+$scope.tenor+"] - Id=" + $scope.$id;
+        }
+
+        var setChartData = function(und) { 
             $scope.underlier = und;
             var surface = $scope.volsurfaces[und];
             if(surface === undefined) {
@@ -91,42 +95,16 @@ angular.module('volmarker')
             });
 
             if(!$scope.listen) {
-              $scope.chartHover = () => update(underlier);
+              $scope.chartHover = () => setChartData(underlier);
             }
           };
 
-        update(underlier);
+        setChartData(underlier);
 
-        var parent = $scope.$parent;
-
-        parent.$watch('data', newdata => { 
-          if(newdata === undefined) { return; }
-          var surfaces = $scope.volsurfaces;
-          var refresh = false;
-          var idx = 0;
-
-          var underlier = newdata[0].underlier;
-          newdata.map(row => {
-            var obs = surfaces[underlier].volSurface.Observables[idx++];
-            var oldValue = obs.Quotes["BM@T"].round(4);
-            var newValue = (row.BM / 100);
-            
-            var tolerance = 1e-6;
-            if(Math.abs(oldValue-newValue)>tolerance) {
-              utils.log("Changing mark for {1}: {2}->{3}", underlier, obs.Name, oldValue, newValue);
-              obs.Quotes["BM@T"] = newValue;
-              refresh = true;
-            }
-          });
-          if(refresh) {
-            parent.update(false);
-          }
-
-        }, true);
 
         if($scope.listen === "1") {
-           $scope.$watch('underlier', newUnd => update(newUnd));
-           $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und); update(und); });
+           $scope.$watch('underlier', newUnd => setChartData(newUnd));
+           $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und + " in " + description()); setChartData(und); });
         }
   }
 

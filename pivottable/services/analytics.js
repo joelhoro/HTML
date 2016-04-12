@@ -123,8 +123,10 @@ angular.module('utilities')
         return interpolator(this.Curve(col));
       }
       this.toDataTable = function() {
+        utils.log("Creating data table for volsurface of " + this.Underlier());
         var tenors = this.TenorLabels();
         var i = 0;
+        utils.log("Running through tenors=", tenors);
         return tenors.map(t => {
           // need to renname coz ng-grid doesn't like fancy names
           var names = { "BM":"BM@T", "BMY": "BM@T-1", "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.avg" }

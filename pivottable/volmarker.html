@@ -44,7 +44,7 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           Indices
-          <button class="btn btn-danger" ng-click="update()">Reload all</button>
+          <button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>
         </div>
         <div class="panel-body list-group">
           <div ng-repeat="und in underliers" class="list-group-item"
@@ -61,7 +61,7 @@
               <div ng-if='hasChanges(und)'>
                 <b>{{numberOfChanges(und)}} changes</b>
                 <ul>
-                  <li ng-repeat="change in changesForUnderlier(und)">{{change.obs}}: {{change.diff}}</li>
+                  <li ng-repeat="change in changesStored[und]">{{change.obs}}: {{change.diff}}</li>
                 </ul>
               </div>
               <div ng-if='settings.showThumbnails'>
@@ -82,7 +82,7 @@
           Var surface for  {{activeUnderlier}}
           <span>
             <button class="btn btn-danger" ng-if='hasChanges()' ng-click="save()">Save changes</button>
-            <button class="btn btn-danger" ng-click="update(true,activeUnderlier)">Reload</button>
+            <button class="btn btn-danger" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button>
           </span>
         </div>
         <div class="panel-body">
