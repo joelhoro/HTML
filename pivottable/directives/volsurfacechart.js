@@ -1,6 +1,6 @@
 "use strict";
 angular.module('volmarker')
-  .service("chartService", function(analytics) {
+  .service("chartService", function(analytics, ChartJs) {
     function adjustScale(scope) {
           var min = scope.chartData.map(x => x.min()).min();
           var width = 5;
@@ -22,6 +22,8 @@ angular.module('volmarker')
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
       };
 
+      scope.chartColours = ChartJs.Chart.defaults.global.colours
+
       scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
       if(type === 'fwd') {
@@ -30,13 +32,15 @@ angular.module('volmarker')
         var fwdCurve = analytics.fwdVarCurve(newCurve, tenor);
         scope.chartData = [ 
             fwdCurve, 
-            ];                            
+            ];      
+        scope.chartColours = [ '#F7464A' ];
       }
       else if(type === 'basis')  {
           scope.chartSeries = [ "Basis (T-1)", "Basis (T)"  ];
           scope.chartData = surface.ExtractMany('basis','newbasis'); 
       }
       else if(type === 'ratio')  {
+          scope.chartColours = [ '#F7464A' ];
           scope.chartSeries = [ "Ratio to SPX"  ];
 
           var spxCurveFn = volsurfaces.SPX.CurveFn("BM@T");
@@ -52,7 +56,8 @@ angular.module('volmarker')
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
           scope.chartData = [ analytics.stdevCurve(curve,today) ];
-      }
+          scope.chartColours = [ '#F7464A' ];
+    }
       else {
         scope.chartSeries = [ "MS", "SocGen", "BM", "Dealer average" ];
         scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T", "Dealer.avg");
@@ -87,7 +92,7 @@ angular.module('volmarker')
               showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip);
 
 //            _.extend($scope, config);
-            ["Data","Series","Labels","Options"].map(t => {
+            ["Data","Series","Labels","Options", "Colours"].map(t => {
               var field = "chart" + t;
               if(!utils.areEqual($scope[field],config[field])) {
                 $scope[field] = config[field];
@@ -115,7 +120,7 @@ angular.module('volmarker')
       ' chart-data="chartData" chart-legend=' +
         (attr.nolegend === '1' ? "false" : "true" ) +
         ` chart-labels="chartLabels" chart-options="chartOptions"  chart-series="chartSeries"
-       chart-hover="chartHover" >
+       chart-hover="chartHover" chart-Colours="chartColours" >
         </canvas> 
       `;
 

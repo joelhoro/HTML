@@ -41,7 +41,7 @@ angular.module("volmarker")
 
   $scope.changesStored = {};
 
-  var _changesForUnderlier = function(underlier) {
+  var changesForUnderlier = function(underlier) {
       utils.log("Calculating changes for " + underlier);
       var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
       var obs1 = mapIt($scope.volsurfaces[underlier]);
@@ -62,20 +62,9 @@ angular.module("volmarker")
   $scope.calculateChanges = function() {
     if($scope.underliers === undefined) return;
       $scope.underliers.map(underlier => 
-        $scope.changesStored[underlier] = _changesForUnderlier(underlier) );
+        $scope.changesStored[underlier] = changesForUnderlier(underlier) );
   }
 
-
-  // $scope.surfaceChanges = function() {
-  //   if($scope.volsurfaces === undefined) { return; }
-  //   var diff = $scope.underliers.toObject($scope.changesForUnderlier);
-  //   for(var und in diff) {
-  //     if(diff[und].length === 0) {
-  //       delete(diff[und]);
-  //     }
-  //   }
-  //   return diff;
-  // };
 
   $scope.hasChanges = function(underlier) {
     return $scope.numberOfChanges(underlier) > 0;
