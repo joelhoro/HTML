@@ -103,7 +103,7 @@ angular.module('utilities')
       var CalculateColumns = {
         Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
         'New basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
-        'Dealer.avg' : o => [ this.GetQuote(o,'Dealer.SocGen'), this.GetQuote(o,'Dealer.MS') ].avg().round(2)
+        'Dealer.avg' : o => ["MS", "SocGen", "JPM", "ML", "HSBC"].map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2)
       };
 
       // returns the list of values (without dates)
@@ -131,7 +131,8 @@ angular.module('utilities')
           // need to renname coz ng-grid doesn't like fancy names
           var names = { 
             "BM":"BM@T", "BMY": "BM@T-1", 
-            "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.avg",
+            "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.ML",
+            "D4" : "Dealer.JPM", "D5" : "Dealer.HSBC", "D6" : "Dealer.avg",
             "B1" : "Basis", "B2" : "New basis",
             "Mark" : "Mark"
              }

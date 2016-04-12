@@ -63,8 +63,8 @@ angular.module('volmarker')
           scope.chartColours = [ '#F7464A' ];
     }
       else {
-        scope.chartSeries = [ "MS", "SocGen", "BM", "Dealer average" ];
-        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T", "Dealer.avg");
+        scope.chartSeries = [ "MS", "SocGen", "BM",  "ML", "HSBC", "Dealer average"];
+        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T",  "Dealer.ML", "Dealer.HSBC", "Dealer.avg" );
         doAdjustScale = true;
       }
 

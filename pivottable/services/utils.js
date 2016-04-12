@@ -211,9 +211,9 @@ angular.module('utilities',[])
 	  var svgFlags = _.template(path + "<%= flag %>.svg" );
 	  var regionFlag = function(und) { 
 
-	  	if(und === 'SPX') {
-	  		return path + "SPXlogo.jpg";
-	  	}
+	  	// if(und === 'SPX') {
+	  	// 	return path + "SPXlogo.jpg";
+	  	// }
 	  	if(und === 'NDX') {
 	  		return path + "nasdaq_logo-660.jpg";
 	  	}
