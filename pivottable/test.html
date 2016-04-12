@@ -41,8 +41,8 @@
   <h1 ng-class="failures <= 1 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
   <span style='text-align: right; display: block'>{{failures-1}} failures (excl. dummy failure)</span></h1>
     <div ng-repeat="(name,group) in groupedResults" >
-    <b>Test group: {{name}} - {{group.length}} tests</b>
-    <ul>
+    <button ng-click='toggle(name)'>{{showcategory[name] ? '-' : '+'}}</button> <b>Test group: {{name}} - {{group.length}} tests</b>
+    <ul ng-if='showcategory[name]'>
       <li ng-repeat="result in group" ng-class="result.success ? 'success' : 'fail'"><b>[{{result.success ? 'PASS' : 'FAIL'}}]</b> {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}</li>
     </ul>
     </div>
@@ -54,12 +54,14 @@
 <script>
 
 var app = angular.module('test',['tests','utilities']);
-app.controller("testCtrl", function($scope,tests,utils) {
+app.controller("testCtrl", function($scope,tests,utils, _) {
 
-
+  $scope.toggle = category => $scope.showcategory[category] = !$scope.showcategory[category];
   $scope.testresults = tests.RunTests();
   $scope.failures = $scope.testresults.where({success: false}).length;
   $scope.groupedResults = $scope.testresults.groupBy(r => r.category);
+  $scope.showcategory = _.keys($scope.groupedResults).toObject(c => false);
+  
   
 
 });
