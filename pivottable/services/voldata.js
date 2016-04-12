@@ -28,10 +28,11 @@ angular.module('dataService',['utilities','dataWarehouse'])
             enableSorting: false,
             enableCellSelection: true,
             enableRowSelection: false,
+            enableCellEditOnFocus: true,
             columnDefs: [
                          {field: 'tenor',       displayName: 'Expiry',      enableCellEdit: false,  width: 50   }, 
                          {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
-                         {field:'BM', displayName: 'BM tday',               enableCellEdit: true,    width: 55    },
+                         {field:'BM', displayName: 'BM tday',               enableCellEditOnFocus: true,    width: 55    },
                          {field:'D3', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   },
                          {field:'D1', displayName: 'MS',                  enableCellEdit: false,   width: 55   },
                          {field:'D2', displayName: 'SG',                  enableCellEdit: false,   width: 55   },
