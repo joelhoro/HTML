@@ -1,26 +1,14 @@
 "use strict";
 
 angular.module("volmarker")
-.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, settings) {
+.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, 
+  settings, dealerUtils) {
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
 
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
-  $scope.showMetadata = u => {
-      var surface = $scope.volsurfaces[u];
-      var allMetadata = surface.volSurface.Metadata;
-      var description = "";
-      for (var source in allMetadata ) {
-          var metadata = allMetadata[source];
-          description += "Source: " + source + "\n\n" +
-              "KT: " + metadata.KnowledgeTime + "\n" +
-          "Description: " + metadata.Description + "\n" +
-          "UserName: " + metadata.UserName;
-      }
-      return description;
-  }
-
+  $scope.showMetadata = u => $scope.volsurfaces[u].MetaData();
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -32,6 +20,7 @@ angular.module("volmarker")
   // active underlier fns
   $scope.surface = () => $scope.volsurfaces[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
+  $scope.dealerInfo = dealerUtils.dealerInfo;
 
   $scope.setActiveUnderlier = function(und, setData=true) {
     if(und === undefined) {

@@ -149,6 +149,14 @@ angular.module('utilities')
           return result;
         })
       }
+
+      this.MetaData = function() {
+        return this.volSurface.Metadata;
+      }
+
+      this.HasMetaData = function() {
+        return _.keys(this.MetaData()).length > 0;
+      }
     }
   }
 

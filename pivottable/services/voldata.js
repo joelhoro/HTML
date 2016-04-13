@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('dataService',['utilities','dataWarehouse'])
-.service("voldata", function(utils,dataWarehouse,analytics,_, settings) { 
+.service("voldata", function(utils,dataWarehouse,analytics,_, settings, dealerUtils) { 
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
@@ -23,26 +23,33 @@ angular.module('dataService',['utilities','dataWarehouse'])
   }
 
   var gridConfig = function(dataField) {
+
+        var count = 1;
+        var columns = 
+              [
+           {field: 'tenor',       displayName: 'Expiry',      enableCellEdit: false,  width: 50   }, 
+           {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
+           {field:'BM', displayName: 'BM tday',               enableCellEditOnFocus: true,    width: 55    },
+           {field:'D6', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   }
+              ]
+           .concat(dealerUtils.dealers.map(dealer => ({
+            field: 'D'+count++, displayName: dealerUtils.dealerInfo[dealer].shortname, 
+            enableCellEdit: false,   width: 55   
+           })))
+           .concat(
+          [
+           {field:'B1', displayName: 'Basis T-1',                  enableCellEdit: false,   width: 55   },
+           {field:'B2', displayName: 'New basis',                  enableCellEdit: false,   width: 55   },
+           {field:'Mark', displayName: 'Mark',               enableCellEdit: false,    width: 55    },
+          ] );
+
         var config = {
             data: dataField,
             enableSorting: false,
             enableCellSelection: true,
             enableRowSelection: false,
             enableCellEditOnFocus: true,
-            columnDefs: [
-                         {field: 'tenor',       displayName: 'Expiry',      enableCellEdit: false,  width: 50   }, 
-                         {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
-                         {field:'BM', displayName: 'BM tday',               enableCellEditOnFocus: true,    width: 55    },
-                         {field:'D6', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   },
-                         {field:'D1', displayName: 'MS',                  enableCellEdit: false,   width: 55   },
-                         {field:'D2', displayName: 'SG',                  enableCellEdit: false,   width: 55   },
-                         {field:'D3', displayName: 'ML',                  enableCellEdit: false,   width: 55   },
-                         {field:'D4', displayName: 'JPM',                  enableCellEdit: false,   width: 55   },
-                         {field:'D5', displayName: 'HSBC',                  enableCellEdit: false,   width: 55   },
-                         {field:'B1', displayName: 'Basis T-1',                  enableCellEdit: false,   width: 55   },
-                         {field:'B2', displayName: 'New basis',                  enableCellEdit: false,   width: 55   },
-                         {field:'Mark', displayName: 'Mark',               enableCellEdit: false,    width: 55    },
-                        ]
+            columnDefs: columns,
                 };
         // set all readonly to a given class
         config.columnDefs

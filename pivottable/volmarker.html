@@ -48,10 +48,13 @@
           <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
         </div>
           <div ng-if='initialized' class="panel-body list-group">
-              
-          <div ng-repeat="und in underliers" class="list-group-item" tooltip-placement='right' uib-tooltip="{{showMetadata(und)}}"
+   
+          <div ng-repeat="und in underliers" class="list-group-item" tooltip-placement='right' 
+          uib-tooltip-template="'metadataTemplate'" tooltip-class="customClass" 
             ng-click='setActiveUnderlier(und)'
             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
+
+              <!-- LIST OF INDICES  -->
               <div class='list-group-item-heading'>
                   <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
                 [{{points[und]}}]</b>
@@ -70,6 +73,26 @@
                       <vol-surface-chart volsurfaces='volsurfaces' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
                   </div>
               </div>
+
+              <!-- METADATA TEMPLATE -->
+              <script type="text/ng-template" id="metadataTemplate">
+                  <span ng-if='settings.withMetaData && volsurfaces[und].HasMetaData()'>
+                         <h3>Sources for {{ und }}</h3>
+                         <span ng-repeat='(source,metadata) in volsurfaces[und].MetaData()'>
+                         <h4>{{ dealerInfo[source].label }}</h4>
+                            <ul>
+                              <li><b>Time:</b> {{metadata.KnowledgeTime}}</li>
+                              <li><b>Description:</b> {{metadata.Description}}</li>
+                              <li><b>CommandLine:</b> {{metadata.CommandLine}}</li>
+                            </ul>
+                        </span>
+                  </span>
+                  <span ng-if='settings.withMetaData && !volsurfaces[und].HasMetaData()'>
+                        <h3 >No sources for {{ und }}</h3>
+                  </span>
+              </script>
+
+
 <!--              <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on left">Tooltip on left</button>-->
           </div>
         </div>
@@ -77,8 +100,11 @@
       </div>
     </div>
 
+
     <!----    MARKING PANE -->
-    
+
+
+
     <div ng-if='initialized' class="col-md-4" id='markingPane'>
       <div class="panel panel-primary" >
         <div class="panel-heading">
