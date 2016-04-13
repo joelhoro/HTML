@@ -117,14 +117,16 @@ h1 {
   }
 
    /* Specify styling for tooltip contents */
-        .tooltip.customClass .tooltip-inner {
-          color: black;
-          background-color: white;
-          box-shadow: 0 6px 22px rgba(0,0,0,.175);
-          min-width: 550;
-          text-align: left;
-        }
-        /* Hide arrow */
-        .tooltip.customClass .tooltip-arrow {
-          display: none;
-        }
+  .tooltip.customClass .tooltip-inner {
+    color: black;
+    background-color: white;
+    box-shadow: 0 6px 22px rgba(0,0,0,.175);
+    min-width: 550;
+    text-align: left;
+  }
+  /* Hide arrow */
+  .tooltip.customClass .tooltip-arrow {
+    display: none;
+  }
+
+        

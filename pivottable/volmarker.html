@@ -44,12 +44,12 @@
           <select name="date" ng-model="pricingDate">
               <option ng-repeat="date in ['2016-4-12', '2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
           </select>
-          <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load volsurfaces" }}</button>
+          <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button>
           <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
         </div>
           <div ng-if='initialized' class="panel-body list-group">
    
-          <div ng-repeat="und in underliers" class="list-group-item" tooltip-placement='right' 
+          <div ng-repeat="und in underliers" class="list-group-item" tooltip-placement='auto' 
           uib-tooltip-template="'metadataTemplate'" tooltip-class="customClass" 
             ng-click='setActiveUnderlier(und)'
             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">

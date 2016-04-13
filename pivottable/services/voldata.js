@@ -31,11 +31,15 @@ angular.module('dataService',['utilities','dataWarehouse'])
            {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
            {field:'BM', displayName: 'BM tday',               enableCellEditOnFocus: true,    width: 55    },
            {field:'D6', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   }
-              ]
+              ];
+        if(settings.showDealerDetails)
+          columns = columns
            .concat(dealerUtils.dealers.map(dealer => ({
             field: 'D'+count++, displayName: dealerUtils.dealerInfo[dealer].shortname, 
             enableCellEdit: false,   width: 55   
-           })))
+           })));
+
+        columns = columns
            .concat(
           [
            {field:'B1', displayName: 'Basis T-1',                  enableCellEdit: false,   width: 55   },

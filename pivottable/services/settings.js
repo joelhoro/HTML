@@ -11,6 +11,7 @@ angular.module('utilities')
         today: new Date("2016-4-7"),
         animationSpeed: 6,	// 1 is default
         withMetaData: true,
+        showDealerDetails: false,
       };
 
     settings.set = function(key, value) {
