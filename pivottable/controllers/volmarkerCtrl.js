@@ -8,6 +8,7 @@ angular.module("volmarker")
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
+  
   $scope.showMetadata = u => $scope.volsurfaces[u].MetaData();
 
   $scope.initialized = false;
@@ -112,8 +113,6 @@ angular.module("volmarker")
           $scope.setActiveUnderlier(underlier,broadcast);
           $scope.initialized = true;
           $scope.requestBusy = false;
-
-          $('[data-toggle="tooltip"]').tooltip();
 
         }, $scope.settings.dataMode) 
       }
