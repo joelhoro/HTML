@@ -2,7 +2,7 @@ angular.module('utilities',[])
 .factory('makeLocal', function($window) { 
 	return function(key) { 
 		var value = $window[key]; 
-		delete($window[key]);
+		//delete($window[key]);
 		return value;
 	} 
 })

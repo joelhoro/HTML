@@ -1,5 +1,5 @@
 angular.module('volmarker')
-  .service("chartService", function(analytics, ChartJs, settings) {
+  .service("chartService", function(analytics, ChartJs, settings, dealerUtils) {
 
     Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
 
@@ -27,7 +27,16 @@ angular.module('volmarker')
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
       };
 
-      scope.chartColours = ChartJs.Chart.defaults.global.colours
+      scope.chartColours = [
+            '#F7464A', // red
+            '#97BBCD', // blue
+            '#DCDCDC', // light grey
+            '#46BFBD', // green
+            '#FDB45C', // yellow
+            '#949FB1', // grey
+            '#4D5360'  // dark grey
+            ];
+
       scope.chartLabels = surface.TenorLabels(showdatesonaxis);
 
       if(type === 'fwd') {
@@ -37,7 +46,6 @@ angular.module('volmarker')
         scope.chartData = [ 
             fwdCurve, 
             ];      
-        scope.chartColours = [ '#F7464A' ];
         doAdjustScale = true;
       }
       else if(type === 'basis')  {
@@ -45,7 +53,6 @@ angular.module('volmarker')
           scope.chartData = surface.ExtractMany('Basis','New basis'); 
       }
       else if(type === 'ratio')  {
-          scope.chartColours = [ '#F7464A' ];
           scope.chartSeries = [ "Ratio to SPX"  ];
 
           var spxCurveFn = volsurfaces.SPX.CurveFn("BM@T");
@@ -60,12 +67,12 @@ angular.module('volmarker')
           scope.chartSeries = [ "Total stdev"  ];
           var curve = surface.Curve("BM@T");
           scope.chartData = [ analytics.stdevCurve(curve,settings.today) ];
-          scope.chartColours = [ '#F7464A' ];
     }
       else {
-        scope.chartSeries = [ "MS", "SocGen", "BM",  "ML", "HSBC", "Dealer average"];
-        scope.chartData = surface.ExtractMany( "Dealer.MS", "Dealer.SocGen", "BM@T",  "Dealer.ML", "Dealer.HSBC", "Dealer.avg" );
-        doAdjustScale = true;
+          scope.chartSeries = ["BlueMountain", "Dealer average"].concat(dealerUtils.dealers.map(d => dealerUtils.dealerInfo[d].label));
+          var tickers = ["BM@T", "Dealer.avg"].concat(dealerUtils.dealers.map(d => "Dealer." + d));
+          scope.chartData = tickers.map(t => surface.Extract(t));
+          doAdjustScale = true;
       }
 
       if(doAdjustScale)

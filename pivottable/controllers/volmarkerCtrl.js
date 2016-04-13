@@ -2,11 +2,25 @@
 
 angular.module("volmarker")
 .controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, settings) {
-  utils.log("Initializing volmarker controller - scope=" + $scope.$id);
+    utils.log("Initializing volmarker controller - scope=" + $scope.$id);
 
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
+  $scope.showMetadata = u => {
+      var surface = $scope.volsurfaces[u];
+      var allMetadata = surface.volSurface.Metadata;
+      var description = "";
+      for (var source in allMetadata ) {
+          var metadata = allMetadata[source];
+          description += "Source: " + source + "\n\n" +
+              "KT: " + metadata.KnowledgeTime + "\n" +
+          "Description: " + metadata.Description + "\n" +
+          "UserName: " + metadata.UserName;
+      }
+      return description;
+  }
+
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -103,11 +117,15 @@ angular.module("volmarker")
           }
           var allUnderliers = _.keys(result);
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
+
           $scope.points = $scope.underliers.toObject(und => result[und].Points());
           var underlier = ($scope.activeUnderlier == undefined) ? $scope.underliers[0] : $scope.activeUnderlier;
           $scope.setActiveUnderlier(underlier,broadcast);
           $scope.initialized = true;
           $scope.requestBusy = false;
+
+          $('[data-toggle="tooltip"]').tooltip();
+
         }, $scope.settings.dataMode) 
       }
 

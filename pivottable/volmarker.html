@@ -1,20 +1,26 @@
 <!-- <link href="css/ng-grid.css" rel="stylesheet" type="text/css" /> -->
 <link href="bower_components/angular-ui-grid/ui-grid.css" rel="stylesheet" type="text/css" />
-<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
 <link rel="stylesheet" href="css/angular-chart.css">
 <link rel="stylesheet" href="css/volmarker.css">
-<script src="lib/jquery-1.10.2.js"></script>
-<script src="lib/underscore.js"></script>
-<!-- <script src="lib/angular.min.js"></script> -->
+
+<script type='text/javascript' src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type='text/javascript' src="bower_components/underscore/underscore-min.js"></script>
 <script type='text/javascript' src="bower_components/angular/angular.min.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type='text/javascript' src="bower_components/ui-bootstrap/src/tooltip/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/js/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
+<script type="text/javascript" src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.1.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">-->
 
 <script type='text/javascript' src='lib/chart.js'></script>
 <script type='text/javascript' src='lib/angular-chart.js'></script>
 <script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
-<script type='text/javascript' src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
-<!-- <script type="text/javascript" src="lib/ng-grid.debug.js"></script>
-<script type="text/javascript" src="lib/ng-grid-layout.js"></script>
- --><!-- Project specific libs -->
+
+<!-- Project specific libs -->
 <script src="apps/volmarker.js"></script>
 <script src="data/datawarehouse.js"></script>
 <script src="services/utils.js"></script>
@@ -24,6 +30,7 @@
 <script src="services/voldata.js"></script>
 <script src="services/volmarkerUtils.js"></script>
 <script src="services/chartService.js"></script>
+<script src="services/dealerUtils.js"></script>
 <script src="controllers/volmarkerCtrl.js"></script>
 <script src="directives/volsurfacechart.js"></script>
 
@@ -41,28 +48,30 @@
           <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load volsurfaces" }}</button>
           <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
         </div>
-        <div ng-if='initialized' class="panel-body list-group">
-          <div ng-repeat="und in underliers" class="list-group-item"
+          <div ng-if='initialized' class="panel-body list-group">
+              
+          <div ng-repeat="und in underliers" class="list-group-item" tooltip-placement='right' uib-tooltip="{{showMetadata(und)}}"
             ng-click='setActiveUnderlier(und)'
             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : isLeader(und), 'follower' : !isLeader(und), 'haschanges' : hasChanges(und) }">
-            <div class='list-group-item-heading'>
-              <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
+              <div class='list-group-item-heading'>
+                  <span><b>{{hasChanges(und)?'*'+und+'*' : und}}
                 [{{points[und]}}]</b>
                 <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
               </span>
-              <div ng-if='!hasChanges(und)'>
-                <b>No changes</b>
+                  <div ng-if='!hasChanges(und)'>
+                      <b>No changes</b>
+                  </div>
+                  <div ng-if='hasChanges(und)'>
+                      <b>{{numberOfChanges(und)}} change{{numberOfChanges(und) > 1 ? "s" : ""}}</b>
+                      <ul>
+                          <li ng-repeat="change in changesStored[und]">{{change.obs}}: {{change.diff}}</li>
+                      </ul>
+                  </div>
+                  <div ng-if='settings.showThumbnails'>
+                      <vol-surface-chart volsurfaces='volsurfaces' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
+                  </div>
               </div>
-              <div ng-if='hasChanges(und)'>
-                <b>{{numberOfChanges(und)}} change{{numberOfChanges(und) > 1 ? "s" : ""}}</b>
-                <ul>
-                  <li ng-repeat="change in changesStored[und]">{{change.obs}}: {{change.diff}}</li>
-                </ul>
-              </div>
-              <div ng-if='settings.showThumbnails'>
-                <vol-surface-chart  volsurfaces='volsurfaces'  underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
-              </div>
-            </div>
+<!--              <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on left">Tooltip on left</button>-->
           </div>
         </div>
         

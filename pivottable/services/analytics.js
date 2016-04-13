@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('utilities')
-.service("analytics", function(utils,dates,_, numeric, settings) { 
+.service("analytics", function(utils,dates,_, numeric, settings, dealerUtils) { 
 
   utils.log("Initializing analytics service");
 
@@ -103,7 +103,7 @@ angular.module('utilities')
       var CalculateColumns = {
         Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
         'New basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
-        'Dealer.avg' : o => ["MS", "SocGen", "JPM", "ML", "HSBC"].map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2)
+        'Dealer.avg' : o => dealerUtils.dealers.map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2)
       };
 
       // returns the list of values (without dates)
@@ -129,13 +129,17 @@ angular.module('utilities')
         utils.log("Running through tenors=", tenors);
         return tenors.map(t => {
           // need to renname coz ng-grid doesn't like fancy names
-          var names = { 
-            "BM":"BM@T", "BMY": "BM@T-1", 
-            "D1" : "Dealer.MS", "D2" : "Dealer.SocGen", "D3" : "Dealer.ML",
-            "D4" : "Dealer.JPM", "D5" : "Dealer.HSBC", "D6" : "Dealer.avg",
-            "B1" : "Basis", "B2" : "New basis",
-            "Mark" : "Mark"
-             }
+            var names = {
+                "BM": "BM@T",
+                "BMY": "BM@T-1",
+                "B1": "Basis",
+                "B2": "New basis",
+                "Mark": "Mark"
+            };
+
+            var dCount = 1;
+            dealerUtils.dealers.map(d => names["D" + dCount++] = "Dealer." + d);
+            names["D"+dCount] = "Dealer.avg";
           var result = _.keys(names).toObject(f => {
             return this.GetQuote(this.volSurface.Observables[i], names[f]);
           } );
