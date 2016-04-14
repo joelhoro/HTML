@@ -18,6 +18,11 @@ angular.module("volmarker")
   $scope.regionFlag = misc.regionFlag;
   $scope.gridConfig = voldata.gridConfig('data');
 
+  $scope.$watch('settings', function(n,o) { 
+    if(n.showDealerDetails != o.showDealerDetails)
+      $scope.gridConfig = voldata.gridConfig('data');
+   }, true);
+
   // active underlier fns
   $scope.surface = () => $scope.volsurfaces[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
