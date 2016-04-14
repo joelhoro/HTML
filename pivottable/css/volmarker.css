@@ -58,14 +58,14 @@ h1 {
   height: 50;
   font-size: 20;
 }
-.panel-heading>button {
+/*.panel-heading>button {
   position: absolute;
   right: 20px;
   font-size:14;
 }
-.panel-heading span {
+*/.panel-heading span {
   position: absolute;
-  right: 40px;
+  right: 25px;
   font-size:14;
 }
 
@@ -109,7 +109,6 @@ h1 {
 
   select {
     color: black;
-      min-height: 50%;
   }
 
   .ui-grid-header-cell-wrapper {

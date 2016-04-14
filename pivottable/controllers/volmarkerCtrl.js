@@ -18,6 +18,11 @@ angular.module("volmarker")
   $scope.regionFlag = misc.regionFlag;
   $scope.gridConfig = voldata.gridConfig('data');
 
+  $scope.$watch('settings', function(n,o) { 
+    if(n.showDealerDetails != o.showDealerDetails)
+      $scope.gridConfig = voldata.gridConfig('data');
+   }, true);
+
   // active underlier fns
   $scope.surface = () => $scope.volsurfaces[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
@@ -138,6 +143,9 @@ angular.module("volmarker")
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
+  $scope.showSettingsMenu = function() {
+    $('#settingsMenu').modal('show');
+  }
 
   $scope.save = function() {
     alert("Not yet implemented");
@@ -176,6 +184,7 @@ angular.module("volmarker")
     
   }, true);
 
+  $scope.showSettingsMenu();
   $scope.setDateAndLoad();
 
 } );
