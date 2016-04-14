@@ -28,7 +28,7 @@ angular.module('utilities')
     var iCurve = interpolator(termCurve,convertor);
     var tenors = _.keys(termCurve).map(r => new Date(r));
 
-    var interval = {'1m':30, '2m' : 60, '3m':90, '6m': 180, '1y':360}[tenor];
+    var interval = {'1w': 7, '2w': 14, '3w' : 21, '4w': 28, '1m':30, '2m' : 60, '3m':90, '6m': 180, '1y':360}[tenor];
     var fwdVars = tenors
       .map(maturity => {
         var start = maturity;
