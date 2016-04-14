@@ -138,6 +138,9 @@ angular.module("volmarker")
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
+  $scope.showSettingsMenu = function() {
+    $('#settingsMenu').modal('show');
+  }
 
   $scope.save = function() {
     alert("Not yet implemented");
@@ -176,6 +179,7 @@ angular.module("volmarker")
     
   }, true);
 
+  $scope.showSettingsMenu();
   $scope.setDateAndLoad();
 
 } );

@@ -36,16 +36,84 @@
 <title>VolMarker</title>
 <html ng-app="volmarker">
   <div ng-controller="volmarkerCtrl">
-    <!-- <span>Started at: {{ startTime }}</span> -->
-    <!----    UNDERLIERS PANE -->
+
+  <!-- SETTINGS MENU -->
+  <div id='settingsMenu' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">VolMarker settings</h4>
+      </div>
+      <div class="modal-body">
+        
+
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="fwdvartenors" class="col-sm-2 control-label">Fwd var tenors</label>
+            <div class="col-sm-10">
+              <input id="fwdvartenors" type="text" class="form-control"  placeholder="" ng-model='settings.fwdVarTenors'>
+            </div>
+          </div>        
+          <div class="form-group">
+            <label for="pricingDate" class="col-sm-2 control-label">Pricing date</label>
+            <div class="col-sm-10">
+              <select id="pricingDate" name="date" ng-model="pricingDate">
+                  <option ng-repeat="date in ['2016-4-12', '2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
+              </select>
+            </div>
+          </div>        
+        </form>
+<!-- 
+          <tr>
+            <td><input type=checkbox ng-model='settings.console'> Show console</td>
+          </tr>
+          <tr>
+            <td>Fwd var tenors</td>
+            <td><input type=text ></td>
+          </tr>
+          <tr>
+            <td>Data mode (leave to AjaxASP)</td>
+            <td>
+              <select ng-model='settings.dataMode'>
+                <option ng-repeat="mode in ['ajaxASP','local','ajax' ]" value = "{{mode}}" ng-selected="$index=0">{{mode}}</option>
+              </select>
+            </td>
+          </tr>
+                    <tr>
+            <td>Pricing date</td>
+            <td>
+            </td>
+          </tr>
+        </table> -->
+
+  <!--                   showThumbnails : false,
+          showFlags: true,
+          console: false,
+          fwdVarTenors: ['1m','3m'],
+          dataMode: 'local',
+          animationSpeed: 6,  // 1 is default
+          withMetaData: true,
+          showDealerDetails: false, -->
+
+      </div>
+      <div class="modal-footer">
+<!--         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+ -->        <button type="button" class="btn btn-primary" ng-click='settings.reset()'>Reset defaults</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+    <!--    UNDERLIERS PANE -->
     <div class="col-md-2" id='underliersPane'>
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <select name="date" ng-model="pricingDate">
-              <option ng-repeat="date in ['2016-4-12', '2016-4-11', '2016-4-8', '2016-4-7']" value="{{date}}" ng-selected="$index==0">{{date}}</option>
-          </select>
-          <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button>
-          <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
+          <button class="btn btn-info" ng-click="showSettingsMenu()">Settings</button>
+          <span>
+            <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button>
+            <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
+          </span>
         </div>
           <div ng-if='initialized' class="panel-body list-group">
    
@@ -92,8 +160,6 @@
                   </span>
               </script>
 
-
-<!--              <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on left">Tooltip on left</button>-->
           </div>
         </div>
         
@@ -102,8 +168,6 @@
 
 
     <!----    MARKING PANE -->
-
-
 
     <div ng-if='initialized' class="col-md-4" id='markingPane'>
       <div class="panel panel-primary" >
@@ -169,7 +233,7 @@
                 <b>Ratio to SPX</b>
                 </vol-surface-chart>
               </div>
-              <div ng-repeat="tenor in settings.fwdVarTenors" class="col-md-6">
+              <div ng-repeat="tenor in settings.fwdVarTenorsList()" class="col-md-6">
                 <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
