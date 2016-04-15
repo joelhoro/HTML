@@ -6,7 +6,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
 
-  function retrieveVolSurfaces(successFn, dataMode) {
+  function retrieveVolSurfaces(successFn) {
       utils.log("Date=", settings.date);
     var convertSurface = data => {
         if (data.status !== undefined) data = data.data;
@@ -14,7 +14,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
         utils.log("Getting volsurfaces - found {1} underliers", surfaceCollection.UnderliersCount());
         successFn(surfaceCollection);
       };
-    if(dataMode === 'local') {
+    if(settings.dataMode === 'local') {
       convertSurface(dataWarehouse.dataFn());   
       return;
     }

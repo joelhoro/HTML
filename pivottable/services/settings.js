@@ -15,9 +15,11 @@ angular.module('utilities')
         withMetaData: true,
         showDealerDetails: false,
         underliers: "SPX,SX5E,NKY,HSCEI",
+        loadMenuOnStartup: true,
       };
 
     var settings;
+    // loading and saving from localStorage
     if(localStorage.volMarkerSettings !== undefined)
     	settings = JSON.parse(localStorage.volMarkerSettings);
     else {
@@ -25,7 +27,11 @@ angular.module('utilities')
     	localStorage.volMarkerSettings = JSON.stringify(settings);
     }
 
-    settings.reset = function() {
+    settings.Save = function() {
+        localStorage.volMarkerSettings = JSON.stringify(settings);
+    }
+
+    settings.Reset = function() {
     	for(var k in defaultSettings)
     		settings[k] = defaultSettings[k];
     }
@@ -36,6 +42,8 @@ angular.module('utilities')
     settings.set = function(key, value) {
         settings[key] = value;
     }
+
+
 
     return settings;
 } );

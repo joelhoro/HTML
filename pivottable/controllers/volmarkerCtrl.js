@@ -53,6 +53,7 @@ angular.module("volmarker")
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
           var underlier = underlierCopy;
+          // all this should be factored out even more on volsurfacecollection
           $scope.volSurfaceCollection.Update(result,underlier);
           var allUnderliers = $scope.volSurfaceCollection.Underliers();
           $scope.allUnderliers = allUnderliers;
@@ -64,7 +65,7 @@ angular.module("volmarker")
           $scope.initialized = true;
           $scope.requestBusy = false;
 
-        }, $scope.settings.dataMode) 
+        }) 
       }
 
       $scope.$broadcast("DataChanged", $scope.activeUnderlier);
@@ -80,7 +81,6 @@ angular.module("volmarker")
       utils.toggleConsole();
   })
 
-  // interactivity
   $scope.next = function(inc) {
     var idx = ($scope.activeUnderlierIndex() + inc)
      .capfloor(0,$scope.underliers.length-1);
@@ -105,35 +105,22 @@ angular.module("volmarker")
   }
 
   // watches
-  $scope.$watch('settings', function(n,o) { 
-    localStorage.volMarkerSettings = JSON.stringify(n);
 
+  $scope.$watch('settings', function(n,o) { 
+    // whenever settings change, save to localStorage
+    settings.Save();
+
+    // update the grid if needed
     if(n.showDealerDetails !== o.showDealerDetails)
       $scope.gridConfig = voldata.gridConfig('data');
+    // update the list of underliers if needed
     if(n.underliers !== o.underliers)
       $scope.underliers = volmarkerUtils.filterUnderliers($scope.allUnderliers,n.underliers);
    }, true);
 
   $scope.$watch('data', newdata => { 
-    if(newdata === undefined) { return; }
-    var surfaces = $scope.volSurfaceCollection;
-
-    var refresh = false;
-    var idx = 0;
-
-    var underlier = newdata[0].underlier;
-    newdata.map(row => {
-      var obs = surfaces.collection[underlier].volSurface.Observables[idx++];
-      var oldValue = obs.Quotes["BM@T"].round(4);
-      var newValue = (row.BM / 100);
-      
-      var tolerance = 1e-6;
-      if(Math.abs(oldValue-newValue)>tolerance) {
-        utils.log("Changing mark for {1}: {2}->{3} in {4}", underlier, obs.Name, oldValue, newValue);
-        obs.Quotes["BM@T"] = newValue;
-        refresh = true;
-      }
-    });
+    // when data changes in the grid, update the volsurfaces if needed
+    var refresh = $scope.volSurfaceCollection.UpdateFromData(newdata);
     if(refresh) {
       $scope.refreshVolSurfaces(false, undefined, false);
     }
@@ -141,7 +128,9 @@ angular.module("volmarker")
   }, true);
 
   /// INITIALIZATION
-  $scope.showSettingsMenu();
+  if(settings.loadMenuOnStartup)
+    $scope.showSettingsMenu();
+
   $scope.setDateAndLoad();
 
 } );

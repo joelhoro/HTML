@@ -20,7 +20,11 @@ angular.module('utilities')
         return this.Underliers().length;
       }
       this.Points = function() {
-        return this.Underliers().toObject(und => this.collection[und].Points());
+        return this.Underliers().toObject(und => this.Get(und).Points());
+      }
+
+      this.Get = function(underlier) {
+        return this.collection[underlier];
       }
 
       this.ChangesCount = function(underlier) {
@@ -30,16 +34,19 @@ angular.module('utilities')
       }
 
       this.MetaData = function(underlier) {
-        return this.collection[underlier].MetaData();
+        return this.Get(underlier).MetaData();
       }
 
       this.HasMetaData = function(underlier) {
-        return this.MetaData(underlier).length > 0;
+        return _.keys(this.MetaData(underlier)).length > 0;
       }
 
+      // Update this collection from another one, either all underliers
+      // or only the one specified
       this.Update = function(volsurfacecollection, underlier) {
+        // if underlier is specified, only update this one
         if(underlier !== null && underlier !== undefined) {
-            var slice = volsurfacecollection.collection[underlier];
+            var slice = volsurfacecollection.Get(underlier);
             this.collection[underlier] = slice;
             this.originalCollection[underlier] = utils.clone(slice);
           }
@@ -50,9 +57,32 @@ angular.module('utilities')
 
       }
 
+      this.UpdateFromData = function(dataGrid) {
+        if(dataGrid === undefined) { return false; }  // would happened before any data was loaded;
+        var refresh = false;
+        var idx = 0;
+
+        var underlier = dataGrid[0].underlier;  // not super kosher...
+        dataGrid.map(row => {
+          var obs = this.Get(underlier).volSurface.Observables[idx++];
+          var oldValue = obs.Quotes["BM@T"].round(4);
+          var newValue = (row.BM / 100);
+          
+          var tolerance = 1e-6;
+          if(Math.abs(oldValue-newValue)>tolerance) {
+            utils.log("Changing mark for {1}: {2}->{3} in {4}", underlier, obs.Name, oldValue, newValue);
+            obs.Quotes["BM@T"] = newValue;
+            refresh = true;
+          }
+        });
+
+        return refresh;
+
+      }
+
       function ChangesForUnderlier(obj,underlier) {
         var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
-        var obs1 = mapIt(obj.collection[underlier]);
+        var obs1 = mapIt(obj.Get(underlier));
         var obs2 = mapIt(obj.originalCollection[underlier]);
         var observables = _.keys(obs1);
         var allDiffs = [];
