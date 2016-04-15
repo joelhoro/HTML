@@ -42,6 +42,8 @@ angular.module("volmarker")
 
   // initialization
   $scope.refreshVolSurfaces = function(initialize=true, underlier,broadcast) {
+      $scope.showLoadingPage();
+
       $scope.requestBusy = true;
       if(broadcast === undefined) broadcast = true;
 
@@ -65,6 +67,8 @@ angular.module("volmarker")
           $scope.initialized = true;
           $scope.requestBusy = false;
 
+          $scope.showLoadingPage(false);
+          $scope.$apply();
         }) 
       }
 
@@ -92,6 +96,11 @@ angular.module("volmarker")
   $scope.showSettingsMenu = function() {
     $('#settingsMenu').modal('show');
   }
+
+  $scope.showLoadingPage = function(show=true) {
+    $('#loadingPage').modal(show ? 'show' : 'hide');
+  }
+
 
   $scope.save = function() {
     alert("Not yet implemented");

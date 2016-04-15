@@ -15,8 +15,9 @@ angular.module('dataService',['utilities','dataWarehouse'])
         successFn(surfaceCollection);
       };
     if(settings.dataMode === 'local') {
-      convertSurface(dataWarehouse.dataFn());   
-      return;
+      var timeOut = settings.fakeSleepOnLocalMode ? 1000 : 0;
+      utils.log("Sleeping for {0}ms to fake server request", timeOut);
+      setTimeout(() => convertSurface(dataWarehouse.dataFn()), timeOut);   
     }
     else
       dataWarehouse.getAjaxData(convertSurface,dataMode,settings.date, settings.withMetaData);
