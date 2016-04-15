@@ -251,7 +251,7 @@ angular.module('utilities',[])
 	      "DEDZ7": "us",
 	      "DEDZ8": "us",
 	      "EURUSD WMCO": "eu",
-	      "FTSEMIB": "gb",
+	      "FTSEMIB": "it",
 	      "GBPUSD WMCO": "gb",
 	      "HYG UP": "us",
 	      "IEF UP": "us",
