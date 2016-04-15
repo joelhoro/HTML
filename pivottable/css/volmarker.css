@@ -133,3 +133,9 @@ h1 {
     background-color: #337ab7;
     color: white;
   }
+
+  .form-control {
+    height: 28px;
+  }
+
+  [ng\:cloak],[ng-cloak],.ng-cloak{display:none !important}
