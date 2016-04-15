@@ -6,7 +6,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
 
-  function retrieveVolSurfaces(successFn) {
+  function retrieveVolSurfaces(successFn, errorHandler) {
       utils.log("Date=", settings.date);
     var convertSurface = data => {
         if (data.status !== undefined) data = data.data;
@@ -17,10 +17,11 @@ angular.module('dataService',['utilities','dataWarehouse'])
     if(settings.dataMode === 'local') {
       var timeOut = settings.fakeSleepOnLocalMode ? 1000 : 0;
       utils.log("Sleeping for {0}ms to fake server request", timeOut);
-      setTimeout(() => convertSurface(dataWarehouse.dataFn()), timeOut);   
+      var date = settings.date.format("y-m-d")
+      setTimeout(() => convertSurface(dataWarehouse.dataFn()[date]), timeOut);   
     }
     else
-      dataWarehouse.getAjaxData(convertSurface,dataMode,settings.date, settings.withMetaData);
+      dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,settings.date, settings.withMetaData);
   }
 
   var gridConfig = function(dataField) {

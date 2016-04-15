@@ -164,7 +164,8 @@
           <img src='assets/gears.gif' />
         </span>
         <span class="col-sm-4">
-          <h1>Please wait...</h1>
+          <h1 ng-if='ajaxError==""'>Please wait...</h1>
+          <h3 ng-if='ajaxError!=""'>{{ajaxError}}</h3>
         </span>
       </div>
       <div class="modal-footer">

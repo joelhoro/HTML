@@ -66,6 +66,7 @@ angular.module("volmarker")
       $scope.showLoadingPage();
 
       $scope.requestBusy = true;
+      $scope.ajaxError = "";
       if(broadcast === undefined) broadcast = true;
 
       var underlierCopy = underlier; // otherwise lambda does not see it
@@ -90,6 +91,10 @@ angular.module("volmarker")
 
           $scope.showLoadingPage(false);
           $scope.$apply();
+        }, () => {
+          $scope.ajaxError = "An error happened requesting the data from the server!";
+          $scope.initialized = true;
+          $scope.requestBusy = false;
         }) 
       }
 
