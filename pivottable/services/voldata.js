@@ -21,7 +21,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
       setTimeout(() => convertSurface(dataWarehouse.dataFn()[date]), timeOut);   
     }
     else
-      dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,settings.date, settings.withMetaData);
+      dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,settings.date.format("y-m-d"), settings.withMetaData);
   }
 
   var gridConfig = function(dataField) {
