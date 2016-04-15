@@ -81,6 +81,7 @@ angular.module('utilities',[])
 	Array.prototype.where = function(values) { return _.where(this,values); };
 	Array.prototype.groupBy = function(fn) { return _.groupBy(this,fn); };
 	Array.prototype.sortBy = function(fn) { return _.sortBy(this,fn); };
+	Array.prototype.contains = function(elt) { return this.indexOf(elt)>-1; };
 	Array.prototype.toObject = function(valueFn,fieldFn) { 
 		  if(fieldFn === undefined) { fieldFn = f => f; }
 	      var obj = {}; 

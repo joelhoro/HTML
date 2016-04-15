@@ -14,6 +14,7 @@ angular.module('utilities')
         animationSpeed: 6,	// 1 is default
         withMetaData: true,
         showDealerDetails: false,
+        underliers: "SPX,SX5E,NKY,HSCEI",
       };
 
     var defaultSettings = _.clone(settings);

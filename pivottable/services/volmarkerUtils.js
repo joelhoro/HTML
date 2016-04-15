@@ -1,21 +1,19 @@
 angular.module("volmarker")
-.service("volmarkerUtils", function(utils) {
+.service("volmarkerUtils", function(utils, settings) {
 
-  function filterUnderliers(underliers) {
+  function filterUnderliers(allUnderliers, underlierString) {
+    if(underlierString === undefined)
+      underlierString = settings.underliers;
+    
+    if(underlierString === "") {
+      utils.log("Starting in full mode - with {0} underliers", allUnderliers.length);
+      return allUnderliers;
+    }
 
-    var search = location.search;
-    if(search.contains("test")) {
-      utils.log("Starting in test mode");
-      return ["SPX","NKY"];
-    }
-    else if(search.contains("full")) {
-      utils.log("Starting in full mode");
-      return underliers;
-    }
-    else {
-      utils.log("Starting in extended test mode");
-      return ["SPX", "SX5E", "NKY", "DAX", "SMI", "HSCEI" ];
-    }
+    settings.underliers = underlierString.toUpperCase();
+    var subset = settings.underliers.split(",").filter(x => allUnderliers.contains(x) );
+    utils.log("Starting in test mode - with {0} underliers", subset.length);
+    return subset;
   }
 
   return {
