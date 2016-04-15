@@ -9,7 +9,7 @@ angular.module("volmarker")
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
   $scope.volSurfaceCollection = new VolSurfaceCollection();
-  $scope.showMetadata = u => $scope.volsurfaceCollection.MetaData(u);
+  $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -34,37 +34,11 @@ angular.module("volmarker")
       $scope.activeUnderlier = und;
     }
     utils.log("Calculating changes");
-    $scope.calculateChanges();
+    $scope.volSurfaceCollection.CalculateChanges();
 
     utils.log("Switching to {0} in scope#{1}", und, $scope.$id);//, $scope.data);
   };
 
-  $scope.changesStored = {};
-
-  $scope.calculateChanges = function() {
-    if($scope.underliers === undefined) return;
-      $scope.underliers.map(underlier => {
-        var changes = $scope.volSurfaceCollection.changesForUnderlier(underlier);
-        if(changes.length)
-          $scope.changesStored[underlier] = changes;
-        else
-          delete($scope.changesStored[underlier]);
-      } )
-  }
-
-
-  $scope.hasChanges = function(underlier) {
-    return $scope.numberOfChanges(underlier) > 0;
-  }
-
-  $scope.numberOfChanges = function(underlier) {
-    if(underlier === undefined) {
-      underlier = $scope.activeUnderlier;
-    }
-    var changes = $scope.changesStored[underlier];
-    if(changes === undefined) changes = {};
-    return changes.length;
-  };
 
   // initialization
   $scope.refreshVolSurfaces = function(initialize=true, underlier,broadcast) {
@@ -73,7 +47,7 @@ angular.module("volmarker")
 
       var underlierCopy = underlier; // otherwise lambda does not see it
 
-      $scope.calculateChanges();      
+      $scope.volSurfaceCollection.CalculateChanges();      
       console.debug("Changes: ", $scope.changesStored);  
       if(initialize) {
         $scope.initialized = false;        
@@ -106,6 +80,7 @@ angular.module("volmarker")
       utils.toggleConsole();
   })
 
+  // interactivity
   $scope.next = function(inc) {
     var idx = ($scope.activeUnderlierIndex() + inc)
      .capfloor(0,$scope.underliers.length-1);
@@ -165,6 +140,7 @@ angular.module("volmarker")
     
   }, true);
 
+  /// INITIALIZATION
   $scope.showSettingsMenu();
   $scope.setDateAndLoad();
 

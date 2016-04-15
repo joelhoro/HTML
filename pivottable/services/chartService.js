@@ -1,8 +1,6 @@
 angular.module('volmarker')
   .service("chartService", function(analytics, ChartJs, settings, dealerUtils) {
 
-    Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
-
     function adjustScale(scope) {
 
           var filter = x => x.filter(y => y > 10);
@@ -17,6 +15,8 @@ angular.module('volmarker')
         }
 
     function getChartSpecs(surface, spxSurface, showdatesonaxis, tenor, type, tooltip) {
+      Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
+
       var scope = {};
       var doAdjustScale = false;
       scope.chartOptions = { 

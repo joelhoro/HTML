@@ -11,6 +11,8 @@ angular.module('utilities')
       this.collection = volSurfaces.toObject(row => new analytics.VolSurface(row), row => row.Index);
       this.originalCollection = utils.clone(this.collection);      
   
+      this.changesStored = {};
+
       this.Underliers = function() {
         return _.keys(this.collection);
       }
@@ -21,11 +23,21 @@ angular.module('utilities')
         return this.Underliers().toObject(und => this.collection[und].Points());
       }
 
+      this.ChangesCount = function(underlier) {
+        var changes = this.changesStored[underlier];
+        if(changes === undefined) changes = {};
+        return _.keys(changes).length;
+      }
+
       this.MetaData = function(underlier) {
         return this.collection[underlier].MetaData();
       }
 
-      this.Update = function(volsurfacecollection,underlier) {
+      this.HasMetaData = function(underlier) {
+        return this.MetaData(underlier).length > 0;
+      }
+
+      this.Update = function(volsurfacecollection, underlier) {
         if(underlier !== null && underlier !== undefined) {
             var slice = volsurfacecollection.collection[underlier];
             this.collection[underlier] = slice;
@@ -38,27 +50,41 @@ angular.module('utilities')
 
       }
 
-      this.changesForUnderlier = function(underlier) {
-      var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
-      var obs1 = mapIt(this.collection[underlier]);
-      var obs2 = mapIt(this.originalCollection[underlier]);
-      var observables = _.keys(obs1);
-      var allDiffs = [];
-      var getQuote = v => (v*100).round(2) + "%";
-      observables.map(k => { 
-        //utils.log("{0} vs {1}", obs1[k], obs2[k]);
-        if(obs1[k] !== obs2[k]) {
-          allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
-        }
-      });
-      utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
-      return allDiffs;
-  };
+      function ChangesForUnderlier(obj,underlier) {
+        var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
+        var obs1 = mapIt(obj.collection[underlier]);
+        var obs2 = mapIt(obj.originalCollection[underlier]);
+        var observables = _.keys(obs1);
+        var allDiffs = [];
+        var getQuote = v => (v*100).round(2) + "%";
+        observables.map(k => { 
+          //utils.log("{0} vs {1}", obs1[k], obs2[k]);
+          if(obs1[k] !== obs2[k]) {
+            allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
+          }
+        });
+        utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
+        return allDiffs;
+      }
 
+      this.CalculateChanges = function() {
+        this.Underliers().map(underlier => {
+            var changes = ChangesForUnderlier(this,underlier);
+            if(changes.length)
+              this.changesStored[underlier] = changes;
+            else
+              delete(this.changesStored[underlier]);
+          } );
+      }
+    
+      this.HasChanges = function(underlier) {
+        return this.NumberOfChanges(underlier) > 0;
+      }
 
+      this.NumberOfChanges = function(underlier) {
+        return this.ChangesCount(underlier);
+      };
     }
-
-  
 
   }
 
