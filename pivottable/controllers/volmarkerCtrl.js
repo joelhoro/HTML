@@ -2,14 +2,14 @@
 
 angular.module("volmarker")
 .controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, 
-  settings, dealerUtils) {
+  settings, dealerUtils, VolSurfaceCollection) {
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
 
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = '2016-4-11';
-  
-  $scope.showMetadata = u => $scope.volsurfaces[u].MetaData();
+  $scope.volSurfaceCollection = new VolSurfaceCollection();
+  $scope.showMetadata = u => $scope.volsurfaceCollection.MetaData(u);
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -19,7 +19,7 @@ angular.module("volmarker")
   $scope.gridConfig = voldata.gridConfig('data');
 
   // active underlier fns
-  $scope.surface = () => $scope.volsurfaces[$scope.activeUnderlier];
+  $scope.surface = () => $scope.volSurfaceCollection.collection[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
   $scope.dealerInfo = dealerUtils.dealerInfo;
 
@@ -29,7 +29,7 @@ angular.module("volmarker")
     }
     if(setData) {
       utils.log("Setting data in volmarkerCtrl");
-      $scope.data = $scope.volsurfaces[und].toDataTable();
+      $scope.data = $scope.volSurfaceCollection.collection[und].toDataTable();
 
       $scope.activeUnderlier = und;
     }
@@ -41,28 +41,10 @@ angular.module("volmarker")
 
   $scope.changesStored = {};
 
-  var changesForUnderlier = function(underlier) {
-      var mapIt = vs => vs.volSurface.Observables.toObject(o => o.Quotes["BM@T"], o => o.Name);
-      var obs1 = mapIt($scope.volsurfaces[underlier]);
-      var obs2 = mapIt($scope.volsurfaceOriginal[underlier]);
-      var observables = _.keys(obs1);
-      var allDiffs = [];
-      var getQuote = v => (v*100).round(2) + "%";
-      observables.map(k => { 
-        //utils.log("{0} vs {1}", obs1[k], obs2[k]);
-        if(obs1[k] !== obs2[k]) {
-          allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
-        }
-      });
-      utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
-      return allDiffs;
-  };
-
-
   $scope.calculateChanges = function() {
     if($scope.underliers === undefined) return;
       $scope.underliers.map(underlier => {
-        var changes = changesForUnderlier(underlier);
+        var changes = $scope.volSurfaceCollection.changesForUnderlier(underlier);
         if(changes.length)
           $scope.changesStored[underlier] = changes;
         else
@@ -97,19 +79,12 @@ angular.module("volmarker")
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
           var underlier = underlierCopy;
-          if(underlier !== null && underlier !== undefined) {
-            $scope.volsurfaces[underlier] = result[underlier];
-            $scope.volsurfaceOriginal[underlier] = JSON.parse(JSON.stringify($scope.volsurfaces[underlier]));
-          }
-          else {
-            $scope.volsurfaces = result;
-            $scope.volsurfaceOriginal = JSON.parse(JSON.stringify($scope.volsurfaces));
-          }
-          var allUnderliers = _.keys(result);
+          $scope.volSurfaceCollection.Update(result,underlier);
+          var allUnderliers = $scope.volSurfaceCollection.Underliers();
           $scope.allUnderliers = allUnderliers;
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
 
-          $scope.points = $scope.underliers.toObject(und => result[und].Points());
+          $scope.points = $scope.volSurfaceCollection.Points();
           var underlier = ($scope.activeUnderlier == undefined) ? $scope.underliers[0] : $scope.activeUnderlier;
           $scope.setActiveUnderlier(underlier,broadcast);
           $scope.initialized = true;
@@ -164,14 +139,14 @@ angular.module("volmarker")
 
   $scope.$watch('data', newdata => { 
     if(newdata === undefined) { return; }
-    var surfaces = $scope.volsurfaces;
+    var surfaces = $scope.volSurfaceCollection;
 
     var refresh = false;
     var idx = 0;
 
     var underlier = newdata[0].underlier;
     newdata.map(row => {
-      var obs = surfaces[underlier].volSurface.Observables[idx++];
+      var obs = surfaces.collection[underlier].volSurface.Observables[idx++];
       var oldValue = obs.Quotes["BM@T"].round(4);
       var newValue = (row.BM / 100);
       

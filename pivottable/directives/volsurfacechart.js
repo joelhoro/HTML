@@ -15,12 +15,12 @@ angular.module('volmarker')
 
         var setChartData = function(und) { 
             $scope.underlier = und;
-            var surface = $scope.volsurfaces[und];
+            var surface = $scope.volSurfaceCollection.collection[und];
             if(surface === undefined) {
               return;
             }
 
-            var config = chartService.getChartSpecs($scope.volsurfaces, surface, 
+            var config = chartService.getChartSpecs(surface, $scope.volSurfaceCollection.collection.SPX,
               showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip);
 
 //            _.extend($scope, config);
@@ -66,7 +66,7 @@ angular.module('volmarker')
     scope: {
        //// variables
        underlier : '=',
-       volsurfaces: '=',
+       volSurfaceCollection: '=volsurfacecollection',
        tenor: '=',
        //// settings
        listen: '@',

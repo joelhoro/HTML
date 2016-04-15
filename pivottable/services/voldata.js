@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('dataService',['utilities','dataWarehouse'])
-.service("voldata", function(utils,dataWarehouse,analytics,_, settings, dealerUtils) { 
+.service("voldata", function(utils,dataWarehouse,analytics,_, settings, dealerUtils, VolSurfaceCollection) { 
 
   utils.log("Initializing voldata service");
   // just so it's available in the lambdas;
@@ -10,9 +10,9 @@ angular.module('dataService',['utilities','dataWarehouse'])
       utils.log("Date=", settings.date);
     var convertSurface = data => {
         if (data.status !== undefined) data = data.data;
-        var surface = data.toObject(row => new analytics.VolSurface(row), row => row.Index);
-        utils.log("Getting volsurfaces - found {1} underliers", _.keys(surface).length);
-        successFn(surface);
+        var surfaceCollection = new VolSurfaceCollection(data);
+        utils.log("Getting volsurfaces - found {1} underliers", surfaceCollection.UnderliersCount());
+        successFn(surfaceCollection);
       };
     if(dataMode === 'local') {
       convertSurface(dataWarehouse.dataFn());   

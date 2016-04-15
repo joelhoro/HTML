@@ -16,7 +16,7 @@ angular.module('volmarker')
           scope.chartOptions.scaleStartValue = min;
         }
 
-    function getChartSpecs(volsurfaces, surface, showdatesonaxis, tenor, type, tooltip) {
+    function getChartSpecs(surface, spxSurface, showdatesonaxis, tenor, type, tooltip) {
       var scope = {};
       var doAdjustScale = false;
       scope.chartOptions = { 
@@ -55,7 +55,7 @@ angular.module('volmarker')
       else if(type === 'ratio')  {
           scope.chartSeries = [ "Ratio to SPX"  ];
 
-          var spxCurveFn = volsurfaces.SPX.CurveFn("BM@T");
+          var spxCurveFn = spxSurface.CurveFn("BM@T");
           var thisCurve = surface.Extract("BM@T");
           var tenors = surface.Tenors();
           var i = 0;

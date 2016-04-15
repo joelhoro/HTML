@@ -27,6 +27,7 @@
 <script src="services/analytics.js"></script>
 <script src="services/settings.js"></script>
 <script src="services/voldata.js"></script>
+<script src="services/volsurfacecollection.js"></script>
 <script src="services/volmarkerUtils.js"></script>
 <script src="services/chartService.js"></script>
 <script src="services/dealerUtils.js"></script>
@@ -174,7 +175,7 @@
                       </ul>
                   </div>
                   <div ng-if='settings.showThumbnails'>
-                      <vol-surface-chart volsurfaces='volsurfaces' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
+                      <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
                   </div>
               </div>
 
@@ -233,12 +234,12 @@
                 <hr>
               </div>
               <div class=row>
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
+                <vol-surface-chart volsurfacecollection='volsurfacecollection' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
                 <b>BM estimate vs. dealers for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
               <div class=row>
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='basis' showdatesonaxis=1 />
+                <vol-surface-chart volsurfacecollection='volsurfacecollection' underlier='activeUnderlier' listen=1 tooltip=1 type='basis' showdatesonaxis=1 />
               </div>
             </div>-->
           </div> 
@@ -253,24 +254,24 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-md-12">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
                 <b>BM estimate vs. dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
                 <b>Total StdDev (Var * sqrt(t))</b>
                 </vol-surface-chart>
               </div>
               <div  class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
                 <b>Ratio to SPX</b>
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in settings.fwdVarTenorsList()" class="col-md-6">
-                <vol-surface-chart volsurfaces='volsurfaces' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>
