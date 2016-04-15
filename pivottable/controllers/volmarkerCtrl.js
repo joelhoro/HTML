@@ -5,11 +5,13 @@ angular.module("volmarker")
   settings, dealerUtils, VolSurfaceCollection) {
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
 
+  $scope.expertMode = false;
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = new Date().addDays(-1);
   $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
+
 
   $scope.initialized = false;
   $scope.startTime = new Date();

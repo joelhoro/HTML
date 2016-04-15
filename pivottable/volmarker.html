@@ -43,7 +43,9 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" ng-click="expertMode = !expertMode" aria-label="Close"><span aria-hidden="true"> &nbsp;&nbsp;&nbsp;  </span></button>
         <h3 class="modal-title">VolMarker settings</h3>
       </div>
       <div class="modal-body">
@@ -80,47 +82,9 @@
           </div>       
 
           <div class="form-group">
-            <label for="f2" class="col-sm-4 control-label">Data mode</label>
-            <div class="col-sm-8">
-              <select id="f2" name="date" ng-model="settings.dataMode">
-                  <option ng-repeat="mode in ['local','ajax','ajaxASP']" value="{{mode}}" ng-selected="settings.dataMode==mode">{{mode}}</option>
-              </select>
-            </div>
-          </div>    
-
-          <div class="form-group">
-            <label  class="col-sm-4 control-label">Animation speed [{{settings.animationSpeed}}]</label>
-            <div class="col-sm-8">
-              <input type="range" ng-model='settings.animationSpeed' data-popup-enabled="true" min="1" max="10">
-            </div>
-          </div>    
-
-
-          <div class="form-group">
-            <label for="f6" class="col-sm-4 control-label">Fake startup wait</label>
-            <div class="col-sm-8">
-            <input id="f6" type=checkbox ng-model='settings.fakeSleepOnLocalMode' /> 
-            </div>
-          </div>     
-
-          <div class="form-group">
             <label for="f3" class="col-sm-4 control-label">Show dealer details</label>
             <div class="col-sm-8">
             <input id="f3" type=checkbox ng-model='settings.showDealerDetails' /> 
-            </div>
-          </div>     
-
-          <div class="form-group">
-            <label for="f3" class="col-sm-4 control-label">Show settings at startup</label>
-            <div class="col-sm-8">
-            <input id="f3" type=checkbox ng-model='settings.loadMenuOnStartup' /> 
-            </div>
-          </div>     
-
-          <div class="form-group">
-            <label for="f3" class="col-sm-4 control-label">Show console</label>
-            <div class="col-sm-8">
-            <input id="f3" type=checkbox ng-model='settings.console' /> 
             </div>
           </div>     
 
@@ -137,6 +101,48 @@
               <input id="fwdvartenors" type="text" class="form-control"  placeholder="" ng-model='settings.fwdVarTenors'>
             </div>
           </div>   
+
+
+          <!-- EXPERT MODE SETTINGS -->
+        <div ng-if='expertMode'>
+          <div class="form-group">
+            <label for="f2" class="col-sm-4 control-label">Data mode</label>
+            <div class="col-sm-8">
+              <select id="f2" name="date" ng-model="settings.dataMode">
+                  <option ng-repeat="mode in ['local','ajax','ajaxASP']" value="{{mode}}" ng-selected="settings.dataMode==mode">{{mode}}</option>
+              </select>
+            </div>
+          </div>    
+
+          <div class="form-group">
+            <label for="f6" class="col-sm-4 control-label">Fake startup wait</label>
+            <div class="col-sm-8">
+            <input id="f6" type=checkbox ng-model='settings.fakeSleepOnLocalMode' /> 
+            </div>
+          </div>     
+
+          <div class="form-group">
+            <label for="f3" class="col-sm-4 control-label">Show settings at startup</label>
+            <div class="col-sm-8">
+            <input id="f3" type=checkbox ng-model='settings.loadMenuOnStartup' /> 
+            </div>
+          </div>     
+
+
+          <div class="form-group" ng-if='expertMode'>
+            <label for="f3" class="col-sm-4 control-label">Show console</label>
+            <div class="col-sm-8">
+            <input id="f3" type=checkbox ng-model='settings.console' /> 
+            </div>
+          </div>     
+
+          <div class="form-group">
+            <label  class="col-sm-4 control-label">Animation speed [{{settings.animationSpeed}}]</label>
+            <div class="col-sm-8">
+              <input type="range" ng-model='settings.animationSpeed' data-popup-enabled="true" min="1" max="10">
+            </div>
+          </div>    
+        </div>
 
         </form>
       </div>
