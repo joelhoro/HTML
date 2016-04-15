@@ -5,14 +5,20 @@ angular.module('utilities')
 
   utils.log("Initializing volsurfacecollection factory");
   class VolSurfaceCollection {
-    constructor(volSurfaces) {
+    constructor(volSurfaces, date) {
       if(volSurfaces === undefined )
         volSurfaces = []
       this.collection = volSurfaces.toObject(row => new analytics.VolSurface(row), row => row.Index);
       this.originalCollection = utils.clone(this.collection);      
-  
+
+      if(date !== undefined)
+        this.date = date;
+
       this.changesStored = {};
 
+      this.Date = function() { 
+        return this.date;
+      }
       this.Underliers = function() {
         return _.keys(this.collection);
       }
@@ -43,7 +49,7 @@ angular.module('utilities')
 
       // Update this collection from another one, either all underliers
       // or only the one specified
-      this.Update = function(volsurfacecollection, underlier) {
+      this.Update = function(volsurfacecollection, underlier, date) {
         // if underlier is specified, only update this one
         if(underlier !== null && underlier !== undefined) {
             var slice = volsurfacecollection.Get(underlier);
@@ -54,7 +60,7 @@ angular.module('utilities')
             this.collection = volsurfacecollection.collection;
             this.originalCollection = utils.clone(volsurfacecollection.collection);
           }
-
+          this.date = date;
       }
 
       this.UpdateFromData = function(dataGrid) {

@@ -16,7 +16,7 @@ angular.module('utilities')
         showDealerDetails: false,
         underliers: "SPX,SX5E,NKY,HSCEI",
         loadMenuOnStartup: true,
-        fakeSleepOnLocalMode: true, // allows to pretend local request takes time - for testing gui
+        fakeSleepOnLocalMode: false, // allows to pretend local request takes time - for testing gui
       };
 
     var settings;

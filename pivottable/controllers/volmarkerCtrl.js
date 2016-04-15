@@ -7,7 +7,7 @@ angular.module("volmarker")
 
   $scope.requestBusy = false;
   $scope.settings = settings;
-  $scope.pricingDate = '2016-4-11';
+  $scope.pricingDate = new Date().addDays(-1);
   $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
@@ -22,6 +22,27 @@ angular.module("volmarker")
   $scope.surface = () => $scope.volSurfaceCollection.collection[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
   $scope.dealerInfo = dealerUtils.dealerInfo;
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[1];
+  $scope.altInputFormats = ['M!/d!/yyyy'];
+  $scope.dateOptions = {
+      // dateDisabled: disabled,
+      formatYear: 'yy',
+      minDate: new Date().addDays(-30),
+      maxDate: new Date(),
+      startingDay: 1
+    };
+
+  $scope.openPricingDatePicker = function() {
+    $scope.pricingDatePicker.opened = true;
+  };
+
+  $scope.pricingDatePicker = {
+    opened: false
+  };
+
+
 
   $scope.setActiveUnderlier = function(und, setData=true) {
     if(und === undefined) {
@@ -56,7 +77,7 @@ angular.module("volmarker")
         voldata.retrieveVolSurfaces(result => {
           var underlier = underlierCopy;
           // all this should be factored out even more on volsurfacecollection
-          $scope.volSurfaceCollection.Update(result,underlier);
+          $scope.volSurfaceCollection.Update(result,underlier, settings.date);
           var allUnderliers = $scope.volSurfaceCollection.Underliers();
           $scope.allUnderliers = allUnderliers;
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
@@ -118,7 +139,6 @@ angular.module("volmarker")
   $scope.$watch('settings', function(n,o) { 
     // whenever settings change, save to localStorage
     settings.Save();
-
     // update the grid if needed
     if(n.showDealerDetails !== o.showDealerDetails)
       $scope.gridConfig = voldata.gridConfig('data');
