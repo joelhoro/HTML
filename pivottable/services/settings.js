@@ -4,7 +4,7 @@ angular.module('utilities')
 
     var isLocal = $location.$$absUrl.startsWith("file://");
 
-    var settings = {
+    var defaultSettings = {
         showThumbnails : false,
         showFlags: true,
         console: false,
@@ -17,7 +17,13 @@ angular.module('utilities')
         underliers: "SPX,SX5E,NKY,HSCEI",
       };
 
-    var defaultSettings = _.clone(settings);
+    var settings;
+    if(localStorage.volMarkerSettings !== undefined)
+    	settings = JSON.parse(localStorage.volMarkerSettings);
+    else {
+    	settings = _.clone(defaultSettings);
+    	localStorage.volMarkerSettings = JSON.stringify(settings);
+    }
 
     settings.reset = function() {
     	for(var k in defaultSettings)

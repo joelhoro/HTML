@@ -131,6 +131,8 @@ angular.module("volmarker")
 
   // watches
   $scope.$watch('settings', function(n,o) { 
+    localStorage.volMarkerSettings = JSON.stringify(n);
+
     if(n.showDealerDetails !== o.showDealerDetails)
       $scope.gridConfig = voldata.gridConfig('data');
     if(n.underliers !== o.underliers)
