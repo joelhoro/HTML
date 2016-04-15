@@ -240,7 +240,7 @@ angular.module('utilities',[])
 
 	    var flags = {
 	      "AS51": "au",
-	      "HSI": "cn",
+	      "HSI": "hk",
 	      "KOSPI2": "kr", 
 	      "SPX": "us",
 	      "SX5E": "eu",
@@ -267,7 +267,7 @@ angular.module('utilities',[])
 	      "DAX": "de",
 	      "EEM UP": "us",
 	      "EWJ UP": "us",
-	      "HSCEI": "cn",
+	      "HSCEI": "hk",
 	      "IBEX": "es",
 	      "NDX": "us",
 	      "RTY": "us",

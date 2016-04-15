@@ -103,10 +103,6 @@ h1 {
   .panel {
       min-height: 90%;
   }
-  .panel-body {
-      min-height: 90%;
-  }
-
   select {
     color: black;
   }
