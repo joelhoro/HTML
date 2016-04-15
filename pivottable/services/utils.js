@@ -20,6 +20,7 @@ angular.module('utilities',[])
 
 	$.fn.scrollTo = function( target, options, callback ){
 	  if(typeof options === 'function' && arguments.length === 2){ callback = options; options = target; }
+	  if($(target).length == 0) return;
 	  var settings = $.extend({
 	    scrollTarget  : target,
 	    offsetTop     : 50,
