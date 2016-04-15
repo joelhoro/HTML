@@ -1,6 +1,7 @@
 angular.module("volmarker")
 .service("volmarkerUtils", function(utils, settings) {
-
+  utils.log("Loading volmarkerUtils");
+  
   function filterUnderliers(allUnderliers, underlierString) {
     if(underlierString === undefined)
       underlierString = settings.underliers;

@@ -18,7 +18,11 @@ angular.module('dataService',['utilities','dataWarehouse'])
       var timeOut = settings.fakeSleepOnLocalMode ? 1000 : 0;
       utils.log("Sleeping for {0}ms to fake server request", timeOut);
       var date = settings.date.format("y-m-d")
-      setTimeout(() => convertSurface(dataWarehouse.dataFn()[date]), timeOut);   
+      var action = () => convertSurface(dataWarehouse.dataFn()[date]);
+      if(timeOut>0)
+        setTimeout(action, timeOut);
+      else
+        action(); // for testing purposes
     }
     else
       dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,settings.date.format("y-m-d"), settings.withMetaData);
