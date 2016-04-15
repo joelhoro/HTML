@@ -21,7 +21,7 @@ angular.module('utilities')
     var settings;
     // loading and saving from localStorage
     if(localStorage.volMarkerSettings !== undefined)
-    	settings = JSON.parse(localStorage.volMarkerSettings);
+    	settings = _.extend(defaultSettings,JSON.parse(localStorage.volMarkerSettings));
     else {
     	settings = _.clone(defaultSettings);
     	localStorage.volMarkerSettings = JSON.stringify(settings);
