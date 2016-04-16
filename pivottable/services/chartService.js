@@ -56,7 +56,6 @@ angular.module('volmarker')
           scope.chartData = surface.ExtractMany('Basis','New basis'); 
       }
       else if(type === 'ratio')  {
-          var delta = 0.4;
           scope.chartSeries = [ "Variance", "Vol at " + Math.round(ratioDelta) + "% delta"  ];
 
           var spxCurveFn = spxSurface.CurveFn("BM@T");
@@ -68,7 +67,7 @@ angular.module('volmarker')
           var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(i)(ratioDelta/100) / spxSurface.VolAtDeltaFn(i++)(ratioDelta/100))*100).round(2));
           scope.chartData = [
             varRatio,
-            settings.showVolRatio ? volRatio : [],
+            settings.showVolRatio ? volRatio : []
           ];
       }
       else if(type === 'totalstdev')  {

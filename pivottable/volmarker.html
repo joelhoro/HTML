@@ -323,8 +323,8 @@
               <div  class="col-md-6">
                 <b>Ratio to SPX {{ settings.showVolRatio ? '(Variance / Vol at '+ratioDelta+'% delta)' : ''}}</b>
                 <div ng-if='settings.showVolRatio' class="col-md-3">Delta:</div>
-                <div ng-if='settings.showVolRatio' class="col-md-9"><input type="range" ng-model='ratioDelta' data-popup-enabled="true" min="1" max="99"></div>
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' ratioDelta='ratioDelta' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
+                <div ng-if='settings.showVolRatio' class="col-md-9"><input type="range" ng-change='changeRatioDelta(ratioDelta)' ng-model='ratioDelta' data-popup-enabled="true" min="5" max="95" step="1"></div>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
 
                 </vol-surface-chart>
               </div>

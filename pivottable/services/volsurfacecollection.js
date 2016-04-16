@@ -99,7 +99,7 @@ angular.module('utilities')
             allDiffs.push( { obs: k.substr(k.length-5), diff: getQuote(obs2[k])+"->"+getQuote(obs1[k]) } );
           }
         });
-        utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
+        //utils.log("Calculating changes for " + underlier + " : " + allDiffs.length + " changes found");
         return allDiffs;
       }
 

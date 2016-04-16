@@ -12,7 +12,10 @@ angular.module("volmarker")
   $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
-  $scope.ratioDelta = 10;
+  $scope.ratioDelta = 20;
+  $scope.changeRatioDelta = function(n) {
+    $scope.ratioDelta = n;
+  }
 
   $scope.initialized = false;
   $scope.startTime = new Date();
