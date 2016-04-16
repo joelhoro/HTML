@@ -66,10 +66,6 @@ angular.module("volmarker")
 
   // initialization
   $scope.refreshVolSurfaces = function(initialize=true, underlier,broadcast) {
-      $scope.showLoadingPage();
-
-      $scope.requestBusy = true;
-      $scope.ajaxError = "";
       if(broadcast === undefined) broadcast = true;
 
       var underlierCopy = underlier; // otherwise lambda does not see it
@@ -77,6 +73,10 @@ angular.module("volmarker")
       $scope.volSurfaceCollection.CalculateChanges();      
       console.debug("Changes: ", $scope.changesStored);  
       if(initialize) {
+        $scope.showLoadingPage();
+
+        $scope.requestBusy = true;
+        $scope.ajaxError = "";
         $scope.initialized = false;        
         voldata.retrieveVolSurfaces(result => {
           var underlier = underlierCopy;
