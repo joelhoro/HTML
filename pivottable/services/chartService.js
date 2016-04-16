@@ -63,8 +63,7 @@ angular.module('volmarker')
           var tenors = surface.Tenors().splice(1);
           var i = 1;
           var varRatio = tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2));
-          var i = 1;
-          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(i)(ratioDelta/100) / spxSurface.VolAtDeltaFn(i++)(ratioDelta/100))*100).round(2));
+          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(t)(ratioDelta/100) / spxSurface.VolAtDeltaFn(t)(ratioDelta/100))*100).round(2));
           scope.chartData = [
             varRatio,
             settings.showVolRatio ? volRatio : []
@@ -75,9 +74,13 @@ angular.module('volmarker')
           var curve = surface.Curve("BM@T");
           scope.chartData = [ analytics.stdevCurve(curve,settings.today) ];
     }
-      else {
+      else if(type === 'bmonly' || type === '') {
+
           scope.chartSeries = ["BlueMountain", "Dealer average"].concat(dealerUtils.dealers.map(d => dealerUtils.dealerInfo[d].label));
           var tickers = ["BM@T", "Dealer.avg"].concat(dealerUtils.dealers.map(d => "Dealer." + d));
+          if(type=== 'bmonly')
+            tickers = [ tickers[0] ];
+
           scope.chartData = tickers.map(t => surface.Extract(t));
           doAdjustScale = true;
       }

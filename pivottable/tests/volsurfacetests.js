@@ -36,18 +36,6 @@ angular.module('tests')
         testscore.AssertEqual(1, vs.ChangesCount("SPX"), "Checking that number of changes=");
         testscore.AssertEqual(changes, vs.changesStored["SPX"][0], "Testing volsurface changes");
 
-        var spx = vs.collection["SPX"];
-        var volAtDelta = spx.VolAtDeltaFn(4);
-        var vol50 = 0.14593844527438138;
-        var vol45 = 0.1394839134920491;
-        var correction = -0.000043020399215;
-        var vol475 = (vol50+vol45)/2 + correction;
-
-        testscore.AssertEqual(vol50, volAtDelta(0.5), "Checking vol at delta");
-        testscore.AssertEqual(vol45, volAtDelta(0.45), "Checking vol at delta");
-        testscore.AssertEqual(vol475, volAtDelta(0.475), "Checking vol at delta");
-
-
     } );
   }
 
@@ -56,8 +44,8 @@ angular.module('tests')
 
     voldata.retrieveVolSurfaces(vs => {
 
-        var spx = vs.collection["SPX"];
-        var volAtDelta = spx.VolAtDeltaFn(4);
+        var spx = vs.Get("SPX");
+        var volAtDelta = spx.VolAtDeltaFn(spx.volSurface.Observables[4].Maturity);
         var vol50 = 0.14593844527438138;
         var vol45 = 0.1394839134920491;
         var correction = -0.000043020399215;

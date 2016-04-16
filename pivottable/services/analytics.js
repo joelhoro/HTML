@@ -79,7 +79,21 @@ angular.module('utilities')
       }
       this.Spot = function() {
         return this.volSurface.Spot;
-      }      
+      }   
+
+      this.IsFollower = function() {
+        return this.volSurface.Leader !== undefined;
+      }
+
+      this.IsLeader = function() {
+        return this.volSurface.Leader === undefined;
+      }
+
+      this.Leader = function() {
+        if(this.volSurface.Leader !== undefined)
+          return this.volSurface.Leader;
+        return "SPX";
+      }   
 
       this.Age = function() {
           return utils.toFriendlyTime( new Date() - new Date(this.Time()) );
@@ -133,8 +147,16 @@ angular.module('utilities')
         return interpolator(this.Curve(col));
       }
 
-      this.VolAtDeltaFn = function(maturityIdx) {
-        var volCurve = this.volSurface.Observables[maturityIdx].Vols;
+      this.VolAtDeltaFn = function(tenor) {
+        // finding, among all observables, the one closer to the tenor given
+        var closestObservable = this.volSurface.Observables
+          .map(o => ({ obs : o, dist : Math.abs((new Date(o.Maturity)-new Date(tenor))/1000/3600/24) }))
+          .sortBy(r => r.dist)[0]
+          .obs
+
+        utils.log("All maturities: ", this.Tenors());
+        utils.log("Closest to " + tenor + " = " + closestObservable.Maturity);
+        var volCurve = closestObservable.Vols;
         var deltas = _.keys(volCurve).map(r => Number(r)).sort();
         return interpolator(deltas.toObject(d => volCurve[d]));
       }

@@ -2759,6 +2759,7 @@ return {
   },
   {
     "Index": "FTSEMIB",
+    "Leader": "SX5E",
     "Ticker": "EQI.FTSEMIB",
     "Spot": 18257.35,
     "VolSurfaceTime": "4/15/2016 11:40:00 AM",
@@ -3443,6 +3444,7 @@ return {
   },
   {
     "Index": "SMI",
+    "Leader": "SX5E",
     "Ticker": "EQI.SMI",
     "Spot": 8013.23,
     "VolSurfaceTime": "4/15/2016 11:24:18 AM",
@@ -3668,6 +3670,7 @@ return {
   },
   {
     "Index": "TPX",
+    "Leader": "NKY",
     "Ticker": "EQI.TPX",
     "Spot": 1361.4,
     "VolSurfaceTime": "4/15/2016 3:15:00 PM",
@@ -4145,6 +4148,7 @@ return {
   },
   {
     "Index": "CAC",
+    "Leader": "SX5E",    
     "Ticker": "EQI.CAC",
     "Spot": 4495.17,
     "VolSurfaceTime": "4/15/2016 11:30:13 AM",
@@ -4190,6 +4194,7 @@ return {
   },
   {
     "Index": "DAX",
+    "Leader": "SX5E",    
     "Ticker": "EQI.DAX",
     "Spot": 10051.57,
     "VolSurfaceTime": "4/15/2016 11:30:19 AM",
@@ -4595,6 +4600,7 @@ return {
   },
   {
     "Index": "HSCEI",
+    "Leader": "NKY",
     "Ticker": "EQI.HSCEI",
     "Spot": 9214.98,
     "VolSurfaceTime": "4/15/2016 4:00:00 PM",
@@ -4892,6 +4898,7 @@ return {
   },
   {
     "Index": "IBEX",
+    "Leader": "SX5E",    
     "Ticker": "EQI.IBEX",
     "Spot": 8850.9,
     "VolSurfaceTime": "4/15/2016 11:35:00 AM",
@@ -4937,6 +4944,7 @@ return {
   },
   {
     "Index": "NDX",
+    "Leader": "SPX",
     "Ticker": "EQI.NDX",
     "Spot": 4543.161,
     "VolSurfaceTime": "4/15/2016 4:15:46 PM",
@@ -5162,6 +5170,7 @@ return {
   },
   {
     "Index": "RTY",
+    "Leader": "SPX",    
     "Ticker": "EQI.RTY",
     "Spot": 1130.923,
     "VolSurfaceTime": "4/15/2016 4:14:22 PM",
@@ -5387,6 +5396,7 @@ return {
   },
   {
     "Index": "SX7E",
+    "Leader": "SX5E",
     "Ticker": "EQI.SX7E",
     "Spot": 104.89,
     "VolSurfaceTime": "4/15/2016 11:30:13 AM",
@@ -5432,6 +5442,7 @@ return {
   },
   {
     "Index": "TWSE",
+    "Leader": "NKY",    
     "Ticker": "EQI.TWSE",
     "Spot": 8700.39,
     "VolSurfaceTime": "4/15/2016 1:45:00 PM",

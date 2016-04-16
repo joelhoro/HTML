@@ -22,7 +22,8 @@ angular.module('volmarker')
               return;
             }
 
-            var config = chartService.getChartSpecs(surface, $scope.volSurfaceCollection.collection.SPX,
+            var leader = surface.Leader();
+            var config = chartService.getChartSpecs(surface, $scope.volSurfaceCollection.collection[leader],
               showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip, $scope.$parent.ratioDelta);
 
 //            _.extend($scope, config);
@@ -45,8 +46,9 @@ angular.module('volmarker')
            $scope.$watch('underlier', newUnd => setChartData(newUnd));
            $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und + " in " + description()); setChartData(und); });
         }
-        if($scope.type == "ratio")
-           $scope.$parent.$watch('ratioDelta', _ => { console.debug("ratio changed to " + _); setChartData() });
+        if($scope.type == "ratio") {
+           $scope.$parent.$watch('ratioDelta', _ => { setChartData() });
+        }
   }
 
   function templateFn(elt,attr)     
