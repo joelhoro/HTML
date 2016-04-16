@@ -114,8 +114,12 @@ angular.module('utilities')
 
       this.GetQuote = function(obs,col) {
         var fn = CalculateColumns[col];
-        if(fn != undefined)
-          return fn(obs).round(2);
+        if(fn != undefined) {
+          var calculatedValue = fn(obs);
+          if(Number.isNaN(calculatedValue))
+            return 0;
+          return calculatedValue.round(2);
+        }
 
         if(obs == undefined) debugger;
         var val = obs.Quotes[col];
@@ -127,7 +131,8 @@ angular.module('utilities')
       var CalculateColumns = {
         Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
         'New basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
-        'Dealer.avg' : o => dealerUtils.dealers.map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2)
+        'Dealer.avg' : o => dealerUtils.dealers.map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2),
+        BMEstimate: o => this.GetQuote(o,"BMComputed@T") + this.GetQuote(o,"Basis")
       };
 
       // returns the list of values (without dates)
@@ -170,7 +175,7 @@ angular.module('utilities')
           // need to renname coz ng-grid doesn't like fancy names
             var names = {
                 "BM": "BM@T",
-                "BMY": "BM@T-1",
+                "BMEST": "BMEstimate",
                 "B1": "Basis",
                 "B2": "New basis",
                 "Mark": "Mark"

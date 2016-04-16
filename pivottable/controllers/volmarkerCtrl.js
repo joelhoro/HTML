@@ -26,7 +26,7 @@ angular.module("volmarker")
   $scope.gridConfig = voldata.gridConfig('data');
 
   // active underlier fns
-  $scope.surface = () => $scope.volSurfaceCollection.collection[$scope.activeUnderlier];
+  $scope.ActiveSurface = () => $scope.volSurfaceCollection.collection[$scope.activeUnderlier];
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
   $scope.dealerInfo = dealerUtils.dealerInfo;
 
@@ -152,8 +152,10 @@ angular.module("volmarker")
     // whenever settings change, save to localStorage
     settings.Save();
     // update the grid if needed
-    if(n.showDealerDetails !== o.showDealerDetails)
+    if(n.showDealerDetails !== o.showDealerDetails) {
       $scope.gridConfig = voldata.gridConfig('data');
+      $scope.$broadcast("DataChanged");
+    }
     // update the list of underliers if needed
     if(n.underliers !== o.underliers)
       $scope.underliers = volmarkerUtils.filterUnderliers($scope.allUnderliers,n.underliers);

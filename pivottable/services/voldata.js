@@ -34,8 +34,8 @@ angular.module('dataService',['utilities','dataWarehouse'])
         var columns = 
               [
            {field: 'tenor',       displayName: 'Expiry',      enableCellEdit: false,  width: 50   }, 
-           {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
-           {field:'BM', displayName: 'BM tday',               enableCellEditOnFocus: true,    width: 55    },
+           // {field:'BMY',    displayName: 'BM yday',           enableCellEdit: false,   width: 55   },                         
+           {field:'BMEST', displayName: 'BM est',               enableCellEditOnFocus: true,    width: 55    },
            {field:'D6', displayName: 'D-avg',                 enableCellEdit: false,   width: 55   }
               ];
         if(settings.showDealerDetails)

@@ -5,7 +5,7 @@ angular.module('volmarker')
 
           var filter = x => x.filter(y => y > 10);
           var min = scope.chartData.map(x => filter(x).min()).filter(x => x!==undefined).min();
-          var width = 5;
+          var width = 2.5;
           min = min - (min%width);
           var max = scope.chartData.map(x => filter(x).max()).filter(x => x!==undefined).max();
           scope.chartOptions.scaleOverride = true;
@@ -44,7 +44,7 @@ angular.module('volmarker')
 
       if(type === 'fwd') {
         scope.chartSeries = [ "Fwd variance"  ];
-        var newCurve = surface.Curve('BM@T');
+        var newCurve = surface.Curve('BMEstimate');
         var fwdCurve = analytics.fwdVarCurve(newCurve, tenor);
         scope.chartData = [ 
             fwdCurve, 
@@ -58,8 +58,8 @@ angular.module('volmarker')
       else if(type === 'ratio')  {
           scope.chartSeries = [ "Variance", "Vol at " + Math.round(ratioDelta) + "% delta"  ];
 
-          var spxCurveFn = spxSurface.CurveFn("BM@T");
-          var thisCurve = surface.Extract("BM@T");
+          var spxCurveFn = spxSurface.CurveFn("BMEstimate");
+          var thisCurve = surface.Extract("BMEstimate");
           var tenors = surface.Tenors().splice(1);
           var i = 1;
           var varRatio = tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2));
@@ -71,13 +71,18 @@ angular.module('volmarker')
       }
       else if(type === 'totalstdev')  {
           scope.chartSeries = [ "Total stdev"  ];
-          var curve = surface.Curve("BM@T");
+          var curve = surface.Curve("BMEstimate");
           scope.chartData = [ analytics.stdevCurve(curve,settings.today) ];
     }
       else if(type === 'bmonly' || type === '') {
 
-          scope.chartSeries = ["BlueMountain", "Dealer average"].concat(dealerUtils.dealers.map(d => dealerUtils.dealerInfo[d].label));
-          var tickers = ["BM@T", "Dealer.avg"].concat(dealerUtils.dealers.map(d => "Dealer." + d));
+          scope.chartSeries = ["BlueMountain estimate", "Dealer average"];
+          var tickers = ["BMEstimate", "Dealer.avg"];
+          if(settings.showDealerDetails) {
+            scope.chartSeries = scope.chartSeries.concat(dealerUtils.dealers.map(d => dealerUtils.dealerInfo[d].label));
+            tickers = tickers.concat(dealerUtils.dealers.map(d => "Dealer." + d));            
+          }
+          
           if(type=== 'bmonly')
             tickers = [ tickers[0] ];
 

@@ -5,10 +5,10 @@ angular.module('utilities')
 
     var dealers = {
         socgen: {   shortname: "SG",    label: "SocGen"         },
+        ms:     {   shortname: "MS",    label: "Morgan Stanley"  },
         jpm:    {   shortname: "JPM",   label: "JP Morgan"      },
-        ml:     {   shortname: "ML",    label: "Merrill"        },
         hsbc:   {   shortname: "HSBC",  label: "HSBC"           },
-        ms:     {   shortname: "MS",    label: "Morgan Stanley"  }
+        ml:     {   shortname: "ML",    label: "Merrill"        },
     };
 
     return {
