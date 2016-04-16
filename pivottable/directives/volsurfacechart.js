@@ -6,6 +6,7 @@ angular.module('volmarker')
   function controller($scope,voldata, utils) {
 
         utils.log("Running volsurface controller - scope=" + $scope.$id);  
+
         var underlier = $scope.underlier;
         var showdatesonaxis = ($scope.showdatesonaxis === undefined) || ($scope.showdatesonaxis === '1');
 
@@ -14,14 +15,15 @@ angular.module('volmarker')
         }
 
         var setChartData = function(und) { 
-            $scope.underlier = und;
-            var surface = $scope.volSurfaceCollection.collection[und];
+            if(und !== undefined)
+              $scope.underlier = und;
+            var surface = $scope.volSurfaceCollection.collection[$scope.underlier];
             if(surface === undefined) {
               return;
             }
 
             var config = chartService.getChartSpecs(surface, $scope.volSurfaceCollection.collection.SPX,
-              showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip);
+              showdatesonaxis, $scope.tenor, $scope.type, $scope.tooltip, $scope.$parent.ratioDelta);
 
 //            _.extend($scope, config);
             ["Data","Series","Labels","Options", "Colours"].map(t => {
@@ -43,6 +45,8 @@ angular.module('volmarker')
            $scope.$watch('underlier', newUnd => setChartData(newUnd));
            $scope.$on("DataChanged", (_,und) => { utils.log("data changed for "+und + " in " + description()); setChartData(und); });
         }
+        if($scope.type == "ratio")
+           $scope.$parent.$watch('ratioDelta', _ => { console.debug("ratio changed to " + _); setChartData() });
   }
 
   function templateFn(elt,attr)     

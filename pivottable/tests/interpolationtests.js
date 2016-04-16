@@ -3,7 +3,15 @@ angular.module('tests')
 
   function TestInterpolation() {
     testscore.SetActiveCategory("Interpolation tests");
-    // interpolator
+    // interpolator with numbers
+    var xs = [0,1,2];
+    var ys = [0,1,4];
+    var interpolator = new analytics.interpolator(xs.toObjectWithValues(ys));
+    testscore.AssertEqual(1,interpolator(1),"Testing interpolation on constant curve at sample point");
+    testscore.AssertEqual(2.3125,interpolator(1.5),"Testing interpolation on constant curve at sample point");
+
+
+    // interpolator with dates
     var flatCurve = {};
     var today = new Date();
     flatCurve[m1=today.addDays(30)] = 1;

@@ -14,7 +14,7 @@ angular.module('volmarker')
           scope.chartOptions.scaleStartValue = min;
         }
 
-    function getChartSpecs(surface, spxSurface, showdatesonaxis, tenor, type, tooltip) {
+    function getChartSpecs(surface, spxSurface, showdatesonaxis, tenor, type, tooltip, ratioDelta) {
       Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
 
       var scope = {};
@@ -26,6 +26,9 @@ angular.module('volmarker')
         legendTemplate: 
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
       };
+
+      if(type == 'ratio')
+        scope.chartOptions.animationSteps = 1;
 
       scope.chartColours = [
             '#F7464A', // red
@@ -53,14 +56,19 @@ angular.module('volmarker')
           scope.chartData = surface.ExtractMany('Basis','New basis'); 
       }
       else if(type === 'ratio')  {
-          scope.chartSeries = [ "Ratio to SPX"  ];
+          var delta = 0.4;
+          scope.chartSeries = [ "Variance", "Vol at " + Math.round(ratioDelta) + "% delta"  ];
 
           var spxCurveFn = spxSurface.CurveFn("BM@T");
           var thisCurve = surface.Extract("BM@T");
-          var tenors = surface.Tenors();
-          var i = 0;
+          var tenors = surface.Tenors().splice(1);
+          var i = 1;
+          var varRatio = tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2));
+          var i = 1;
+          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(i)(ratioDelta/100) / spxSurface.VolAtDeltaFn(i++)(ratioDelta/100))*100).round(2));
           scope.chartData = [
-            tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2))
+            varRatio,
+            settings.showVolRatio ? volRatio : [],
           ];
       }
       else if(type === 'totalstdev')  {

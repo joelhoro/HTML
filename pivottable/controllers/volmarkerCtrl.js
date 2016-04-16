@@ -12,6 +12,7 @@ angular.module("volmarker")
   $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
+  $scope.ratioDelta = 10;
 
   $scope.initialized = false;
   $scope.startTime = new Date();
@@ -92,7 +93,7 @@ angular.module("volmarker")
           $scope.requestBusy = false;
 
           $scope.showLoadingPage(false);
-          $scope.$apply();
+          //$scope.$apply();
         }, () => {
           $scope.ajaxError = "An error happened requesting the data from the server!";
           $scope.initialized = true;

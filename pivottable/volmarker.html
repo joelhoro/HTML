@@ -102,6 +102,12 @@
             </div>
           </div>   
 
+          <div class="form-group" >
+            <label for="f3" class="col-sm-4 control-label">Show vol ratio</label>
+            <div class="col-sm-8">
+            <input id="f3" type=checkbox ng-model='settings.showVolRatio' /> 
+            </div>
+          </div> 
 
           <!-- EXPERT MODE SETTINGS -->
         <div ng-if='expertMode'>
@@ -315,8 +321,11 @@
                 </vol-surface-chart>
               </div>
               <div  class="col-md-6">
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
-                <b>Ratio to SPX</b>
+                <b>Ratio to SPX {{ settings.showVolRatio ? '(Variance / Vol at '+ratioDelta+'% delta)' : ''}}</b>
+                <div ng-if='settings.showVolRatio' class="col-md-3">Delta:</div>
+                <div ng-if='settings.showVolRatio' class="col-md-9"><input type="range" ng-model='ratioDelta' data-popup-enabled="true" min="1" max="99"></div>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' ratioDelta='ratioDelta' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
+
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in settings.fwdVarTenorsList()" class="col-md-6">

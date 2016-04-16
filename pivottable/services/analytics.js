@@ -6,12 +6,22 @@ angular.module('utilities')
   utils.log("Initializing analytics service");
 
   function interpolator(curve, conversion) {
+    if(_.keys(curve).length === 0) return d => null;
+
+    //utils.log("Creating interpolator for {0}", curve)
     if(conversion === undefined) {
       conversion = [(t,v) => v, (t,v) => v];
     }
+    var keys = _.keys(curve);
 
-    var dates = _.keys(curve).map(t => new Date(t).valueOf());
-    var values = _.keys(curve).map(t => conversion[0](new Date(t),curve[t]));
+    if( keys[0] instanceof Date || Number.isNaN(Number(keys[0])) ) {
+      var dates = keys.map(t => new Date(t).valueOf());
+      var values = keys.map(t => conversion[0](new Date(t),curve[t]));
+    } else
+    {
+      var dates = keys;
+      var values = _.values(curve);
+    }
 
     var spline = numeric.spline(dates,values);
     return d => conversion[1](d,spline.at(d.valueOf()));
@@ -122,6 +132,13 @@ angular.module('utilities')
       this.CurveFn = function(col) {
         return interpolator(this.Curve(col));
       }
+
+      this.VolAtDeltaFn = function(maturityIdx) {
+        var volCurve = this.volSurface.Observables[maturityIdx].Vols;
+        var deltas = _.keys(volCurve).map(r => Number(r)).sort();
+        return interpolator(deltas.toObject(d => volCurve[d]));
+      }
+
       this.toDataTable = function() {
         utils.log("Creating data table for volsurface of " + this.Underlier());
         var tenors = this.TenorLabels();
