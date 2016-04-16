@@ -19,7 +19,7 @@ angular.module('tests')
   function TestBasic() {
     SetActiveCategory("Basic tests");
     AssertTrue(1+1==2, "Test that 1+1 = 2");
-    AssertTrue(1+1==3, "Test that 1+1 = 3");
+    //AssertTrue(1+1==3, "Test that 1+1 = 3");
 
     AssertEqual(1.23,1.23456.round(2), "Test rounding");
 

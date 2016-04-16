@@ -44,11 +44,11 @@
 <html ng-app="tests">
   <div ng-controller="testCtrl">
 
-  <h1 ng-class="failures <= 1 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
-  <span style='text-align: right; display: block'>{{failures-1}} failures (excl. dummy failure)</span></h1>
+  <h1 ng-class="failures == 0 ? 'success' : 'fail'"><span>Total tests = {{testresults.length}}</span>
+  <span style='text-align: right; display: block'>{{failures}} failures</span></h1>
     <div ng-repeat="(name,group) in groupedResults" >
-    <button ng-click='toggle(name)'>{{showcategory[name] ? '-' : '+'}}</button> <b>Test group: {{name}} - {{group.length}} tests</b>
-    <ul ng-if='showcategory[name]'>
+    <button ng-click='toggle(name)'>{{showcategory[name] ? '-' : '+'}}</button> <b>Test group: {{name}} - {{group.length}} tests {{group.failures>0 ? '(' + group.failures + ' failures)' : '' }}</b>
+    <ul ng-if='showcategory[name] || group.failures > 0'>
       <li ng-repeat="result in group" ng-class="result.success ? 'success' : 'fail'"><b>[{{result.success ? 'PASS' : 'FAIL'}}]</b> {{result.description}} {{result.details != "" ? '[' + result.details + ']' : ''}}</li>
     </ul>
     </div>
@@ -67,7 +67,20 @@ angular.module('tests')
   $scope.testresults = tests.RunTests();
   $scope.failures = $scope.testresults.where({success: false}).length;
   $scope.groupedResults = $scope.testresults.groupBy(r => r.category);
-  $scope.showcategory = _.keys($scope.groupedResults).toObject(c => false);
+
+  var categories = _.keys($scope.groupedResults);
+  categories.map(cat => $scope.groupedResults[cat].failures = $scope.groupedResults[cat].filter(r => !r.success).length );
+
+  var defaultShowCategory = _.keys($scope.groupedResults).toObject(c => false);
+  var storedShowCategory = {};
+  if(localStorage.showcategory !== undefined) {
+    storedShowCategory = JSON.parse(localStorage.showcategory);
+  }
+
+
+  $scope.showcategory = _.extend(defaultShowCategory,storedShowCategory);
+
+  $scope.$watch('showcategory', n => localStorage.showcategory = JSON.stringify(n), true);
   
   
 
