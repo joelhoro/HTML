@@ -4,6 +4,7 @@ angular.module("volmarker")
 .controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, 
   settings, dealerUtils, VolSurfaceCollection) {
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
+  console.groupEnd();
 
   $scope.expertMode = false;
   $scope.requestBusy = false;

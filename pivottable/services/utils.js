@@ -131,7 +131,7 @@ angular.module('utilities',[])
 
 	// console stuff
     function log(message,...arg) {
-    	console.debug(message,arg);
+    	console.info(message,arg);
     	var spanId = "console_" + id;
     	var html = "<p># <span id=" + spanId + ">" + message.format(arg) + "</span>";
 		$("#console").append(html);
