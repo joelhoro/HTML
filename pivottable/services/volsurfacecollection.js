@@ -40,7 +40,16 @@ angular.module('utilities')
       }
 
       this.MetaData = function(underlier) {
-        return this.Get(underlier).MetaData();
+        var metadata = this.Get(underlier).MetaData();
+        for(var source in metadata) {
+          var description = metadata[source].Description;
+          var re = /.*file=(.*)\]/;
+          if(description.match(re) == null)
+            continue;
+          metadata[source].Link = description.replace(re,"$1");
+        }
+
+        return metadata;
       }
 
       this.HasMetaData = function(underlier) {

@@ -134,6 +134,9 @@ angular.module("volmarker")
     $('#loadingPage').modal(show ? 'show' : 'hide');
   }
 
+  $scope.showMetadataPage = function() {
+    $('#metadataPage').modal('show');    
+  }
 
   $scope.save = function() {
     alert("Not yet implemented");

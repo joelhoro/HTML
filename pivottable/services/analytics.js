@@ -159,8 +159,8 @@ angular.module('utilities')
           .sortBy(r => r.dist)[0]
           .obs
 
-        utils.log("All maturities: ", this.Tenors());
-        utils.log("Closest to " + tenor + " = " + closestObservable.Maturity);
+        // utils.log("All maturities: ", this.Tenors());
+        // utils.log("Closest to " + tenor + " = " + closestObservable.Maturity);
         var volCurve = closestObservable.Vols;
         var deltas = _.keys(volCurve).map(r => Number(r)).sort();
         return interpolator(deltas.toObject(d => volCurve[d]));

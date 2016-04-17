@@ -130,6 +130,10 @@ h1 {
     color: white;
   }
 
+  #metadataPage .modal-dialog {
+    width: 1050px;
+  }
+
   .form-control {
     height: 28px;
   }
