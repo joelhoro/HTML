@@ -45,7 +45,14 @@ angular.module('utilities')
         settings[key] = value;
     }
 
-
+    settings.SetFromUrl = function(urlSettings) {
+        for(var key in defaultSettings) {
+            if(urlSettings[key] !== undefined) {
+                settings[key] = JSON.parse(urlSettings[key]);
+            }
+        }
+        settings.Save();
+    }
 
     return settings;
 } );

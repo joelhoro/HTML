@@ -1,10 +1,12 @@
 "use strict";
 
 angular.module("volmarker")
-.controller("volmarkerCtrl", function($scope, $, _, voldata,utils,misc,volmarkerUtils, 
+.controller("volmarkerCtrl", function($scope, $location, $, _, voldata,utils,misc,volmarkerUtils, 
   settings, dealerUtils, VolSurfaceCollection) {
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
   console.groupEnd();
+
+  settings.SetFromUrl($location.search());
 
   $scope.expertMode = false;
   $scope.requestBusy = false;
@@ -184,5 +186,6 @@ angular.module("volmarker")
 
   $scope.setDateAndLoad();
 
+//  $scope.showMetadataPage();
 } );
   
