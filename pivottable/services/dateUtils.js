@@ -189,5 +189,29 @@ angular.module("utilities")
     };
 
     Date.prototype.addDays = function(d) {return new Date(this.valueOf()+d*1000*3600*24); }
-
+    Date.prototype.addWeekDays = function(d) { 
+        var date = this.addDays(0);
+        if(d<0) {
+            while(d++ < 0) {
+                if(date.getDay() == 1)
+                    date = date.addDays(-3)
+                else if (date.getDay() == 0)
+                    date = date.addDays(-2)
+                else 
+                    date = date.addDays(-1);
+            }
+        }
+        else if(d>0) {
+            while(d-- > 0) {
+                if(date.getDay() == 5)
+                    date = date.addDays(3)
+                else if (date.getDay() == 6)
+                    date = date.addDays(2)
+                else 
+                    date = date.addDays(1);
+            }
+        }
+        
+        return date;
+    }
 })

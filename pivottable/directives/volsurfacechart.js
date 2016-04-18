@@ -71,7 +71,7 @@ angular.module('volmarker')
     transclude: true,
     scope: {
        //// variables
-       underlier : '=',
+       underlier : '@',
        volSurfaceCollection: '=volsurfacecollection',
        tenor: '=',
        //// settings

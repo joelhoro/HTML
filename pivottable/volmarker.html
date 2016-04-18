@@ -231,9 +231,14 @@
     <div class="col-md-2" id='underliersPane'>
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <button class="btn btn-warning" ng-click="showSettingsMenu()">Settings</button>
+                    {{volSurfaceCollection.date.format("y-m-d")}}
+                    <button class="btn btn-xs btn-warning glyphicon glyphicon-chevron-left" ng-click="shiftPricingDate(-1)"> </button> 
+          <button class="btn btn-xs btn-warning glyphicon glyphicon-refresh" ng-click="shiftPricingDate(0)"> </button> 
+          <button class="btn btn-xs btn-warning glyphicon glyphicon-chevron-right"  ng-click="shiftPricingDate(1)"> </button> 
+          <button class="btn btn-xs btn-warning glyphicon glyphicon-wrench" ng-click="showSettingsMenu()"></button>
+
           <span>
-            <button class="btn" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button>
+            <!-- <button class="btn btn-xs" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button> -->
             <!--<button class="btn btn-danger" ng-click="refreshVolSurfaces()">Reload all</button>-->
           </span>
         </div>
@@ -266,7 +271,7 @@
               <!-- METADATA TEMPLATE -->
               <script type="text/ng-template" id="metadataTemplate">
                   <span ng-if='settings.withMetaData && volSurfaceCollection.HasMetaData(und)'>
-                         <h3>Sources for {{ und }}</h3>
+                         <h3>xx Sources for {{ und }}</h3>
                          <span ng-repeat='(source,metadata) in volSurfaceCollection.MetaData(und)'>
                          <h4>{{ dealerInfo[source].label }}</h4>
                             <ul>
@@ -293,12 +298,11 @@
     <div class="col-md-5" id='markingPane'>
       <div class="panel panel-primary" >
         <div class="panel-heading">
-          Var surface for  {{activeUnderlier}} [{{volSurfaceCollection.date.format("y-m-d")}}]
-          <button type="button" class="btn btn-default" ng-click="openPricingDatePicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+          Var surface for  {{activeUnderlier}} 
           <span>
-            <button ng-if='volSurfaceCollection.HasMetaData(activeUnderlier)' class="btn btn-warning" ng-click="showMetadataPage()">Show metadata</button>
+            <button ng-if='volSurfaceCollection.HasMetaData(activeUnderlier)' class="btn btn-xs btn-warning glyphicon glyphicon-info-sign" ng-click="showMetadataPage()"></button>
             <button class="btn btn-danger" ng-if='volSurfaceCollection.HasChanges(activeUnderlier)' ng-click="save()">Save changes</button>
-            <button class="btn btn-danger" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button>
+            <!-- <button class="btn btn-danger" ng-class="requestBusy ? 'btn-warning' : 'btn-danger'" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button> -->
           </span>
         </div>
         <div class="panel-body">
@@ -350,19 +354,19 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-md-12">
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier' listen=1 tooltip=1 type='' showdatesonaxis=1 >
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{activeUnderlier}}' listen=1 tooltip=1 type='' showdatesonaxis=1 >
                 <b>BM estimate vs. dealer for {{activeUnderlier}}</b>
                 </vol-surface-chart>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='ActiveSurface().Leader()' listen=1 tooltip=1  showdatesonaxis=1 nolegend=1 type=bmonly>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{ActiveSurface().Leader()}}' listen=1 tooltip=1  showdatesonaxis=1 nolegend=1 type=bmonly>
                 <b>{{ActiveSurface().IsLeader() ? "SPX variance" : "Leader variance (" + ActiveSurface().Leader() + ")" }}</b>
                 </vol-surface-chart>
               </div>
 <!--              <div class="col-md-6">
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{activeUnderlier}}' listen=1 tooltip=1 type='totalstdev' showdatesonaxis=1 nolegend=1>
                 <b>Total StdDev (Var * sqrt(t))</b>
                 </vol-surface-chart>
                </div> 
@@ -371,12 +375,12 @@
                 <b>Ratio to {{ActiveSurface().Leader()}} {{ settings.showVolRatio ? '(Variance / Vol at '+ratioDelta+'% delta)' : ''}}</b>
                 <div ng-if='settings.showVolRatio' class="col-md-3">Delta:</div>
                 <div ng-if='settings.showVolRatio' class="col-md-9"><input type="range" ng-change='changeRatioDelta(ratioDelta)' ng-model='ratioDelta' data-popup-enabled="true" min="5" max="95" step="1"></div>
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{activeUnderlier}}'  listen=1 tooltip=1 type=ratio showdatesonaxis=1 nolegend=1>
 
                 </vol-surface-chart>
               </div>
               <div ng-repeat="tenor in settings.fwdVarTenorsList()" class="col-md-6">
-                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='activeUnderlier'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
+                <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{activeUnderlier}}'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
                 <b>{{tenor}} forward variance</b>
                 </vol-surface-chart>
               </div>

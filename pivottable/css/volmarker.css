@@ -139,3 +139,11 @@ h1 {
   }
 
   [ng\:cloak],[ng-cloak],.ng-cloak{display:none !important}
+
+  .btn-xs {
+    margin-bottom: 4px;
+  }
+
+  .panel-heading {
+    /*height: 30px;*/
+  }

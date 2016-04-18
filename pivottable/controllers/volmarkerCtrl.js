@@ -9,7 +9,7 @@ angular.module("volmarker")
   $scope.expertMode = false;
   $scope.requestBusy = false;
   $scope.settings = settings;
-  $scope.pricingDate = new Date().addDays(-1);
+  $scope.pricingDate = new Date().addWeekDays(-1);
   $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
@@ -140,6 +140,11 @@ angular.module("volmarker")
 
   $scope.save = function() {
     alert("Not yet implemented");
+  }
+
+  $scope.shiftPricingDate = function(shift) {
+    $scope.pricingDate = $scope.pricingDate.addWeekDays(shift);
+    $scope.setDateAndLoad();
   }
 
   $scope.setDateAndLoad = function() {

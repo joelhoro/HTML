@@ -38,6 +38,16 @@ angular.module('tests')
     AssertEqual(new Date(),new Date(), "Test date equality");
     AssertEqual(new Date("2016-4-29"),new Date("2016-4-19").addDays(10), "Test addDays");
 
+    AssertEqual(new Date("2016-4-15"), new Date("2016-4-18").addWeekDays(-1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-15"), new Date("2016-4-17").addWeekDays(-1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-15"), new Date("2016-4-16").addWeekDays(-1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-14"), new Date("2016-4-15").addWeekDays(-1), "Test addweekdays");
+
+    AssertEqual(new Date("2016-4-18"), new Date("2016-4-15").addWeekDays(1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-18"), new Date("2016-4-16").addWeekDays(1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-18"), new Date("2016-4-17").addWeekDays(1), "Test addweekdays");
+    AssertEqual(new Date("2016-4-19"), new Date("2016-4-18").addWeekDays(1), "Test addweekdays");
+
     var m = 1000 * 60;
     AssertEqual( "1 minute", utils.toFriendlyTime(m), "Testing toFriendTime");
     AssertEqual( "50 minutes", utils.toFriendlyTime(50*m), "Testing toFriendTime");

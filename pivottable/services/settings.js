@@ -17,7 +17,7 @@ angular.module('utilities')
         underliers: "SPX,SX5E,NKY,HSCEI",
         loadMenuOnStartup: true,
         fakeSleepOnLocalMode: false, // allows to pretend local request takes time - for testing gui
-        showVolRatio: false,
+        showVolRatio: true,
       };
 
     var settings;
