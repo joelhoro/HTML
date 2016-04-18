@@ -294,6 +294,7 @@
       <div class="panel panel-primary" >
         <div class="panel-heading">
           Var surface for  {{activeUnderlier}} [{{volSurfaceCollection.date.format("y-m-d")}}]
+          <button type="button" class="btn btn-default" ng-click="openPricingDatePicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           <span>
             <button ng-if='volSurfaceCollection.HasMetaData(activeUnderlier)' class="btn btn-warning" ng-click="showMetadataPage()">Show metadata</button>
             <button class="btn btn-danger" ng-if='volSurfaceCollection.HasChanges(activeUnderlier)' ng-click="save()">Save changes</button>
@@ -357,7 +358,7 @@
             <div class="row">
               <div class="col-md-6">
                 <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='ActiveSurface().Leader()' listen=1 tooltip=1  showdatesonaxis=1 nolegend=1 type=bmonly>
-                <b>Leader variance ({{ActiveSurface().Leader()}})</b>
+                <b>{{ActiveSurface().IsLeader() ? "SPX variance" : "Leader variance (" + ActiveSurface().Leader() + ")" }}</b>
                 </vol-surface-chart>
               </div>
 <!--              <div class="col-md-6">

@@ -89,15 +89,15 @@ angular.module('utilities')
       }   
 
       this.IsFollower = function() {
-        return this.volSurface.Leader !== undefined;
+        return !this.IsLeader();
       }
 
       this.IsLeader = function() {
-        return this.volSurface.Leader === undefined;
+        return this.volSurface.Leader === undefined || this.volSurface.Leader == "";
       }
 
       this.Leader = function() {
-        if(this.volSurface.Leader !== undefined)
+        if(!this.IsLeader())
           return this.volSurface.Leader;
         return "SPX";
       }   
