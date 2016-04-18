@@ -31,8 +31,9 @@ angular.module('utilities')
 
       this.Get = function(underlier) {
         var surface = this.collection[underlier];
-        if(surface == undefined)
-          return new analytics.VolSurface();
+        if(surface === undefined)
+          surface = new analytics.VolSurface();
+        return surface;
       }
 
       this.ChangesCount = function(underlier) {
