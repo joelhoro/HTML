@@ -7,7 +7,7 @@ angular.module('utilities')
   class VolSurfaceCollection {
     constructor(volSurfaces, date) {
       if(volSurfaces === undefined )
-        volSurfaces = []
+        volSurfaces = [];
       this.collection = volSurfaces.toObject(row => new analytics.VolSurface(row), row => row.Index);
       this.originalCollection = utils.clone(this.collection);      
 
@@ -30,7 +30,9 @@ angular.module('utilities')
       }
 
       this.Get = function(underlier) {
-        return this.collection[underlier];
+        var surface = this.collection[underlier];
+        if(surface == undefined)
+          return new analytics.VolSurface();
       }
 
       this.ChangesCount = function(underlier) {

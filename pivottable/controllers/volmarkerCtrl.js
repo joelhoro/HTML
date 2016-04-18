@@ -26,7 +26,7 @@ angular.module("volmarker")
   $scope.gridConfig = voldata.gridConfig('data');
 
   // active underlier fns
-  $scope.ActiveSurface = () => $scope.volSurfaceCollection.collection[$scope.activeUnderlier];
+  $scope.ActiveSurface = () => $scope.volSurfaceCollection.Get($scope.activeUnderlier);
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
   $scope.dealerInfo = dealerUtils.dealerInfo;
 
@@ -57,7 +57,7 @@ angular.module("volmarker")
     }
     if(setData) {
       utils.log("Setting data in volmarkerCtrl");
-      $scope.data = $scope.volSurfaceCollection.collection[und].toDataTable();
+      $scope.data = $scope.volSurfaceCollection.Get(und).toDataTable();
 
       $scope.activeUnderlier = und;
     }

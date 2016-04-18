@@ -6,6 +6,11 @@ angular.module('utilities')
   utils.log("Initializing analytics service");
 
   function interpolator(curve, conversion) {
+    for(var k in curve) {
+      if(curve[k] == null)
+        delete(curve[k]);
+    }
+    
     if(_.keys(curve).length === 0) return d => null;
 
     //utils.log("Creating interpolator for {0}", curve)
@@ -71,6 +76,8 @@ angular.module('utilities')
   class VolSurface {
     constructor(volSurface) {
       this.volSurface = volSurface;
+      var defaults = { MetaData: {}, Observables: [] };
+      this.volSurface = _.extend(defaults, this.volSurface);
       this.Underlier = function() {
         return this.volSurface.Index;
       }
@@ -117,7 +124,7 @@ angular.module('utilities')
         if(fn != undefined) {
           var calculatedValue = fn(obs);
           if(Number.isNaN(calculatedValue))
-            return 0;
+            return null;
           return calculatedValue.round(2);
         }
 

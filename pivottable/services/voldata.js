@@ -9,8 +9,13 @@ angular.module('dataService',['utilities','dataWarehouse'])
   function retrieveVolSurfaces(successFn, errorHandler) {
       utils.log("Date=", settings.date);
     var convertSurface = data => {
-        if (data.status !== undefined) data = data.data;
-        var surfaceCollection = new VolSurfaceCollection(data, settings.date);
+        var surfaceCollection;
+        if(data == undefined)
+          surfaceCollection = new VolSurfaceCollection([],settings.date);
+        else {
+          if (data.status !== undefined) data = data.data;
+          surfaceCollection = new VolSurfaceCollection(data, settings.date);
+        }
         utils.log("Getting volsurfaces - found {1} underliers", surfaceCollection.UnderliersCount());
         successFn(surfaceCollection);
       };

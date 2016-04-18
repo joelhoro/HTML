@@ -27,8 +27,6 @@ angular.module('volmarker')
      "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
       };
 
-      if(type == 'ratio')
-        scope.chartOptions.animationSteps = 1;
 
       scope.chartColours = [
             '#F7464A', // red
@@ -63,11 +61,18 @@ angular.module('volmarker')
           var tenors = surface.Tenors().splice(1);
           var i = 1;
           var varRatio = tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2));
-          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(t)(ratioDelta/100) / spxSurface.VolAtDeltaFn(t)(ratioDelta/100))*100).round(2));
+          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(t)(ratioDelta/100) / spxSurface.VolAtDeltaFn(t)(ratioDelta/100))*100).round(2))
+            .map(x => Number.isNaN(x) ? null : x);
+            
           scope.chartData = [
             varRatio,
             settings.showVolRatio ? volRatio : []
           ];
+
+        // this one refreshes more often than other graphs
+        // because of the deltaRatio, so we don't want
+        // the slow animation
+        scope.chartOptions.animationSteps = 1;
       }
       else if(type === 'totalstdev')  {
           scope.chartSeries = [ "Total stdev"  ];
