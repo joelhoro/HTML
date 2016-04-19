@@ -125,11 +125,13 @@ angular.module('utilities')
           var calculatedValue = fn(obs);
           if(Number.isNaN(calculatedValue))
             return null;
+          //utils.log("{0}.{1}={2}", obs, col, calculatedValue);
           return calculatedValue.round(2);
         }
 
         if(obs == undefined) debugger;
         var val = obs.Quotes[col];
+        //utils.log("{0}.{1}={2}", obs, col, val);
         if(val == undefined || val == 0)
           return null;
         return (val * 100).round(2);
@@ -178,27 +180,40 @@ angular.module('utilities')
         var tenors = this.TenorLabels();
         var i = 0;
         utils.log("Running through tenors=", tenors);
-        return tenors.map(t => {
+        var columns;
+        var columnNames;
+        var data = tenors.map(t => {
           // need to renname coz ng-grid doesn't like fancy names
-            var names = {
-                "BM": "BM@T",
-                "BMEST": "BMEstimate",
-                "B1": "Basis",
-                "B2": "New basis",
-                "Mark": "Mark"
-            };
 
-            var dCount = 1;
-            dealerUtils.dealers.map(d => names["D" + dCount++] = "Dealer." + d);
-            names["D"+dCount] = "Dealer.avg";
-          var result = _.keys(names).toObject(f => {
-            return this.GetQuote(this.volSurface.Observables[i], names[f]);
+          var lookupColumns = [ "BMEstimate", "Dealer.avg" ];
+          var basisColumns = [ "Basis", "New basis", "Mark" ];
+          columns = _.clone(lookupColumns);
+          lookupColumns = lookupColumns.concat(basisColumns);
+
+          columnNames = [ "Expiry", "BM est", "D avg" ];
+
+          var dCount = 1;
+          if(settings.showDealerDetails) {
+            lookupColumns = lookupColumns.concat(dealerUtils.dealers.map(d => "Dealer."+ d));
+            columns = columns.concat(dealerUtils.dealers.map(d => "Dealer."+ d));
+            columnNames = columnNames.concat(dealerUtils.dealers.map(d => d.toUpperCase()));
+          }
+
+          columnNames = columnNames.concat(basisColumns);
+          columns = columns.concat(basisColumns);
+
+          var result = lookupColumns.toObject(f => {
+            return this.GetQuote(this.volSurface.Observables[i], f);
           } );
+
           i++;
-          result.tenor = t;
+          result.Tenor = t;
           result.underlier = this.Underlier();
+          columns = [ "Tenor" ].concat(columns);
           return result;
-        })
+        });
+
+        return { data: data, columns: columns, underlier: this.Underlier(), columnNames: columnNames };
       }
 
       this.MetaData = function() {

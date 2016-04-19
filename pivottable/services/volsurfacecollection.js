@@ -80,8 +80,8 @@ angular.module('utilities')
         var refresh = false;
         var idx = 0;
 
-        var underlier = dataGrid[0].underlier;  // not super kosher...
-        dataGrid.map(row => {
+        var underlier = dataGrid.underlier;  // not super kosher...
+        dataGrid.data.map(row => {
           var obs = this.Get(underlier).volSurface.Observables[idx++];
           var oldValue = obs.Quotes["BM@T"].round(4);
           var newValue = (row.BM / 100);

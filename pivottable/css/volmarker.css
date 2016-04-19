@@ -147,3 +147,7 @@ h1 {
   .panel-heading {
     /*height: 30px;*/
   }
+
+  #vartable {
+    font-size: 0.8em;
+  }

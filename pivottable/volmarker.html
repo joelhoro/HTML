@@ -215,7 +215,7 @@
         <span class="col-sm-4">
           <img src='assets/gears.gif' />
         </span>
-        <span class="col-sm-4">
+        <span class="col-sm-8">
           <h1 ng-if='ajaxError==""'>Please wait...</h1>
           <h3 ng-if='ajaxError!=""'>{{ajaxError}}</h3>
         </span>
@@ -315,7 +315,23 @@
           </div>
           <div class="panel-body">
           <!-- </div>      -->
-            <div class="gridStyle" ui-grid="gridConfig" ui-grid-cellnav ui-grid-edit></div>
+            <!-- <div class="gridStyle" ui-grid="gridConfig" ui-grid-cellnav ui-grid-edit></div> -->
+
+                <table id='vartable' class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th ng-repeat="col in data.columnNames">{{col}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="row in data.data">
+
+                    <td ng-repeat="k in data.columns" ng-class="$index == 0 ? 'bold' : ''">{{row[k]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+
           </div>
           <!-- THE DATA GRID -->
           <!-- <div class="col-md-12"> -->
