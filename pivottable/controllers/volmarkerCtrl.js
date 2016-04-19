@@ -8,6 +8,7 @@ angular.module("volmarker")
 
   settings.SetFromUrl($location.search());
 
+  // right so this laundry list of variables starts really looking bad...
   $scope.expertMode = false;
   $scope.requestBusy = false;
   $scope.settings = settings;
@@ -32,9 +33,7 @@ angular.module("volmarker")
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
   $scope.dealerInfo = dealerUtils.dealerInfo;
 
-  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-  $scope.format = $scope.formats[1];
-  $scope.altInputFormats = ['M!/d!/yyyy'];
+  $scope.format = 'yyyy/MM/dd';
   $scope.dateOptions = {
       // dateDisabled: disabled,
       formatYear: 'yy',
@@ -165,7 +164,8 @@ angular.module("volmarker")
     settings.Save();
     // update the grid if needed
     if(n.showDealerDetails !== o.showDealerDetails) {
-      $scope.gridConfig = voldata.gridConfig('data');
+      //$scope.gridConfig = voldata.gridConfig('data');
+      $scope.data = $scope.ActiveSurface().toDataTable();
       $scope.$broadcast("DataChanged");
     }
     // update the list of underliers if needed
