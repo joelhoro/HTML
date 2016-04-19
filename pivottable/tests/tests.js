@@ -70,6 +70,18 @@ angular.module('tests')
     AssertEqual({"Label1" : 1, "Label2" : 4}, [1,2].toObject(x => x*x, x => "Label"+x),"Test toObject with 2 arguments");
     AssertEqual({"A" : 1, "B" : 2}, ["A","B"].toObjectWithValues([1,2]), "Test 'toObjectWithValues'");
 
+
+    var tableSpecs = [
+      ["A", "B"],
+      [1,2],
+      [3,4],
+    ];
+    var table = [
+      { A: 1, B: 2 },
+      { A: 3, B: 4 },
+      ]
+    AssertEqual(table, tableSpecs.toObjectList(), "Testing toObjectList");
+
   }
 
 

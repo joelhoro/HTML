@@ -95,6 +95,14 @@ angular.module('utilities',[])
 		return this.toObject(() => values[idx++]);
 	};
 
+	Array.prototype.toObjectList = function(values) {
+		var columns = this[0];
+		var results = [];
+		for(var i = 1; i < this.length; i++)
+			results.push(columns.toObjectWithValues(this[i]))
+		return results;
+	}
+
     Array.prototype.max = function() {
       var max = this[0];
       this.map(x => { if(x !== null)  { max = Math.max(max,x) } });
