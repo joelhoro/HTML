@@ -49,7 +49,7 @@ angular.module('utilities')
           var re = /.*file=(.*)\]/;
           if(description.match(re) == null)
             continue;
-          metadata[source].Link = description.replace(re,"$1");
+          metadata[source].Link = description.replace(re,"file://$1");
         }
 
         return metadata;
