@@ -173,8 +173,8 @@ angular.module("volmarker")
 
   $scope.$watch('data', newdata => { 
     // when data changes in the grid, update the volsurfaces if needed
-    var refresh = $scope.volSurfaceCollection.UpdateFromData(newdata);
-    if(refresh) {
+    var dataHasChanged = $scope.volSurfaceCollection.UpdateFromData(newdata);
+    if(dataHasChanged) {
       $scope.refreshVolSurfaces(false, undefined, false);
     }
     

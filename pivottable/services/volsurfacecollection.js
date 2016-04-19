@@ -77,7 +77,7 @@ angular.module('utilities')
 
       this.UpdateFromData = function(dataGrid) {
         if(dataGrid === undefined) { return false; }  // would happened before any data was loaded;
-        var refresh = false;
+        var dataHasChanged = false;
         var idx = 0;
 
         var underlier = dataGrid[0].underlier;  // not super kosher...
@@ -90,11 +90,11 @@ angular.module('utilities')
           if(Math.abs(oldValue-newValue)>tolerance) {
             utils.log("Changing mark for {1}: {2}->{3} in {4}", underlier, obs.Name, oldValue, newValue);
             obs.Quotes["BM@T"] = newValue;
-            refresh = true;
+            dataHasChanged = true;
           }
         });
 
-        return refresh;
+        return dataHasChanged;
 
       }
 
