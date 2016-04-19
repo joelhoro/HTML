@@ -139,7 +139,7 @@ angular.module('utilities')
 
       var CalculateColumns = {
         Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
-        'New basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
+        'Dealer basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
         'Dealer.avg' : o => dealerUtils.dealers.map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2),
         BMEstimate: o => this.GetQuote(o,"BMComputed@T") + this.GetQuote(o,"Basis")
       };
@@ -175,45 +175,54 @@ angular.module('utilities')
         return interpolator(deltas.toObject(d => volCurve[d]));
       }
 
+
+      // Defines what column get displayed in table
+      this.ColSpecs = function() {
+        var colSpecs = [
+          [ "ColumnName",      "Formula",                                       "Class"    ],
+          [ "Expiry",           (t,obs) => t,                                   "bold"     ],
+          [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate") ],
+          [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg") ],
+        ];
+
+        if(settings.showDealerDetails) {
+          dealerUtils.dealers.map(d => colSpecs.push(
+            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d) ]
+            ));
+        }
+
+        colSpecs = colSpecs.concat([
+
+          [ "Basis",            (t,obs) => this.GetQuote(obs, "Basis") ],
+          [ "Dealer basis",     (t,obs) => this.GetQuote(obs, "Dealer basis") ],
+          //[ "Mark",             (t,obs) => -1 ],
+
+          ]);
+
+        return colSpecs.toObjectList();
+      }
+
+
       this.toDataTable = function() {
         utils.log("Creating data table for volsurface of " + this.Underlier());
         var tenors = this.TenorLabels();
         var i = 0;
         utils.log("Running through tenors=", tenors);
-        var columns;
-        var columnNames;
+
+        var columnSpecs = this.ColSpecs();
+
         var data = tenors.map(t => {
-          // need to renname coz ng-grid doesn't like fancy names
-
-          var lookupColumns = [ "BMEstimate", "Dealer.avg" ];
-          var basisColumns = [ "Basis", "New basis", "Mark" ];
-          columns = _.clone(lookupColumns);
-          lookupColumns = lookupColumns.concat(basisColumns);
-
-          columnNames = [ "Expiry", "BM est", "D avg" ];
-
-          var dCount = 1;
-          if(settings.showDealerDetails) {
-            lookupColumns = lookupColumns.concat(dealerUtils.dealers.map(d => "Dealer."+ d));
-            columns = columns.concat(dealerUtils.dealers.map(d => "Dealer."+ d));
-            columnNames = columnNames.concat(dealerUtils.dealers.map(d => d.toUpperCase()));
-          }
-
-          columnNames = columnNames.concat(basisColumns);
-          columns = columns.concat(basisColumns);
-
-          var result = lookupColumns.toObject(f => {
-            return this.GetQuote(this.volSurface.Observables[i], f);
+          var result = {};
+          var obs = this.volSurface.Observables[i++];
+          columnSpecs.map(spec => {
+              result[spec.ColumnName] = spec.Formula(t, obs);
           } );
 
-          i++;
-          result.Tenor = t;
-          result.underlier = this.Underlier();
-          columns = [ "Tenor" ].concat(columns);
           return result;
         });
 
-        return { data: data, columns: columns, underlier: this.Underlier(), columnNames: columnNames };
+        var columns = columnSpecs.map(spec => spec.ColumnName);
+        return { data: data, columns: columns, underlier: this.Underlier() };
       }
 
       this.MetaData = function() {
