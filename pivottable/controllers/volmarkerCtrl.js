@@ -83,11 +83,9 @@ angular.module("volmarker")
 
         $scope.requestBusy = true;
         $scope.ajaxError = "";
-        $scope.initialized = false;        
-        voldata.retrieveVolSurfaces(result => {
-          var underlier = underlierCopy;
-          // all this should be factored out even more on volsurfacecollection
-          $scope.volSurfaceCollection.Update(result,underlier, settings.date);
+        $scope.initialized = false;    
+
+        var setVolSurfaceCollection = function() {
           var allUnderliers = $scope.volSurfaceCollection.Underliers();
           $scope.allUnderliers = allUnderliers;
           $scope.underliers = volmarkerUtils.filterUnderliers(allUnderliers);
@@ -97,13 +95,17 @@ angular.module("volmarker")
           $scope.setActiveUnderlier(underlier,broadcast);
           $scope.initialized = true;
           $scope.requestBusy = false;
+        }
 
+        voldata.retrieveVolSurfaces(result => {
+          //var underlier = underlierCopy;
+          $scope.volSurfaceCollection.Update(result,underlier, settings.date);
+          setVolSurfaceCollection()
           $scope.showLoadingPage(false);
-          //$scope.$apply();
         }, () => {
           $scope.ajaxError = "An error happened requesting the data from the server!";
-          $scope.initialized = true;
-          $scope.requestBusy = false;
+          $scope.volSurfaceCollection.Update(new VolSurfaceCollection(),undefined, settings.date);
+          setVolSurfaceCollection()          
         }) 
       }
 

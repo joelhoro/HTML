@@ -243,7 +243,9 @@
           </span>
         </div>
           <div ng-if='initialized' class="panel-body list-group">
-   
+              <div ng-if='underliers.length==0' class='list-group-item-heading'>
+                <b format='alert'>No data found for {{pricingDate.format("y-m-d")}}</b>
+              </div>
           <div ng-repeat="und in underliers" class="list-group-item" 
             ng-click='setActiveUnderlier(und)'
             ng-class="{'active': und == $parent.activeUnderlier, 'leader' : volSurfaceCollection.Get(und).IsLeader(), 'follower' : !volSurfaceCollection.Get(und).IsLeader(), 'haschanges' : volSurfaceCollection.HasChanges(und) }">
