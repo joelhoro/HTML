@@ -230,6 +230,9 @@ angular.module('utilities',[])
 		if(und === "NIZ6" || und === "NIZ7")	  	 {
 			return "http://www.fxmarker.com/sites/all/themes/fxmarker/uploads/commodities_icon.png";
 		}
+
+		if(und.match(/^X.* UP/) !== null )
+			return "https://www.newconstructs.com/wp-content/uploads/2014/12/ETF-Investing-sm.jpg";
 		
 	  	var cme = "https://s3.amazonaws.com/media.agricharts.com/sites/658/New%20Stories/CME%20Group%20Story/Chicago%20Mer%20Logo%20Picture.jpg";
 	  	var specialFlags = {

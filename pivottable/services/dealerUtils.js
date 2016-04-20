@@ -7,12 +7,12 @@ angular.module('utilities')
         socgen: {   shortname: "SG",    label: "SocGen"         },
         ms:     {   shortname: "MS",    label: "Morgan Stanley"  },
         jpm:    {   shortname: "JPM",   label: "JP Morgan"      },
-        hsbc:   {   shortname: "HSBC",  label: "HSBC"           },
         ml:     {   shortname: "ML",    label: "Merrill"        },
+        hsbc:   {   shortname: "HSBC",  label: "HSBC"           },
     };
 
-    for(var dealer in dealers)
-        dealers[dealer].active = true;
+    for (var dealer in dealers)
+        dealers[dealer].active = dealer !== "hsbc";
 
     var dealerList = _.keys(dealers);
 

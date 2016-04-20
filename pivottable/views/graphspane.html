@@ -32,7 +32,7 @@
               </div>
               <div ng-repeat="tenor in settings.fwdVarTenorsList()" class="col-md-6">
                 <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{activeUnderlier}}'  listen=1 tooltip=1 type=fwd tenor='tenor' showdatesonaxis=1 nolegend=1>
-                <b>{{tenor}} forward variance</b>
+                <b>{{tenor}} forward variance {{ activeUnderlier == "SPX" && tenor == "1m" ? " vs. VIX" : "" }} </b>
                 </vol-surface-chart>
               </div>
             </div>

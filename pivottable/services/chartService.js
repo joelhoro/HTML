@@ -47,6 +47,13 @@ angular.module('volmarker')
         scope.chartData = [ 
             fwdCurve, 
             ];      
+
+        if(surface.Underlier() == "SPX" && tenor == "1m") {
+          scope.chartSeries.push("VIX future");
+          var vixCurve = surface.Extract("VIX");
+          scope.chartData.push(vixCurve);
+        }
+
         doAdjustScale = true;
       }
       else if(type === 'basis')  {

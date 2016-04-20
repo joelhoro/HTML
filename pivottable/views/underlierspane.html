@@ -1,10 +1,14 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
                     {{volSurfaceCollection.date.format("y-m-d")}}
-                    <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-left" ng-click="shiftPricingDate(-1,$event)"> </button> 
-          <button class="btn btn-xs btn-info glyphicon glyphicon-refresh" ng-click="shiftPricingDate(0,$event)"> </button> 
-          <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-right"  ng-click="shiftPricingDate(1,$event)"> </button> 
-          <button class="btn btn-xs btn-danger glyphicon glyphicon-wrench" ng-click="showSettingsMenuCb($event)"></button>
+          <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-left" ng-click="shiftPricingDate(-1,$event)"
+            uib-tooltip="CTRL-click to force recalculation on the server" tooltip-placement="bottom" > </button> 
+          <button class="btn btn-xs btn-info glyphicon glyphicon-refresh" ng-click="shiftPricingDate(0,$event)"
+            uib-tooltip="CTRL-click to force recalculation on the server" tooltip-placement="bottom" > </button> 
+          <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-right"  ng-click="shiftPricingDate(1,$event)"
+            uib-tooltip="CTRL-click to force recalculation on the server" tooltip-placement="bottom" > </button> 
+          <button class="btn btn-xs btn-danger glyphicon glyphicon-wrench" ng-click="showSettingsMenuCb($event)"
+            uib-tooltip="CTRL-click to get expert settings" tooltip-placement="bottom" > </button> 
 
           <span>
             <!-- <button class="btn btn-xs" ng-class="requestBusy ? 'btn-info' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button> -->
