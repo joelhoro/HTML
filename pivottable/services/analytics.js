@@ -183,16 +183,17 @@ angular.module('utilities')
       // Defines what column get displayed in table
       this.ColSpecs = function() {
         var colSpecs = [
-          [ "ColumnName",      "Formula",                                       "Class", "IsDealerColumn"   ],
+          [ "ColumnName",      "Formula",                                       "Class"  ],
           [ "Expiry",           (t,obs) => t,                                   "bold"     ],
           [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate"),    "vartable_bmestimate" ],
           [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg"), "vartable_dealeravgquote" ],
         ];
 
         if(settings.showDealerDetails) {
-          var inactiveClass = d => dealerUtils.dealerInfo[d].active ? "" : " vartable_inactive";
+          var isActive = d => dealerUtils.dealerInfo[d].active;
+          var inactiveClass = d => isActive(d) ? "" : " vartable_inactive";
           dealerUtils.dealers.map(d => colSpecs.push(
-            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d), true ]
+            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d), { IsDealerColumn: true, IsActiveDealer: isActive(d) } ]
             ));
         }
 
