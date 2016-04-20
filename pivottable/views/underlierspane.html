@@ -1,10 +1,10 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
                     {{volSurfaceCollection.date.format("y-m-d")}}
-                    <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-left" ng-click="shiftPricingDate(-1)"> </button> 
-          <button class="btn btn-xs btn-info glyphicon glyphicon-refresh" ng-click="shiftPricingDate(0)"> </button> 
-          <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-right"  ng-click="shiftPricingDate(1)"> </button> 
-          <button class="btn btn-xs btn-danger glyphicon glyphicon-wrench" ng-click="showSettingsMenu()"></button>
+                    <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-left" ng-click="shiftPricingDate(-1,$event)"> </button> 
+          <button class="btn btn-xs btn-info glyphicon glyphicon-refresh" ng-click="shiftPricingDate(0,$event)"> </button> 
+          <button class="btn btn-xs btn-info glyphicon glyphicon-chevron-right"  ng-click="shiftPricingDate(1,$event)"> </button> 
+          <button class="btn btn-xs btn-danger glyphicon glyphicon-wrench" ng-click="showSettingsMenuCb($event)"></button>
 
           <span>
             <!-- <button class="btn btn-xs" ng-class="requestBusy ? 'btn-info' : 'btn-danger'" ng-click="setDateAndLoad()">{{ requestBusy ? "Loading..." : "Load" }}</button> -->
@@ -25,7 +25,7 @@
                 [{{points[und]}}]</b>
                 <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
               </span>
-                  <div ng-if='!volSurfaceCollection.HasChanges(und)'>
+<!--                   <div ng-if='!volSurfaceCollection.HasChanges(und)'>
                       <b>No changes</b>
                   </div>
                   <div ng-if='volSurfaceCollection.HasChanges(und)'>
@@ -34,8 +34,8 @@
                           <li ng-repeat="change in volSurfaceCollection.changesStored[und]">{{change.obs}}: {{change.diff}}</li>
                       </ul>
                   </div>
-                  <div ng-if='settings.showThumbnails'>
-                      <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
+ -->                  <div ng-if='settings.showThumbnails'>
+                      <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='{{und}}' showdatesonaxis=0 nolegend=1 type=''></vol-surface-chart>
                   </div>
               </div>
           </div>

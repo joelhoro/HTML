@@ -134,9 +134,15 @@ angular.module("volmarker")
     $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
   }
 
-  $scope.showSettingsMenu = function() {
+  var showSettingsMenu = function() {
     $('#settingsMenu').modal('show');
   }
+
+  $scope.showSettingsMenuCb = function(evt) {
+    $scope.expertMode = evt.ctrlKey;
+    showSettingsMenu();
+  }
+
 
   $scope.showLoadingPage = function(show=true) {
     $('#loadingPage').modal(show ? 'show' : 'hide');
@@ -150,16 +156,22 @@ angular.module("volmarker")
     alert("Not yet implemented");
   }
 
-  $scope.shiftPricingDate = function(shift) {
+  // pressing Ctrl while clicking will cause a force refresh on the server
+  // (i.e. calculate instead of loading the cached data)
+  $scope.shiftPricingDate = function(shift, evt) {
     $scope.pricingDate = $scope.pricingDate.addWeekDays(shift);
-    $scope.setDateAndLoad();
+    var forceRefresh = evt.ctrlKey;
+    $scope.setDateAndLoad(forceRefresh);
   }
 
-  $scope.setDateAndLoad = function() {
+  $scope.setDateAndLoad = function(forceRefresh = false) {
       var date = $scope.pricingDate;
       settings.set('today', new Date(date));
       settings.date = date;
+      var oldForceRefresh = settings.forceRefresh;
+      settings.forceRefresh = forceRefresh;
       $scope.refreshVolSurfaces();
+      settings.forceRefresh = oldForceRefresh;
   }
 
   // watches
@@ -189,7 +201,7 @@ angular.module("volmarker")
 
   /// INITIALIZATION
   if(settings.loadMenuOnStartup)
-    $scope.showSettingsMenu();
+    showSettingsMenu();
 
   $scope.setDateAndLoad();
 

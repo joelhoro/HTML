@@ -30,7 +30,8 @@ angular.module('dataService',['utilities','dataWarehouse'])
         action(); // for testing purposes
     }
     else
-      dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,settings.date.format("y-m-d"), settings.withMetaData);
+      dataWarehouse.getAjaxData(convertSurface, errorHandler, settings.dataMode,
+        settings.date.format("y-m-d"), settings.withMetaData, settings.forceRefresh);
   }
 
 return { 

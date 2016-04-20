@@ -24,10 +24,17 @@
         </div>  
 
 
-           <div class="form-group">
+          <div class="form-group">
             <label class="col-sm-4 control-label">Load metadata (slower)</label>
             <div class="col-sm-8">
             <input type=checkbox ng-model='settings.withMetaData' /> 
+            </div>
+          </div>       
+
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Force refresh (slower)</label>
+            <div class="col-sm-8">
+            <input type=checkbox ng-model='settings.forceRefresh' /> 
             </div>
           </div>       
 
@@ -53,9 +60,16 @@
           </div>   
 
           <div class="form-group" >
-            <label for="f3" class="col-sm-4 control-label">Show vol ratio</label>
+            <label class="col-sm-4 control-label">Show vol ratio</label>
             <div class="col-sm-8">
-            <input id="f3" type=checkbox ng-model='settings.showVolRatio' /> 
+            <input type=checkbox ng-model='settings.showVolRatio' /> 
+            </div>
+          </div> 
+
+          <div class="form-group" >
+            <label class="col-sm-4 control-label">Show thumbnails</label>
+            <div class="col-sm-8">
+            <input type=checkbox ng-model='settings.showThumbnails' /> 
             </div>
           </div> 
 

@@ -4,11 +4,17 @@ angular.module('dataWarehouse',['utilities'])
 var $ = window.$;
 utils.log("Initializing datawareHouse service");
 
-function getAjaxData(successFn,errorFn, mode, date, withMetaData) {
+function getAjaxData(successFn,errorFn, mode, date, withMetaData, forceRefresh) {
+
+  var aspUrl = '../../Blink/EquityVol.asmx/RetrieveVolSurfaces?date=' + 
+    date + 
+    "&withMetaData=" + withMetaData +
+    "&forceRefresh=" + forceRefresh;
+
     var url = { 
       'ajaxfull' : 'http://localhost:17041/services/DBAccessor.asmx/RetrieveVolSurfaces',
       'ajax' : 'data/volsurfaces-'+date.format('y-m-d')+'.json',
-      'ajaxASP': '../../Blink/EquityVol.asmx/RetrieveVolSurfaces?date=' + date +"&withMetaData=" + withMetaData }[mode];
+      'ajaxASP':  aspUrl }[mode];
 
     var method = mode === 'ajaxfull' ? 'post' : 'get';
     var req = { method: method, url: url };
