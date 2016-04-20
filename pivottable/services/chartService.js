@@ -14,7 +14,7 @@ angular.module('volmarker')
           scope.chartOptions.scaleStartValue = min;
         }
 
-    function getChartSpecs(surface, spxSurface, showdatesonaxis, tenor, type, tooltip, ratioDelta) {
+    function getChartSpecs(surface, leaderSurface, showdatesonaxis, tenor, type, tooltip, ratioDelta) {
       Chart.defaults.global.animationSteps = 60 / settings.animationSpeed;
 
       var scope = {};
@@ -42,8 +42,8 @@ angular.module('volmarker')
 
       if(type === 'fwd') {
         scope.chartSeries = [ "Fwd variance"  ];
-        var newCurve = surface.Curve('BMEstimate');
-        var fwdCurve = analytics.fwdVarCurve(newCurve, tenor);
+        var bmEstimateCurve = surface.Curve('BMEstimate');
+        var fwdCurve = analytics.fwdVarCurve(bmEstimateCurve, tenor);
         scope.chartData = [ 
             fwdCurve, 
             ];      
@@ -56,17 +56,37 @@ angular.module('volmarker')
       else if(type === 'ratio')  {
           scope.chartSeries = [ "Variance", "Vol at " + Math.round(ratioDelta) + "% delta"  ];
 
-          var spxCurveFn = spxSurface.CurveFn("BMEstimate");
+          var leaderCurveFn = leaderSurface.CurveFn("BMEstimate");
           var thisCurve = surface.Extract("BMEstimate");
-          var tenors = surface.Tenors().splice(1);
-          var i = 1;
-          var varRatio = tenors.map(t => (thisCurve[i++] / spxCurveFn(t) * 100).round(2));
-          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(t)(ratioDelta/100) / spxSurface.VolAtDeltaFn(t)(ratioDelta/100))*100).round(2))
-            .map(x => Number.isNaN(x) ? null : x);
+          var tenors = surface.Tenors();
+          var i = 0;
+          var cleanNumber = x => Number.isNaN(x) ? null : x;
+
+          var varRatio = tenors.map(t => (thisCurve[i++] / leaderCurveFn(t) * 100).round(2)).map(cleanNumber);
+          var volRatio = tenors.map(t => ((surface.VolAtDeltaFn(t)(ratioDelta/100) / leaderSurface.VolAtDeltaFn(t)(ratioDelta/100))*100).round(2))
+            .map(cleanNumber);
             
           scope.chartData = [
             varRatio,
             settings.showVolRatio ? volRatio : []
+          ];
+
+        // this one refreshes more often than other graphs
+        // because of the deltaRatio, so we don't want
+        // the slow animation
+        scope.chartOptions.animationSteps = 1;
+      }
+      else if(type === 'leaderfollower')  {
+          scope.chartSeries = [ surface.Underlier(), leaderSurface.Underlier() + " (leader)" ];
+
+          var leaderCurveFn = leaderSurface.CurveFn("BMEstimate");
+          var thisCurve = surface.Extract("BMEstimate");
+          var tenors = surface.Tenors();
+          var leaderData = tenors.map(t => leaderCurveFn(t).round(2));
+            
+          scope.chartData = [
+            thisCurve,
+            leaderData
           ];
 
         // this one refreshes more often than other graphs

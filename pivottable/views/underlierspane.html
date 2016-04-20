@@ -38,25 +38,6 @@
                       <vol-surface-chart volSurfaceCollection='volSurfaceCollection' underlier='und' showdatesonaxis=0 nolegend=1></vol-surface-chart>
                   </div>
               </div>
-
-              <!-- METADATA TEMPLATE -->
-              <script type="text/ng-template" id="metadataTemplate">
-                  <span ng-if='settings.withMetaData && volSurfaceCollection.HasMetaData(und)'>
-                         <h3>xx Sources for {{ und }}</h3>
-                         <span ng-repeat='(source,metadata) in volSurfaceCollection.MetaData(und)'>
-                         <h4>{{ dealerInfo[source].label }}</h4>
-                            <ul>
-                              <li><b>Time:</b> {{metadata.KnowledgeTime}}</li>
-                              <li><b>Description:</b> {{metadata.Description}}</li>
-                              <li><b>CommandLine:</b> {{metadata.CommandLine}}</li>
-                            </ul>
-                        </span>
-                  </span>
-                  <span ng-if='settings.withMetaData && !volSurfaceCollection.HasMetaData(und)'>
-                        <h3 >No sources for {{ und }}</h3>
-                  </span>
-              </script>
-
           </div>
         </div>
         
