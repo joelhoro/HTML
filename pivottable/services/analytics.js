@@ -140,7 +140,11 @@ angular.module('utilities')
       var CalculateColumns = {
         Basis : o => this.GetQuote(o,"BM@T-1") - this.GetQuote(o,"BMComputed@T-1"),
         'Dealer basis' : o => this.GetQuote(o,"Dealer.avg") - this.GetQuote(o,"BMComputed@T"),
-        'Dealer.avg' : o => dealerUtils.dealers.map(d => this.GetQuote(o,'Dealer.' + d)).avg().round(2),
+        'Dealer.avg' : o => dealerUtils.dealers
+          .filter(d => dealerUtils.dealerInfo[d].active)
+          .map(d => this.GetQuote(o,'Dealer.' + d))
+          .avg()
+          .round(2),
         BMEstimate: o => this.GetQuote(o,"BMComputed@T") + this.GetQuote(o,"Basis")
       };
 
@@ -179,16 +183,16 @@ angular.module('utilities')
       // Defines what column get displayed in table
       this.ColSpecs = function() {
         var colSpecs = [
-          [ "ColumnName",      "Formula",                                       "Class"    ],
+          [ "ColumnName",      "Formula",                                       "Class", "IsDealerColumn"   ],
           [ "Expiry",           (t,obs) => t,                                   "bold"     ],
           [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate"),    "vartable_bmestimate" ],
           [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg"), "vartable_dealeravgquote" ],
         ];
 
         if(settings.showDealerDetails) {
-          var inactiveClass = d => d == "hsbc" ? " vartable_inactive" : "";
+          var inactiveClass = d => dealerUtils.dealerInfo[d].active ? "" : " vartable_inactive";
           dealerUtils.dealers.map(d => colSpecs.push(
-            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d) ]
+            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d), true ]
             ));
         }
 
@@ -224,7 +228,7 @@ angular.module('utilities')
 
         var columns = columnSpecs.map(spec => spec.ColumnName);
         var classes = columnSpecs.map(spec => spec.Class);
-        return { data: data, columns: columns, underlier: this.Underlier(), classes: classes };
+        return { data: data, columnSpecs: columnSpecs, underlier: this.Underlier() };
       }
 
       this.MetaData = function() {

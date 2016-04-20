@@ -11,9 +11,19 @@ angular.module('utilities')
         ml:     {   shortname: "ML",    label: "Merrill"        },
     };
 
+    for(var dealer in dealers)
+        dealers[dealer].active = true;
+
+    var dealerList = _.keys(dealers);
+
+    var ActiveDealers = function() {
+        return dealerList.filter(d => dealers[d].active);
+    }
+
     return {
-        dealers: _.keys(dealers),
+        dealers: dealerList,
         dealerInfo: dealers,
-        dealerCount: _.keys(dealers).length
+        dealerCount: dealerList.length,
+        ActiveDealers: ActiveDealers,
     }
 });

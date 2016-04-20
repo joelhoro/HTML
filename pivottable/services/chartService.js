@@ -104,8 +104,9 @@ angular.module('volmarker')
           scope.chartSeries = ["BlueMountain estimate", "Dealer average"];
           var tickers = ["BMEstimate", "Dealer.avg"];
           if(settings.showDealerDetails) {
-            scope.chartSeries = scope.chartSeries.concat(dealerUtils.dealers.map(d => dealerUtils.dealerInfo[d].label));
-            tickers = tickers.concat(dealerUtils.dealers.map(d => "Dealer." + d));            
+            var activeDealers = dealerUtils.ActiveDealers();
+            scope.chartSeries = scope.chartSeries.concat(activeDealers.map(d => dealerUtils.dealerInfo[d].label));
+            tickers = tickers.concat(activeDealers.map(d => "Dealer." + d));            
           }
           
           if(type=== 'bmonly')

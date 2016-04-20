@@ -26,7 +26,6 @@ angular.module("volmarker")
   $scope.mode = 'browse';
 
   $scope.regionFlag = misc.regionFlag;
-
   // active underlier fns
   $scope.ActiveSurface = () => $scope.volSurfaceCollection.Get($scope.activeUnderlier);
   $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
@@ -49,7 +48,14 @@ angular.module("volmarker")
     opened: false
   };
 
-
+  $scope.toggleDealer = function(d) {
+    var source = d.toLowerCase();
+    if(dealerUtils.dealerInfo[source] !== undefined) {
+      dealerUtils.dealerInfo[source].active = !dealerUtils.dealerInfo[source].active;
+      $scope.data = $scope.ActiveSurface().toDataTable();
+      $scope.refreshVolSurfaces(false, undefined, false);
+    }
+  }
 
   $scope.setActiveUnderlier = function(und, setData=true) {
     if(und === undefined) {
