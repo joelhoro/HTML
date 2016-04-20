@@ -1,0 +1,25 @@
+  <!-- 'LOADING' PAGE -->
+<div id='loadingPage' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Loading data for {{pricingDate.format("y-m-d")}}</h3>
+      </div>
+      <div class="modal-body">
+
+          
+        <span class="col-sm-4">
+          <img src='assets/gears.gif' />
+        </span>
+        <span class="col-sm-8">
+          <h1 ng-if='ajaxError==""'>Please wait...</h1>
+          <h3 ng-if='ajaxError!=""'>{{ajaxError}}</h3>
+        </span>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

@@ -1,0 +1,37 @@
+  <div id='metadataPage' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Sources for {{activeUnderlier}} on {{pricingDate.format("y-m-d")}}</h3>
+      </div>
+      <div class="modal-body">
+
+                  <span ng-if='settings.withMetaData && volSurfaceCollection.HasMetaData(activeUnderlier)'>
+                         <span ng-repeat='(source,metadata) in volSurfaceCollection.MetaData(activeUnderlier)'>
+                         <h4>{{ dealerInfo[source].label }}</h4>
+                            <ul>
+                              <li><b>Time:</b> {{metadata.KnowledgeTime}}</li>
+                              <li><b>Description:</b> {{metadata.Description}}</li>
+                              <li><b>CommandLine:</b> {{metadata.CommandLine}}</li>
+                              <li ng-if='metadata.Link != ""'><b>Link:</b> <a href='{{metadata.Link}}'>{{metadata.Link}}</a></li>
+                            </ul>
+                        </span>
+                  </span>
+                  <span ng-if='settings.withMetaData && !volSurfaceCollection.HasMetaData(activeUnderlier)'>
+                        <h3 >No sources for {{ activeUnderlier }}</h3>
+                  </span>
+          
+<!--         <span class="col-sm-4">
+          <img src='assets/gears.gif' />
+        </span>
+        <span class="col-sm-4">
+          <h1 ng-if='ajaxError==""'>Please wait...</h1>
+          <h3 ng-if='ajaxError!=""'>{{ajaxError}}</h3>
+        </span>
+ -->      </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
