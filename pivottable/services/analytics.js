@@ -182,9 +182,14 @@ angular.module('utilities')
 
       // Defines what column get displayed in table
       this.ColSpecs = function() {
+
+        var blockStoreTemplate = _.template("http://blockstore/#?token=EqiVar_<%= underlier %>_<%= maturity %>");
+
+        var expiryLink = t => blockStoreTemplate({ underlier : this.Underlier(), maturity: t.toUpperCase() } );
+
         var colSpecs = [
           [ "ColumnName",      "Formula",                                       "Class"  ],
-          [ "Expiry",           (t,obs) => t,                                   "bold"     ],
+          [ "Expiry",           (t,obs) => t,                                   "bold", { Link : expiryLink }     ],
           [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate"),    "vartable_bmestimate" ],
           [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg"), "vartable_dealeravgquote" ],
         ];

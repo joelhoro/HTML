@@ -32,7 +32,10 @@
           </thead>
           <tbody>
             <tr ng-repeat="row in data.data">
-              <td ng-repeat="col in data.columnSpecs" ng-class="col.Class" ng-click="toggleDealer(col.ColumnName)">{{row[col.ColumnName]}}</td>
+              <td ng-repeat="col in data.columnSpecs" ng-class="col.Class" ng-click="toggleDealer(col.ColumnName)">
+                 <span ng-if='col.Link !== undefined'><a ng-href='{{col.Link(row.Expiry)}}' target="_blank">{{row[col.ColumnName]}} </a></span>
+                 <span ng-if='col.Link == undefined'>{{row[col.ColumnName]}}</span>               
+              </td>
             </tr>
           </tbody>
         </table>
