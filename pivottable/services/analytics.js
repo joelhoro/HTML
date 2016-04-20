@@ -181,20 +181,21 @@ angular.module('utilities')
         var colSpecs = [
           [ "ColumnName",      "Formula",                                       "Class"    ],
           [ "Expiry",           (t,obs) => t,                                   "bold"     ],
-          [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate") ],
-          [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg") ],
+          [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate"),    "vartable_bmestimate" ],
+          [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg"), "vartable_dealeravgquote" ],
         ];
 
         if(settings.showDealerDetails) {
+          var inactiveClass = d => d == "hsbc" ? " vartable_inactive" : "";
           dealerUtils.dealers.map(d => colSpecs.push(
-            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d) ]
+            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d) ]
             ));
         }
 
         colSpecs = colSpecs.concat([
 
-          [ "Basis",            (t,obs) => this.GetQuote(obs, "Basis") ],
-          [ "Dealer basis",     (t,obs) => this.GetQuote(obs, "Dealer basis") ],
+          [ "Basis",            (t,obs) => this.GetQuote(obs, "Basis"), "vartable_basis" ],
+          [ "Dealer basis",     (t,obs) => this.GetQuote(obs, "Dealer basis"),"vartable_basis" ],
           //[ "Mark",             (t,obs) => -1 ],
 
           ]);
@@ -222,7 +223,8 @@ angular.module('utilities')
         });
 
         var columns = columnSpecs.map(spec => spec.ColumnName);
-        return { data: data, columns: columns, underlier: this.Underlier() };
+        var classes = columnSpecs.map(spec => spec.Class);
+        return { data: data, columns: columns, underlier: this.Underlier(), classes: classes };
       }
 
       this.MetaData = function() {

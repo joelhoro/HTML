@@ -16,6 +16,27 @@ h1 {
   font-weight: bold;
 }
 
+.vartable_bmestimate {
+  background-color: FFFFCC;
+}
+.vartable_dealerquote {
+  background-color: 99CCFF;
+}
+
+.vartable_basis {
+  background-color: CCCC00;
+  color: white;
+}
+
+
+.vartable_inactive {
+  color: orange;
+}
+
+.vartable_dealeravgquote {
+  background-color: 3333CC;
+  color: white;
+}
 
 .list-group {
   overflow: scroll;
@@ -149,5 +170,5 @@ h1 {
   }
 
   #vartable {
-    font-size: 0.8em;
+    font-size: 0.9em;
   }

@@ -26,7 +26,6 @@ angular.module("volmarker")
   $scope.mode = 'browse';
 
   $scope.regionFlag = misc.regionFlag;
-  $scope.gridConfig = voldata.gridConfig('data');
 
   // active underlier fns
   $scope.ActiveSurface = () => $scope.volSurfaceCollection.Get($scope.activeUnderlier);

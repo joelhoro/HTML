@@ -14,7 +14,7 @@ angular.module('utilities')
         animationSpeed: 6,	// 1 is default
         withMetaData: true,
         showDealerDetails: false,
-        underliers: "SPX,SX5E,NKY,HSCEI",
+        underliers: "",
         loadMenuOnStartup: true,
         fakeSleepOnLocalMode: false, // allows to pretend local request takes time - for testing gui
         showVolRatio: true,
