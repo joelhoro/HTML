@@ -14,7 +14,7 @@ angular.module('dataService',['utilities','dataWarehouse'])
           surfaceCollection = new VolSurfaceCollection([],settings.date);
         else {
           if (data.status !== undefined) data = data.data;
-          surfaceCollection = new VolSurfaceCollection(data, settings.date);
+          surfaceCollection = new VolSurfaceCollection(data.VolData, settings.date);
         }
         utils.log("Getting volsurfaces - found {1} underliers", surfaceCollection.UnderliersCount());
         successFn(surfaceCollection);
