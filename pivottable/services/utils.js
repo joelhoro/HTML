@@ -99,7 +99,7 @@ angular.module('utilities',[])
 		var columns = this[0];
 		var results = [];
 		for(var i = 1; i < this.length; i++)
-			results.push(columns.toObjectWithValues(this[i]))
+			results.push(_.extend(columns.toObjectWithValues(this[i]), this[i][this[0].length] ))
 		return results;
 	}
 

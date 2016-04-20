@@ -82,6 +82,18 @@ angular.module('tests')
       ]
     AssertEqual(table, tableSpecs.toObjectList(), "Testing toObjectList");
 
+    var tableSpecs2 = [
+      ["A", "B"], 
+      [ 1, 2 ],
+      [ 3, 4, { C: 5 }]
+    ]
+
+    var table2 = [
+      { A: 1, B: 2 },
+      { A: 3, B: 4, C: 5 },
+    ]
+
+    AssertEqual(table2, tableSpecs2.toObjectList(), "Testing toObjectList");
   }
 
 
