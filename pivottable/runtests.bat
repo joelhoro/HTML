@@ -1,0 +1,1 @@
+karma start --single-run --browsers Chrome karma.conf.js
