@@ -39,6 +39,7 @@
 <html ng-app="volmarker">
   <div ng-controller="volmarkerCtrl" ng-cloak>
 
+	  <span ng-if="settings.favicon"><link rel="shortcut icon" type="image/ico" href="assets/xfavicon.ico"/></span>
 	  <div ng-include="'views/settings.html'"></div>
 	  <div ng-include="'views/metadata.html'"></div>
 	  <div ng-include="'views/loading.html'"></div>

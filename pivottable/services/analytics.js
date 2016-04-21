@@ -190,6 +190,7 @@ angular.module('utilities')
         var colSpecs = [
           [ "ColumnName",      "Formula",                                       "Class"  ],
           [ "Expiry",           (t,obs) => t,                                   "bold", { Link : expiryLink }     ],
+          [ "BM Mark",           (t,obs) => this.GetQuote(obs, "BM@T"),       "vartable_bmestimate" ],
           [ "BM Est",           (t,obs) => this.GetQuote(obs, "BMEstimate"),    "vartable_bmestimate" ],
           [ "D avg",            (t,obs) => this.GetQuote(obs, "Dealer.avg"), "vartable_dealeravgquote" ],
         ];
@@ -198,7 +199,7 @@ angular.module('utilities')
           var isActive = d => dealerUtils.dealerInfo[d].active;
           var inactiveClass = d => isActive(d) ? "" : " vartable_inactive";
           dealerUtils.dealers.map(d => colSpecs.push(
-            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d), { IsDealerColumn: true, IsActiveDealer: isActive(d) } ]
+            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "vartable_dealerquote" + inactiveClass(d), { IsDealerColumn: true, IsActiveDealer: isActive(d) } ]
             ));
         }
 

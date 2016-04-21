@@ -19,6 +19,7 @@ angular.module('utilities')
         loadMenuOnStartup: true,
         fakeSleepOnLocalMode: false, // allows to pretend local request takes time - for testing gui
         showVolRatio: true,
+        favicon: false,
       };
 
     var settings;

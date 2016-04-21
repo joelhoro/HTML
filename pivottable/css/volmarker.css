@@ -17,15 +17,15 @@ h1 {
 }
 
 .vartable_bmestimate {
-  background-color: FFFFCC;
+  background-color: #DDC879;
+  font-weight: bold;
 }
 .vartable_dealerquote {
-  background-color: 99CCFF;
+  background-color: #ABDEA3;
 }
 
 .vartable_basis {
-  background-color: CCCC00;
-  color: white;
+  background-color: #C3E088;
 }
 
 
@@ -34,8 +34,9 @@ h1 {
 }
 
 .vartable_dealeravgquote {
-  background-color: 3333CC;
-  color: white;
+  background-color: #A3D9D7;
+  /*color: white;*/
+  font-weight: bold;
 }
 
 .list-group {
