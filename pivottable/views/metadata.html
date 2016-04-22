@@ -6,6 +6,10 @@
         <h3 class="modal-title">Sources for {{activeUnderlier}} on {{pricingDate.format("y-m-d")}}</h3>
       </div>
       <div class="modal-body">
+          <h4>
+            <button class='btn btn-xs btn-danger' ng-click='setDateAndLoad(true)'>Refresh now</button>
+            Last server update: {{volSurfaceCollection.metaData.Time}} by {{volSurfaceCollection.metaData.UserName}}@{{volSurfaceCollection.metaData.Host}} 
+          </h4>
 
                   <span ng-if='settings.withMetaData && volSurfaceCollection.HasMetaData(activeUnderlier)'>
                          <span ng-repeat='(source,metadata) in volSurfaceCollection.MetaData(activeUnderlier)'>

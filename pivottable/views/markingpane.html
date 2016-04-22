@@ -1,8 +1,6 @@
 <div class="panel panel-primary" >
   <div class="panel-heading">
-    Var surface for  {{activeUnderlier}} 
-      <span id='lastupdate'>Last update: {{volSurfaceCollection.Time()}}</span>
-    <span>
+    Var surface for  {{activeUnderlier}} - volsurface time: {{ActiveSurface().Time()}}
       <button ng-if='volSurfaceCollection.HasMetaData(activeUnderlier)' class="btn btn-xs btn-info glyphicon glyphicon-info-sign" ng-click="showMetadataPage()"></button>
       <button class="btn btn-danger" ng-if='volSurfaceCollection.HasChanges(activeUnderlier)' ng-click="save()">Save changes</button>
       <!-- <button class="btn btn-danger" ng-class="requestBusy ? 'btn-info' : 'btn-danger'" ng-click="refreshVolSurfaces(true,activeUnderlier)">Reload</button> -->
@@ -23,7 +21,6 @@
         <table id='vartable' class="table table-striped table-hover table-condensed">
           <thead>
             <tr>
-              // click only for dealers
               <th ng-repeat="col in data.columnSpecs" ng-class="" ng-click="toggleDealer(col.Dealer)">
               <a href='#' class='glyphicon' ng-class='col.IsActiveDealer ? "glyphicon-minus-sign" : "glyphicon-plus-sign"' ng-if='col.IsDealerColumn'> 
                </a>
