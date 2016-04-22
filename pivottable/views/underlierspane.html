@@ -27,7 +27,7 @@
               <div class='list-group-item-heading'>
                   <span><b>{{volSurfaceCollection.HasChanges(und)?'*'+und+'*' : und}}
                 [{{points[und]}}]</b>
-                <img ng-if='settings.showFlags' class=flag ng-src='{{regionFlag(und)}}'/>
+                <img ng-if='settings.showFlags' class=flag ng-src='{{misc.regionFlag(und)}}'/>
               </span>
 <!--                   <div ng-if='!volSurfaceCollection.HasChanges(und)'>
                       <b>No changes</b>

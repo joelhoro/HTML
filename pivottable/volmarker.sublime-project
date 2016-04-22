@@ -2,7 +2,28 @@
 	"folders":
 	[
 		{
-			"path": "."
+			"path": "apps"
+		},
+		{
+			"path": "controllers"
+		},
+		{
+			"path": "css"
+		},
+		{
+			"path": "data"
+		},
+		{
+			"path": "services"
+		},
+		{
+			"path": "tests"
+		},
+		{
+			"path": "directives"
+		},
+		{
+			"path": "views"
 		}
 	]
 }

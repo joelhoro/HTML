@@ -3,12 +3,19 @@
 angular.module('utilities')
 .service("dealerUtils", function(_) {
 
+    class Dealer {
+        constructor(shortname, label) {
+            this.shortname = shortname;
+            this.label = label;
+        }
+    }
+
     var dealers = {
-        socgen: {   shortname: "SG",    label: "SocGen"         },
-        ms:     {   shortname: "MS",    label: "Morgan Stanley"  },
-        jpm:    {   shortname: "JPM",   label: "JP Morgan"      },
-        ml:     {   shortname: "ML",    label: "Merrill"        },
-        hsbc:   {   shortname: "HSBC",  label: "HSBC"           },
+        socgen: new Dealer("SG", "SocGen"),
+        ms:     new Dealer("MS", "Morgan Stanley"),
+        jpm:    new Dealer("JPM", "JP Morgan" ),
+        ml:     new Dealer("ML",  "Merrill" ),
+        hsbc:   new Dealer("HSBC", "HSBC"),
     };
 
     for (var dealer in dealers)

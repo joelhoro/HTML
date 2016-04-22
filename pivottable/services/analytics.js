@@ -145,6 +145,7 @@ angular.module('utilities')
           .map(d => this.GetQuote(o,'Dealer.' + d))
           .avg()
           .round(2),
+        'Basis diff' : o => this.GetQuote(o,'Dealer basis') - this.GetQuote(o, 'Basis'),
         BMEstimate: o => this.GetQuote(o,"BMComputed@T") + this.GetQuote(o,"Basis")
       };
 
@@ -196,10 +197,11 @@ angular.module('utilities')
         ];
 
         if(settings.showDealerDetails) {
-          var isActive = d => dealerUtils.dealerInfo[d].active;
+          var dealerInfo = dealerUtils.dealerInfo;
+          var isActive = d => dealerInfo[d].active;
           var inactiveClass = d => isActive(d) ? "" : " vartable_inactive";
           dealerUtils.dealers.map(d => colSpecs.push(
-            [ d.toUpperCase(),  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "vartable_dealerquote" + inactiveClass(d), { IsDealerColumn: true, IsActiveDealer: isActive(d) } ]
+            [ dealerInfo[d].shortname,  (t,obs) => this.GetQuote(obs, "Dealer." + d),   "info" + inactiveClass(d), { IsDealerColumn: true, IsActiveDealer: isActive(d), Dealer: dealerInfo[d] } ]
             ));
         }
 
@@ -207,6 +209,7 @@ angular.module('utilities')
 
           [ "Basis",            (t,obs) => this.GetQuote(obs, "Basis"), "vartable_basis" ],
           [ "Dealer basis",     (t,obs) => this.GetQuote(obs, "Dealer basis"),"vartable_basis" ],
+          [ "Diff",             (t,obs) => this.GetQuote(obs, "Basis diff"),"vartable_basis" ],
           //[ "Mark",             (t,obs) => -1 ],
 
           ]);

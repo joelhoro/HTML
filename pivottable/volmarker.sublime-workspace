@@ -4,8 +4,108 @@
 		"selected_items":
 		[
 			[
+				"as",
+				"aspUrl"
+			],
+			[
+				"delaer",
+				"dealerInfo"
+			],
+			[
+				"de",
+				"dealerUtils"
+			],
+			[
+				"inac",
+				"inactiveClass"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
 				"vol",
+				"volSurfaceCollection"
+			],
+			[
+				"vo",
 				"VolSurfaceCollection"
+			],
+			[
+				"VolSu",
+				"VolSurfaceCollection"
+			],
+			[
+				"max",
+				"max-height"
+			],
+			[
+				"data",
+				"dataWarehouse	AngularJS"
+			],
+			[
+				"volmak",
+				"volmarkerCtrl"
+			],
+			[
+				"volmark",
+				"volmarkerCtrl"
+			],
+			[
+				"la",
+				"layerX"
+			],
+			[
+				"showm",
+				"showMetadataPage"
+			],
+			[
+				"TestI",
+				"TestInterpolation"
+			],
+			[
+				"Test",
+				"TestVolSurface"
+			],
+			[
+				"test",
+				"TestVolSurface"
+			],
+			[
+				"asser",
+				"AssertNotEqual"
+			],
+			[
+				"Asser",
+				"AssertNotEqual"
+			],
+			[
+				"new",
+				"newdata"
+			],
+			[
+				"p",
+				"parse"
+			],
+			[
+				"local",
+				"localStorage"
+			],
+			[
+				"vos",
+				"volSurfaceCollection"
+			],
+			[
+				"volSurface",
+				"volSurfaceCollection"
+			],
+			[
+				"volSU",
+				"volSurfaceCollection"
+			],
+			[
+				"volsurf",
+				"volsurfacecollection"
 			],
 			[
 				"underli",
@@ -68,10 +168,6 @@
 				"activeUnderlier"
 			],
 			[
-				"data",
-				"dataMode"
-			],
-			[
 				"und",
 				"underliers"
 			],
@@ -124,10 +220,6 @@
 				"TenorLabels"
 			],
 			[
-				"test",
-				"testresults"
-			],
-			[
 				"T",
 				"TestInterpolation"
 			],
@@ -140,100 +232,10 @@
 	"buffers":
 	[
 		{
-			"file": "volmarker.html",
+			"file": "services/utils.js",
 			"settings":
 			{
-				"buffer_size": 14721,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "services/volsurfacecollection.js",
-			"settings":
-			{
-				"buffer_size": 4280,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "Searching 585 files for \"VolSurfaceCollection(\"\n\nC:\\Users\\jhorowitz\\Documents\\GIT\\HTML\\pivottable\\controllers\\volmarkerCtrl.js:\n    9    $scope.settings = settings;\n   10    $scope.pricingDate = new Date().addDays(-1);\n   11:   $scope.volSurfaceCollection = new VolSurfaceCollection();\n   12    $scope.showMetadata = $scope.volSurfaceCollection.MetaData;\n   13  \n\nC:\\Users\\jhorowitz\\Documents\\GIT\\HTML\\pivottable\\services\\voldata.js:\n   11      var convertSurface = data => {\n   12          if (data.status !== undefined) data = data.data;\n   13:         var surfaceCollection = new VolSurfaceCollection(data, settings.date);\n   14          utils.log(\"Getting volsurfaces - found {1} underliers\", surfaceCollection.UnderliersCount());\n   15          successFn(surfaceCollection);\n\n2 matches across 2 files\n",
-			"settings":
-			{
-				"buffer_size": 806,
-				"line_ending": "Windows",
-				"name": "Find Results",
-				"scratch": true
-			}
-		},
-		{
-			"file": "services/settings.js",
-			"settings":
-			{
-				"buffer_size": 1425,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "css/volmarker.css",
-			"settings":
-			{
-				"buffer_size": 1961,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "controllers/volmarkerCtrl.js",
-			"settings":
-			{
-				"buffer_size": 5211,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "directives/volsurfacechart.js",
-			"settings":
-			{
-				"buffer_size": 2568,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "services/dealerUtils.js",
-			"settings":
-			{
-				"buffer_size": 574,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "services/voldata.js",
-			"settings":
-			{
-				"buffer_size": 2870,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "data/datawarehouse.js",
-			"settings":
-			{
-				"buffer_size": 130233,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "services/volmarkerUtils.js",
-			"settings":
-			{
-				"buffer_size": 694,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "services/chartService.js",
-			"settings":
-			{
-				"buffer_size": 3226,
+				"buffer_size": 9680,
 				"line_ending": "Windows"
 			}
 		},
@@ -241,36 +243,115 @@
 			"file": "services/analytics.js",
 			"settings":
 			{
-				"buffer_size": 5410,
+				"buffer_size": 8413,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "services/utils.js",
+			"file": "views/markingpane.html",
 			"settings":
 			{
-				"buffer_size": 9398,
+				"buffer_size": 2278,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/settings.html",
+			"settings":
+			{
+				"buffer_size": 5251,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "services/settings.js",
+			"settings":
+			{
+				"buffer_size": 1721,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "data/datawarehouse.js",
+			"settings":
+			{
+				"buffer_size": 372216,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/underlierspane.html",
+			"settings":
+			{
+				"buffer_size": 2764,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "volmarker.html",
+			"settings":
+			{
+				"buffer_size": 2637,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/graphspane.html",
+			"settings":
+			{
+				"buffer_size": 2480,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "controllers/volmarkerCtrl.js",
+			"settings":
+			{
+				"buffer_size": 6687,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Searching 618 files for \"showSettingsMenuCb\"\n\n\n\nSearching 618 files for \"showSettingsMenu\"\n\nC:\\Users\\Joel\\Dropbox\\Programming\\HTML\\pivottable\\controllers\\volmarkerCtrl.js:\n  135    }\n  136  \n  137:   var showSettingsMenu = function() {\n  138      $('#settingsMenu').modal('show');\n  139    }\n  140  \n  141:   $scope.showSettingsMenuCb = function(evt) {\n  142      settings.expertMode = evt.ctrlKey;\n  143:     showSettingsMenu();\n  144    }\n  145  \n  ...\n  202    /// INITIALIZATION\n  203    if(settings.loadMenuOnStartup)\n  204:     showSettingsMenu();\n  205  \n  206    $scope.setDateAndLoad();\n\nC:\\Users\\Joel\\Dropbox\\Programming\\HTML\\pivottable\\views\\underlierspane.html:\n    5            <button class=\"btn btn-xs btn-info glyphicon glyphicon-refresh\" ng-click=\"shiftPricingDate(0,$event)\"> </button> \n    6            <button class=\"btn btn-xs btn-info glyphicon glyphicon-chevron-right\"  ng-click=\"shiftPricingDate(1,$event)\"> </button> \n    7:           <button class=\"btn btn-xs btn-danger glyphicon glyphicon-wrench\" ng-click=\"showSettingsMenu()\"></button>\n    8  \n    9            <span>\n\n5 matches across 2 files\n",
+			"settings":
+			{
+				"buffer_size": 1123,
+				"line_ending": "Windows",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"file": "services/voldata.js",
+			"settings":
+			{
+				"buffer_size": 1509,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "tests/tests.js",
+			"settings":
+			{
+				"buffer_size": 4213,
 				"line_ending": "Windows"
 			}
 		}
 	],
 	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
 	"command_palette":
 	{
-		"height": 196.0,
+		"height": 269.0,
+		"last_filter": "",
 		"selected_items":
 		[
 			[
-				"sy js",
-				"Set Syntax: JavaScript"
-			],
-			[
-				"syn js",
-				"Set Syntax: JavaScript"
-			],
-			[
-				"syntax js",
-				"Set Syntax: JavaScript"
+				"install",
+				"Package Control: Install Package"
 			],
 			[
 				"gitdi",
@@ -283,10 +364,6 @@
 			[
 				"sear",
 				"Search In Project"
-			],
-			[
-				"install",
-				"Package Control: Install Package"
 			],
 			[
 				"json",
@@ -357,11 +434,15 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 400.0
+		"width": 648.0
 	},
 	"console":
 	{
-		"height": 162.0
+		"height": 162.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
 	},
 	"distraction_free":
 	{
@@ -372,39 +453,75 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/apps",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/controllers",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/css",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/data",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/tests",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/directives",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views"
+	],
 	"file_history":
 	[
-		"/C/Users/jhorowitz/Documents/GIT/HTML/pivottable/data/datawarehouse.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/data/datawarehouse.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/css/volmarker.css",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/analytics.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/settings.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/apps/volmarker.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/volsurfacecollection.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/volmarker.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/markingpane.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/utils.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/graphspane.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/chartService.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/settings.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/voldata.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/controllers/volmarkerCtrl.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/dealerUtils.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/metadata.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/loading.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/views/underlierspane.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/views/dashboard.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/apps/volmarker.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/volmarker.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/index.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/scripts/controllers/main.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/chart.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/test.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/angular-chart.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/simplechartwithcontext.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/scripts/directives/directives.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/scripts/app.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/scripts/config.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/controllers/volmarkerCtrl.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/simplechart.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/scripts/homer.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/directives/volsurfacechart.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/views/common/panel_tools.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/views/common/header.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/app/views/common/navigation.html",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/dist/scripts/scripts.d79c6f35.js",
+		"/C/Users/Joel/Downloads/products-WB055J451/Homer_Seed_Project_AngulaJS/dist/index.html",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/tests/interpolationtests.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/tests/tests.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/volmarkerUtils.js",
+		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/tests.js",
 		"/C/Users/Joel/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
-		"/C/Users/jhorowitz/Documents/GIT/HTML/pivottable/services/volsurfacecollection.js",
 		"/C/Users/Joel/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/bower_components/ui-bootstrap/src/tooltip/tooltip.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/directives/volsurfacechart.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/test.html",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/apps/volmarker.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/tests.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/ng-grid.debug.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/css/volmarker.css",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/bower_components/angular/angular.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/controllers/volmarkerCtrl.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/data/tests.html",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/js/pivottable.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/data/datawarehouse.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/settings.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/angular-chart.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/volsurfaceUtils.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/analytics.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/voldata.js",
 		"/C/Users/Joel/Downloads/html-52-[d9a6670696681a4e338b08d81f380f15cfb54f42]/pivottable/volmarker.html",
 		"/C/Users/Joel/Downloads/html-52-[d9a6670696681a4e338b08d81f380f15cfb54f42]/pivottable/controllers/volmarkerCtrl.js",
 		"/C/Users/Joel/Downloads/html-52-[d9a6670696681a4e338b08d81f380f15cfb54f42]/pivottable/directives/volsurfacechart.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/chartService.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/dateUtils.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/utils.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/volmarker.html",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/simplechart.html",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/test2.html",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/services/volmarkerUtils.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/server.bat",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/apps",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/js/volsurfacechart.js",
@@ -419,7 +536,6 @@
 		"/C/Users/Public/Deployment/html/pivottable/js/volsurfacechart.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/css/tests.css",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/chart/Chart.Line.js",
-		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/lib/chart.js",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/css/angular-chart.css",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/pivottable.html",
 		"/C/Users/Joel/Dropbox/Programming/HTML/pivottable/data/volsurfaces.json"
@@ -430,7 +546,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 90.0,
+		"height": 135.0,
 		"where_history":
 		[
 			""
@@ -441,12 +557,98 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"VolSurfaceCollection(",
-			"Update = ",
-			"volsurfacecollection.update",
-			"VolSurfaceCollection(",
+			"glyph",
+			"gdh",
+			"div",
+			"expertmode",
+			"showSettingsMenu",
+			"showSettingsMenuCb",
+			"reload",
+			"?",
+			"dealer",
+			"ng-click",
+			"newCurve",
+			"spxSurface",
+			"spxCurveFn",
+			"refreshvol",
+			"error",
+			"initialized",
+			"showtooltip",
+			"template",
+			"multitooltiptemplate",
+			"options",
+			"template",
+			"datasetobject",
+			"labels",
+			".label",
+			"dataset.label",
+			"datasets.",
+			"datasets",
+			"tooltiptemplate",
+			"element",
+			"tooltip",
+			"tooltipTemplate",
+			"tooltip",
+			"ratio",
+			"volmarker",
+			"homer",
+			"volmarkerctrl",
+			"volmarkerCtrl",
+			"volmarkerctrl",
+			"angular.",
+			"angular.min.js",
+			".js\"",
+			"clone",
+			"showtooltips",
+			".chart",
+			"chart",
+			"tooltip",
+			"label",
+			"special ang",
+			"js",
+			"button",
+			"settings",
+			"metadata",
+			"link",
+			"uib",
+			"reload",
+			"metadata",
+			"MetaData",
+			"metadata",
+			"reload",
+			"volSurfacecollection",
+			"s[",
+			"getpointsat",
+			"geteventhandler",
+			"click",
+			"hover",
+			"elem",
+			"hover",
+			"click",
+			"hover",
+			"retrievevolsurfaces",
+			"reset",
+			"collection[",
+			"this.collection[",
 			"volsurfacecollection",
-			"retrieveVolSurfaces",
+			"metadata",
+			"settings",
+			"animationSpeed",
+			"animationspeed",
+			"metadata",
+			"haschange",
+			"haschanges",
+			"$scope",
+			"numberOfChanges",
+			"changes",
+			"volsurfacecollection='volsurfacecollection'",
+			"volSurfaceCollection",
+			"getChartSpecs",
+			"volsurfacecollection",
+			"volsurfaces='volsurfaces'",
+			"volsurfacecollection",
+			"volsurfaces",
+			"alt+d",
 			"ctrl+shift+u",
 			"volsurface",
 			"filter",
@@ -482,87 +684,7 @@
 			"update",
 			"_change",
 			"update",
-			"surfacechanges",
-			"utils.log",
-			"return;",
-			"here",
-			">>>",
-			"surfacechanges",
-			"haschanges",
-			"setactiveunderlier",
-			"DataChanged",
-			"broadcast",
-			"on(",
-			"changed",
-			"DataChanged",
-			"broadcast",
-			"update(",
-			"update",
-			"reload",
-			" == ",
-			"!= ",
-			"scrollto",
-			"_",
-			"clone",
-			"dealer",
-			"ng-repeat",
-			"$scope.volsurfaces",
-			"reload",
-			"parent",
-			"datachanged",
-			"add",
-			"getunderliers",
-			"getvol",
-			"reloadSurfaces",
-			"getunderliers",
-			"reloadsurfaces",
-			"          //$scope.$apply();\n",
-			"apply",
-			"data",
-			"surfacec",
-			"listen",
-			"exec",
-			"eval(",
-			".at(",
-			"interpolator",
-			"curvefn",
-			"mode",
-			"updatelabels",
-			"series",
-			"<vol",
-			"$on",
-			"on(",
-			"watch",
-			"resetchart",
-			"underlierchanged",
-			"fillcolor",
-			"tooltip",
-			"volsurface",
-			"showdate",
-			"vol-surface",
-			"listen",
-			"vol-surface-chart",
-			"vol-surface-chart ",
-			"tenor",
-			"test",
-			"utils",
-			"tenors",
-			"tenors(",
-			"tenors",
-			"datekey",
-			"update",
-			"interpolator",
-			"extractmany",
-			"update",
-			"volsurface=",
-			"volsurface",
-			"volsurface=",
-			"volsurface",
-			"vol-surface-chart",
-			"vol-surface",
-			"updateUnderlier",
-			"updateunderlier",
-			"debugger"
+			"surfacechanges"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -570,6 +692,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this",
+			"volSurfaceCollection='volSurfaceCollection'",
+			"volSurfaceCollection",
 			"updateXX",
 			" === ",
 			"!== ",
@@ -588,70 +713,311 @@
 	"groups":
 	[
 		{
-			"selected": 9,
+			"selected": 7,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "volmarker.html",
+					"file": "services/utils.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14721,
+						"buffer_size": 9680,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10859,
-								10859
+								3457,
+								3457
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 3374.0,
+						"translation.y": 2610.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "services/volsurfacecollection.js",
+					"file": "services/analytics.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4280,
+						"buffer_size": 8413,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2105,
-								2105
+								6762,
+								6762
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 411.0,
+						"translation.y": 5220.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
+					"file": "views/markingpane.html",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 806,
+						"buffer_size": 2278,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1834,
+								2034
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 908.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "views/settings.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5251,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2796,
+								2796
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1580.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "services/settings.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1721,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								844,
+								846
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "data/datawarehouse.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 372216,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								166,
+								245
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "views/underlierspane.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2764,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								202,
+								202
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "volmarker.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2637,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								249,
+								249
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "views/graphspane.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2480,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								400,
+								393
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "controllers/volmarkerCtrl.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6687,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2178,
+								2178
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1884.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1123,
 						"regions":
 						{
 							"match":
@@ -660,12 +1026,24 @@
 								"regions":
 								[
 									[
-										262,
-										283
+										204,
+										220
 									],
 									[
-										583,
-										604
+										316,
+										332
+									],
+									[
+										410,
+										426
+									],
+									[
+										534,
+										550
+									],
+									[
+										1035,
+										1051
 									]
 								],
 								"scope": ""
@@ -674,264 +1052,43 @@
 						"selection":
 						[
 							[
-								779,
-								779
+								1042,
+								1042
 							]
 						],
 						"settings":
 						{
 							"detect_indentation": false,
-							"output_tag": 1,
+							"line_numbers": false,
+							"output_tag": 2,
 							"result_base_dir": "",
-							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_file_regex": "^([^ 	].*):$",
 							"result_line_regex": "^ +([0-9]+):",
 							"scroll_past_end": true,
 							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 90.0,
 						"zoom_level": 1.0
 					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "services/settings.js",
-					"settings":
-					{
-						"buffer_size": 1425,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								569,
-								589
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "css/volmarker.css",
-					"settings":
-					{
-						"buffer_size": 1961,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1939,
-								1939
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3118.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "controllers/volmarkerCtrl.js",
-					"settings":
-					{
-						"buffer_size": 5211,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2595,
-								2595
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 861.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "directives/volsurfacechart.js",
-					"settings":
-					{
-						"buffer_size": 2568,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 858.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "services/dealerUtils.js",
-					"settings":
-					{
-						"buffer_size": 574,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "services/voldata.js",
-					"settings":
-					{
-						"buffer_size": 2870,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								714,
-								714
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "data/datawarehouse.js",
-					"settings":
-					{
-						"buffer_size": 130233,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "services/volmarkerUtils.js",
-					"settings":
-					{
-						"buffer_size": 694,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								387,
-								387
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 11,
-					"file": "services/chartService.js",
+					"file": "services/voldata.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3226,
+						"buffer_size": 1509,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								276,
+								331
 							]
 						],
 						"settings":
@@ -941,25 +1098,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1609.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 12,
-					"file": "services/analytics.js",
+					"file": "tests/tests.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5410,
+						"buffer_size": 4213,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2029,
-								2366
+								4124,
+								4124
 							]
 						],
 						"settings":
@@ -969,35 +1128,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1398.0,
+						"translation.y": 2058.0,
 						"zoom_level": 1.0
 					},
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "services/utils.js",
-					"settings":
-					{
-						"buffer_size": 9398,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2855,
-								2855
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 2060.0,
-						"zoom_level": 1.0
-					},
+					"stack_index": 12,
 					"type": "text"
 				}
 			]
@@ -1005,7 +1139,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 38.0
+		"height": 48.0
 	},
 	"input":
 	{
@@ -1042,31 +1176,63 @@
 	{
 		"height": 0.0
 	},
+	"pinned_build_system": "",
+	"project": "volmarker.sublime-project",
 	"replace":
 	{
-		"height": 90.0
+		"height": 72.0
 	},
 	"save_all_on_build": true,
 	"select_file":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"ctrl",
+				"controllers\\volmarkerCtrl.js"
+			],
+			[
+				"pane",
+				"views\\markingpane.html"
+			],
+			[
+				"vol",
+				"volmarker.html"
+			]
 		],
 		"width": 0.0
 	},
 	"select_project":
 	{
 		"height": 0.0,
+		"last_filter": "",
 		"selected_items":
 		[
 		],
 		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
 	},
 	"show_minimap": true,
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
 	"side_bar_width": 285.0,
-	"status_bar_visible": true
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
 }

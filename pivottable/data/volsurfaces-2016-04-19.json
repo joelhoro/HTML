@@ -1,4 +1,4 @@
-{
+{ "MetaData" : {
   "UserName": "jhorowitz",
   "Host": "BC416",
   "Time": "2016-04-20T14:27:12.9556451-04:00",
@@ -6,7 +6,7 @@
   "ProcessName": "w3wp",
   "PID": 91856,
   "CommandLine": "c:\\windows\\system32\\inetsrv\\w3wp.exe -ap \"DefaultAppPool\" -v \"v4.0\" -l \"webengine4.dll\" -a \\\\.\\pipe\\iisipmf52d0778-532a-4eed-a5f8-a09e0fb236d4 -h \"C:\\inetpub\\temp\\apppools\\DefaultAppPool\\DefaultAppPool.config\" -w \"\" -m 0 -t 20",
-  "Assembly": "1.0.0.0",
+  "Assembly": "1.0.0.0" },
   "VolData": [
     {
       "Index": "AS51",

@@ -11,10 +11,10 @@ angular.module('dataService',['utilities','dataWarehouse'])
     var convertSurface = data => {
         var surfaceCollection;
         if(data == undefined)
-          surfaceCollection = new VolSurfaceCollection([],settings.date);
+          surfaceCollection = new VolSurfaceCollection([],settings.date, {});
         else {
           if (data.status !== undefined) data = data.data;
-          surfaceCollection = new VolSurfaceCollection(data.VolData, settings.date);
+          surfaceCollection = new VolSurfaceCollection(data.VolData, settings.date, data.MetaData);
         }
         utils.log("Getting volsurfaces - found {1} underliers", surfaceCollection.UnderliersCount());
         successFn(surfaceCollection);

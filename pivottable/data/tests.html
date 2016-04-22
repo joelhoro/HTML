@@ -56,8 +56,6 @@
 
 <div ng-controller="volmarkerCtrl">
 
-<!-- <span>Started at: {{ startTime }}</span> -->
-
       <div class="col-md-2" id='underliersPane'>
         <div class="panel panel-primary">
           <div class="panel-heading"><h1>Underliers 
@@ -71,7 +69,7 @@
               <div class='list-group-item-heading'>
                 <span><b>{{und}}
                   [{{points[und]}} maturities]</b></div>
-                  <img class=flag ng-src='{{regionFlag(und)}}'/>
+                  <img class=flag ng-src='{{misc.regionFlag(und)}}'/>
                 </span>
               <vol-surface-chart volsurface='volsurfaces[und]' showdatesonaxis='false' nolegend=1>
             </vol-surface-chart>

@@ -177,3 +177,15 @@ h1 {
   #vartable {
     font-size: 0.9em;
   }
+
+  #lastupdate {
+    font-size: 0.6em;
+/*    text-align: bottom;
+    display: block;
+    right: 30px;
+*/  }
+
+  button.glyphicon-wrench {
+    display: inline-block;
+    right: -20px;
+  }

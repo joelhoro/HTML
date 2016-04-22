@@ -5,11 +5,12 @@ angular.module('utilities')
 
   utils.log("Initializing volsurfacecollection factory");
   class VolSurfaceCollection {
-    constructor(volSurfaces, date) {
+    constructor(volSurfaces, date, metaData) {
       if(volSurfaces === undefined )
         volSurfaces = [];
       this.collection = volSurfaces.toObject(row => new analytics.VolSurface(row), row => row.Index);
       this.originalCollection = utils.clone(this.collection);      
+      this.metaData = metaData;
 
       if(date !== undefined)
         this.date = date;
@@ -29,6 +30,9 @@ angular.module('utilities')
         return this.Underliers().toObject(und => this.Get(und).Points());
       }
 
+      this.Time = function() {
+        return new Date(this.metaData.Time).toString();
+      }
       this.Get = function(underlier) {
         var surface = this.collection[underlier];
         if(surface === undefined)
@@ -71,6 +75,7 @@ angular.module('utilities')
           else {
             this.collection = volsurfacecollection.collection;
             this.originalCollection = utils.clone(volsurfacecollection.collection);
+            this.metaData = volsurfacecollection.metaData;
           }
           this.date = date;
       }

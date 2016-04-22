@@ -6,39 +6,38 @@ angular.module("volmarker")
     utils.log("Initializing volmarker controller - scope=" + $scope.$id);
   console.groupEnd();
 
+  // importing some scopes
+  $scope.misc = misc;
+  $scope.dealerInfo = dealerUtils.dealerInfo;
+
+  // use options in url to set settings
   settings.SetFromUrl($location.search());
 
   // right so this laundry list of variables starts really looking bad...
+  $scope.volSurfaceCollection = new VolSurfaceCollection();
   $scope.expertMode = false;
   $scope.requestBusy = false;
   $scope.settings = settings;
   $scope.pricingDate = new Date().addWeekDays(-1);
-  $scope.volSurfaceCollection = new VolSurfaceCollection();
-  $scope.showMetadata = $scope.volSurfaceCollection.MetaData;
 
-  $scope.ratioDelta = 20;
-  $scope.changeRatioDelta = function(n) {
+  $scope.ratioDelta = 40;
+  $scope.ChangeRatioDelta = function(n) {
     $scope.ratioDelta = n;
   }
 
   $scope.initialized = false;
-  $scope.startTime = new Date();
-  $scope.mode = 'browse';
 
-  $scope.regionFlag = misc.regionFlag;
-  // active underlier fns
   $scope.ActiveSurface = () => $scope.volSurfaceCollection.Get($scope.activeUnderlier);
-  $scope.activeUnderlierIndex = () => $scope.underliers.indexOf($scope.activeUnderlier);
-  $scope.dealerInfo = dealerUtils.dealerInfo;
 
   $scope.format = 'yyyy/MM/dd';
   $scope.dateOptions = {
       // dateDisabled: disabled,
       formatYear: 'yy',
-      minDate: new Date().addDays(-30),
+      minDate: new Date().addDays(-300),
       maxDate: new Date(),
       startingDay: 1
     };
+
 
   $scope.openPricingDatePicker = function() {
     $scope.pricingDatePicker.opened = true;
@@ -48,10 +47,9 @@ angular.module("volmarker")
     opened: false
   };
 
-  $scope.toggleDealer = function(d) {
-    var source = d.toLowerCase();
-    if(dealerUtils.dealerInfo[source] !== undefined) {
-      dealerUtils.dealerInfo[source].active = !dealerUtils.dealerInfo[source].active;
+  $scope.toggleDealer = function(dealer) {
+    if(dealer !== undefined) {
+      dealer.active = !dealer.active;
       $scope.data = $scope.ActiveSurface().toDataTable();
       $scope.refreshVolSurfaces(false, undefined, false);
     }
@@ -78,8 +76,6 @@ angular.module("volmarker")
   $scope.refreshVolSurfaces = function(initialize=true, underlier,broadcast) {
       if(broadcast === undefined) broadcast = true;
 
-      var underlierCopy = underlier; // otherwise lambda does not see it
-
       $scope.volSurfaceCollection.CalculateChanges();      
       console.debug("Changes: ", $scope.changesStored);  
       if(initialize) {
@@ -102,7 +98,6 @@ angular.module("volmarker")
         }
 
         voldata.retrieveVolSurfaces(result => {
-          //var underlier = underlierCopy;
           $scope.volSurfaceCollection.Update(result,underlier, settings.date);
           setVolSurfaceCollection()
           $scope.showLoadingPage(false);
@@ -116,29 +111,17 @@ angular.module("volmarker")
       $scope.$broadcast("DataChanged", $scope.activeUnderlier);
   }
 
-  // user interaction
-  $(document).keydown(evt => {
-    if(evt.keyCode == 40)  // down
-      $scope.next(1);
-    if(evt.keyCode == 38)  // up
-      $scope.next(-1); 
-    if(evt.keyCode == 67)   // c
-      utils.toggleConsole();
-  })
-
-  $scope.next = function(inc) {
-    var idx = ($scope.activeUnderlierIndex() + inc)
-     .capfloor(0,$scope.underliers.length-1);
-    var und = $scope.underliers[idx];
-    $scope.setActiveUnderlier(und);
-    $(".list-group").scrollTo($(".active"), {offsetTop: '120', duration: 250});
-  }
-
   var showSettingsMenu = function() {
     $('#settingsMenu').modal('show');
   }
 
   $scope.showSettingsMenuCb = function(evt) {
+    if(evt.altKey) {
+      // play here...
+      debugger;
+      return;
+    }
+
     $scope.expertMode = evt.ctrlKey;
     showSettingsMenu();
   }
@@ -205,6 +188,5 @@ angular.module("volmarker")
 
   $scope.setDateAndLoad();
 
-//  $scope.showMetadataPage();
 } );
   

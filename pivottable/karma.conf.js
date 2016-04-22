@@ -18,8 +18,8 @@ module.exports = function(config) {
         "bower_components/jquery/dist/jquery.min.js",
         "bower_components/underscore/underscore-min.js",
          //"bower_components/angular/angular.min.js",
-         "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.js",
-        "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-mocks.js",
+         "lib/jasmine-2.4.1/angular.js",
+         "lib/jasmine-2.4.1/angular-mocks.js",
 
          "lib/numeric-1.2.6.js",
         "apps/volmarker.js",
