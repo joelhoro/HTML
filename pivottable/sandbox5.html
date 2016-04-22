@@ -1,0 +1,103 @@
+<link href="bower_components/angular-ui-grid/ui-grid.css" rel="stylesheet" type="text/css" />
+<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="css/angular-chart.css">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/volmarker.css">
+
+<script type='text/javascript' src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type='text/javascript' src="bower_components/underscore/underscore-min.js"></script>
+<script type='text/javascript' src="bower_components/angular/angular.min.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type='text/javascript' src="bower_components/ui-bootstrap/src/tooltip/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/js/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
+<script type="text/javascript" src="lib/ui-bootstrap-tpls-1.3.1.js"></script>
+<script type="text/javascript" src="lib/angular-animate.js"></script>
+
+<script type='text/javascript' src='lib/chart.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<!-- Project specific libs -->
+<script src="apps/volmarker.js"></script>
+<script src="data/datawarehouse.js"></script>
+<script src="services/utils.js"></script>
+<script src="services/dateUtils.js"></script>
+<script src="services/analytics.js"></script>
+<script src="services/settings.js"></script>
+<script src="services/voldata.js"></script>
+<script src="services/volsurfacecollection.js"></script>
+<script src="services/volmarkerUtils.js"></script>
+<script src="services/chartService.js"></script>
+<script src="services/dealerUtils.js"></script>
+<script src="controllers/volmarkerCtrl.js"></script>
+<script src="directives/volsurfacechart.js"></script>
+
+</style>
+
+<title>Chart test</title>
+<html ng-app="app">
+
+  <div ng-controller="sandboxCtrl">
+
+  <div class='row'>
+
+      <div class='col-md-6'>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            Interpolation: x = {{x}}
+          </div>
+          <div class="panel-body list-group">
+            <!-- <input type=text ng-model='x' /> -->
+            <input type=range min=0 max=100 step=0.01 ng-model='mean' />
+            <input type=range min=0 max=50 step=0.01 ng-model='stdev' />
+
+                <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-options="options">
+                </canvas>
+          </div>
+      </div>
+  </div>
+
+
+  </div>
+
+</html>
+
+<script>
+
+Chart.defaults.global.animationSteps = 1;//60 / settings.animationSpeed;
+
+angular.module("app", ["utilities","chart.js"]).controller("sandboxCtrl", function ($scope,utils, $http) {
+
+
+  $scope.drawChart = function() {
+    var points = 50;
+    var labels = [];
+    for(var i = 0; i < points; i++)
+      labels.push(i);
+
+    var mean = $scope.mean;
+    var stdev = $scope.stdev;
+
+    var Xs = labels.map(x => 0.4*Math.exp(-0.5*Math.pow((x-mean)/stdev,2)) / Math.sqrt(stdev));
+
+    var x = $scope.x;
+    $scope.data = [ Xs ];
+    //$scope.data[2] = _.zip( $scope.data[0],  $scope.data[1] ).map(p => p[0]*x+p[1]*(1-x));
+    $scope.labels = labels;
+    $scope.series = ["X"];// "Y", "X x "+x*100+"% + Y x " + (1-x)*100 + "%"];
+    $scope.options = { datasetFill : false };
+  }
+
+  $scope.mean = 25;
+  $scope.stdev = 10;
+
+  $scope.drawChart();
+
+  $scope.$watch('mean', $scope.drawChart);
+  $scope.$watch('stdev', $scope.drawChart);
+});
+
+</script>

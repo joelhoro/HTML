@@ -1,0 +1,141 @@
+<link href="bower_components/angular-ui-grid/ui-grid.css" rel="stylesheet" type="text/css" />
+<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="css/angular-chart.css">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/volmarker.css">
+
+<script type='text/javascript' src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type='text/javascript' src="bower_components/underscore/underscore-min.js"></script>
+<script type='text/javascript' src="bower_components/angular/angular.min.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type='text/javascript' src="bower_components/ui-bootstrap/src/tooltip/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/js/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
+<script type="text/javascript" src="lib/ui-bootstrap-tpls-1.3.1.js"></script>
+<script type="text/javascript" src="lib/angular-animate.js"></script>
+
+<script type='text/javascript' src='lib/chart.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<!-- Project specific libs -->
+<script src="apps/volmarker.js"></script>
+<script src="data/datawarehouse.js"></script>
+<script src="services/utils.js"></script>
+<script src="services/dateUtils.js"></script>
+<script src="services/analytics.js"></script>
+<script src="services/settings.js"></script>
+<script src="services/voldata.js"></script>
+<script src="services/volsurfacecollection.js"></script>
+<script src="services/volmarkerUtils.js"></script>
+<script src="services/chartService.js"></script>
+<script src="services/dealerUtils.js"></script>
+<script src="controllers/volmarkerCtrl.js"></script>
+<script src="directives/volsurfacechart.js"></script>
+
+</style>
+
+<title>Chart test</title>
+<html ng-app="app">
+
+  <div ng-controller="sandboxCtrl">
+
+  <div class='row'>
+      <div class='col-md-6'>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+              Heading
+          </div>
+          <div class="panel-body list-group">
+              {{ dataComingFromServer.VolData.length }} entries found
+              <ul>
+                <li ng-repeat='surface in dataComingFromServer.VolData'>
+                <h2 ng-click='index=surface.Index' ng-click='underliersVisible[index]=!underliersVisible[surface.Index]'>{{surface.Index}}</h2>
+                  <ul>
+                    <table ng-click='selectSurface(surface)' class='table' ng-if='underliersVisible[surface.Index]'>
+                      <thead>
+                        <th>Observable</th>
+                        <th>BM today</th>
+                        <th>BM yesterday</th>
+                        <th>Change</th>
+                      </thead>
+                    <tr ng-repeat='observable in surface.Observables'>
+                        <td>{{observable.Name}}</td>
+                        <td ng-repeat='type in ["BM@T", "BM@T-1"]'>
+                          {{observable.Quotes[type]}}
+                        </td>
+                        <td>{{observable.Quotes["BM@T"] - observable.Quotes["BM@T-1"] }}</td>
+                    </tr>
+                    </table>
+                  </ul>
+                </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div class='col-md-6'>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+              Volsurface for {{ActiveUnderlier()}}
+
+
+          </div>
+          <div class="panel-body list-group">
+                <canvas id="line" class="chart chart-line" 
+                  chart-data="chart(activeSurface).data" chart-labels="labels" chart-legend="true" chart-series="series">
+                </canvas>
+          </div>  
+      </div>
+  </div>
+
+
+  </div>
+
+</html>
+
+<script>
+
+
+angular.module("app", ["utilities","chart.js"]).controller("sandboxCtrl", function ($scope,utils, $http) {
+
+  $http.get("data/volsurfaces-2016-04-18.json").then(data => { 
+    $scope.dataComingFromServer = data.data; 
+    var surfaces = data.data.VolData;
+    $scope.underliers = surfaces.map(volsurface => volsurface.Index);
+    $scope.underliersVisible = {};
+    $scope.underliers.map(und => $scope.underliersVisible[und] = true);
+    $scope.activeSurface = surfaces[0];
+  });
+
+
+  $scope.ActiveUnderlier = function() {
+    return $scope.activeSurface.Index;
+  }
+
+  $scope.selectSurface = function(surface) {
+    $scope.activeSurface = surface;
+  }
+  //   $scope.data = ["BM@T", "BM@T-1" ].map(source => surface.Observables.map(obs => Math.round(1e4*obs.Quotes[source])/1e2));
+  //   $scope.labels = surface.Observables.map(obs => obs.Maturity);
+  //   $scope.series = ["Today", "Yesterday" ];
+  //   //   $scope.data = [ [1,2,3,4] , [2,6,4,5] ];
+  //   // $scope.labels = ["A","B", "C", "D"];
+  //   // $scope.series = ["First", "Second"];
+  // }
+
+  $scope.chart = function(surface) {
+    if(surface == undefined) return;
+    return { data : ["BM@T", "BM@T-1" ].map(source => surface.Observables.map(obs => Math.round(1e4*obs.Quotes[source])/1e2)),
+             labels : surface.Observables.map(obs => obs.Maturity),
+             series : ["Today", "Yesterday" ]
+           };
+  }
+
+});
+
+</script>

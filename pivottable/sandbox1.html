@@ -1,0 +1,106 @@
+<link href="bower_components/angular-ui-grid/ui-grid.css" rel="stylesheet" type="text/css" />
+<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="css/angular-chart.css">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/volmarker.css">
+
+<script type='text/javascript' src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type='text/javascript' src="bower_components/underscore/underscore-min.js"></script>
+<script type='text/javascript' src="bower_components/angular/angular.min.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type='text/javascript' src="bower_components/ui-bootstrap/src/tooltip/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/bootstrap/js/tooltip.js"></script>
+<script type='text/javascript' src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
+<script type="text/javascript" src="lib/ui-bootstrap-tpls-1.3.1.js"></script>
+<script type="text/javascript" src="lib/angular-animate.js"></script>
+
+<script type='text/javascript' src='lib/chart.js'></script>
+<script type='text/javascript' src='lib/angular-chart.js'></script>
+<script type='text/javascript' src="lib/numeric-1.2.6.js"></script>
+
+<!-- Project specific libs -->
+<script src="apps/volmarker.js"></script>
+<script src="data/datawarehouse.js"></script>
+<script src="services/utils.js"></script>
+<script src="services/dateUtils.js"></script>
+<script src="services/analytics.js"></script>
+<script src="services/settings.js"></script>
+<script src="services/voldata.js"></script>
+<script src="services/volsurfacecollection.js"></script>
+<script src="services/volmarkerUtils.js"></script>
+<script src="services/chartService.js"></script>
+<script src="services/dealerUtils.js"></script>
+<script src="controllers/volmarkerCtrl.js"></script>
+<script src="directives/volsurfacechart.js"></script>
+
+</style>
+
+<title>Chart test</title>
+<html ng-app="app">
+
+  <div ng-controller="sandboxCtrl">
+
+  <div class='row'>
+      <div class='col-md-6'>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+          <h1><span ng-if='dataComingFromServer === undefined'>Loading...</span>
+          <span ng-if='dataComingFromServer !== undefined' >
+              {{ dataComingFromServer.VolData.length }} entries found
+              </span>
+          </h1>
+          </div>
+          <div class="panel-body list-group">
+              <ul>
+                <li ng-repeat='surface in dataComingFromServer.VolData'>
+                <a href='http://blockstore?token={{surface.Index}}'>{{surface.Index}}</a>:  
+                  <ul>
+                    <li ng-repeat='observable in surface.Observables'>
+                      {{observable.Name}}: 
+                        <span ng-repeat='type in ["BM@T", "BM@T-1"]'>
+                          {{type}}: {{observable.Quotes[type]}}
+                        </span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+      </div>
+
+      <div class='col-md-6'>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+         
+          </div>
+          <div class="panel-body list-group">
+            <pre>{{dataJson}}</pre>
+            </div>
+          </div>
+      </div>
+  </div>
+
+  
+
+
+
+  </div>
+
+</html>
+
+<script>
+
+
+angular.module("app", ["utilities","chart.js"]).controller("sandboxCtrl", function ($scope,utils, $http) {
+
+        $http.get("data/volsurfaces-2016-04-18.json").then(data => { 
+          $scope.dataComingFromServer = data.data; 
+          $scope.dataJson = JSON.stringify(data.data, null, 2);
+        });
+
+});
+
+</script>
