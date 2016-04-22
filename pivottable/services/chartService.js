@@ -108,8 +108,8 @@ angular.module('volmarker')
     }
       else if(type === 'bmonly' || type === '') {
 
-          scope.chartSeries = ["BlueMountain estimate", "Dealer average"];
-          var tickers = ["BMEstimate", "Dealer.avg"];
+          scope.chartSeries = ["BM estimate", "BM mark", "Dealer average"];
+          var tickers = ["BMEstimate", "BM@T", "Dealer.avg"];
           if(settings.showDealerDetails) {
             var activeDealers = dealerUtils.ActiveDealers();
             scope.chartSeries = scope.chartSeries.concat(activeDealers.map(d => dealerUtils.dealerInfo[d].label));
