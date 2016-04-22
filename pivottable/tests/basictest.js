@@ -10,7 +10,7 @@ describe("Utils - basics", function() {
 
   it("should implement some basic fns", function() {
 
-    expect(2.23).toEqual(1.23456.round(2), "Test rounding");
+    expect(1.23).toEqual(1.23456.round(2), "Test rounding");
 
     expect(3).toEqual([ x = 1, x.capfloor(3,8) ][1], "Test capfloor");
     expect(5).toEqual([ x = 5, x.capfloor(3,8) ][1], "Test capfloor");
