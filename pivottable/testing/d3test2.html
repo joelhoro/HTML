@@ -138,7 +138,15 @@ function start() {
 	var indices = d3.range(chart.data.length);
 	var series = d3.range(chart.series.length);
 
-	var d3data = d3.zip(chart.series,d3.zip(...chart.data)).map(p => ({ x: p[0], ys: p[1] }));
+	var counter = 0;
+	var d3data = d3
+		.zip(chart.series,d3.zip(...chart.data))
+		.map(p => ({ 
+			x: p[0], 
+			ys: p[1], 
+			edited: p[1].map(x => (counter++==0))
+		}));
+
 	x = d3.scale.ordinal()
 		.domain(chart.series)
 		.range(series.map(i => padding + i*(w-padding*2)/(series.length-1)));
@@ -199,16 +207,16 @@ function start() {
 	    .x(d => x(d.x))
 	    .y(d => y(d.ys[i]))
 	    );
+
+	var addPaths = (k,c) => c
+		  .attr("d",lines[k])
+		  .attr("class", "line") 
+		  .attr("stroke", colors[k])
 	
 	var curves = indices.map(i => 
-		svg
+		addPaths(i,svg
 		  .append("path")
-		  .datum(d3data)
-		 // .attr("transform", translate(padding,padding))
-		  .attr("d",lines[i])
-		  .attr("class", "line") 
-		  .attr("stroke", colors[i])
-	  );
+		  .datum(d3data)))
 
 	// tooltip
 	var tip = d3.tip()
@@ -248,68 +256,69 @@ function start() {
 			tip.hide();
 		})
 		.selectAll("circle")
-		.data(d => [//{ r: 16, fill: 'transparent', stroke: 'black' },
-			 { r: 4, fill: colors[i], data: d }, { r: 20, fill: "transparent", data: d }])
+		.data(d =>  [//{ r: 16, fill: 'transparent', stroke: 'black' },
+			 { r: 4, fill: colors[i], editMode: false }, 
+			 { r: 20, fill: "transparent", editMode: false },
+			 { r: 25, fill: "transparent", editMode: d.edited[i] },
+			 ])
 		.enter()
 		.append("circle")
 		.attr("fill", d => d.fill)
-		.attr("stroke", d => d.stroke)
+		.attr("stroke", d => d.editMode ? "black" : "transparent" )
 		.attr("r", d => d.r)
 		}
 		);
 
 	var activeElement = 0;
+	var activeSeries = 0;
 
 	function move(changeElement,shiftY) {
 		return function(event) {
 	        event.preventDefault();
-			// console.debug("Shifting");
-			// scatterData[0].y += 0.025 * shift;
-			// svg
-			// 	.select("#scatterpoints")
-			// 	.selectAll("image")
-			// 	.data(scatterData)
-			// 	.transition()
-			// 	.duration(100)
-			// 	.attr("x", d => x(d.x))
-			// 	.attr("y", d => y(d.y))
+			
 			var factor = 1;
 			if(event.shiftKey) factor= 0.2;
 			if(event.ctrlKey) factor = 5;
 
+			d3data[activeElement].edited[0] = false;
 			activeElement += changeElement;
 			activeElement = Math.min(Math.max(activeElement,0), d3data.length-1);
+			d3data[activeElement].edited[0] = true;
 			d3.selectAll(d3.selectAll(".x .tick text")[0]).classed("edited",false)
 			d3.select(d3.selectAll(".x .tick text")[0][activeElement]).classed("edited", true);
 
 			console.debug(activeElement);
 			d3data[activeElement].ys[0] += shiftY*0.1*factor;
 
-			var lines = indices.map(i =>
-				d3.svg.line()
-				.interpolate("cardinal")    
-			    .x(function(d) { return x(d.x); })
-			    .y(function(d) { return y(d.ys[i]); }) );
 			indices.forEach(i => 
-				curves[i]
+				addPaths(i,curves[i]
 				  .datum(d3data)
 				  .transition()
-				  .duration(100)
+				  .duration(100))
 				 // .attr("transform", translate(padding,padding))
-				  .attr("d",lines[i])
-				  .attr("class", "line") 
-				  .attr("stroke", colors[i])
 			  );
 
-			indices.forEach(i => 
+			indices.forEach(i =>  {
 				dots[i]
 				//	.selectAll("circle")
 					.data(d3data)
 					.transition()
 	   			    .duration(100)
 					.attr("transform", d => translate(x(d.x),y(d.ys[i])))
+				dots[i]
+					.selectAll("circle")
+					.data(d =>  {  return [//{ r: 16, fill: 'transparent', stroke: 'black' },
+						 { r: 4, fill: colors[i], editMode: false }, 
+						 { r: 20, fill: "transparent", editMode: false },
+						 { r: 25, fill: "transparent", editMode: d.edited[i] },
+						 ]})
+					.enter()
+					.append("circle")
+					.attr("fill", d => d.fill)
+					.attr("stroke", d => d.editMode ? "black" : "transparent" )
+					.attr("r", d => d.r)
 
-				);
+				});
 	    };
 
 	}
