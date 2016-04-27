@@ -114,6 +114,7 @@ function getChart() {
 					[ 2,4, 5, 3, 4]
 				],
 		labels: [ "Series A", "Series B" ],
+		styles: [ "line", "point"],
 		options : {
 			padding: 50,
 			tooltipFn: (d,chart, settings) => {
@@ -156,6 +157,7 @@ function start() {
 
 	var padding = chart.options.padding;
 	var labels = chart.labels;
+	var styles = chart.styles;
 	var tooltipFn = d => chart.options.tooltipFn(d, chart, globalSettings);
 	var indices = d3.range(chart.data.length);
 	var series = d3.range(chart.series.length);
@@ -166,8 +168,10 @@ function start() {
 		.map(p => ({ 
 			x: p[0], 
 			ys: p[1], 
+			// only set first element to edited=true
 			edited: p[1].map(x => (counter++==0))
 		}));
+
 
 	var x = d3.scale.ordinal()
 		.domain(chart.series)
@@ -179,8 +183,6 @@ function start() {
 			d3.max(chart.data, d => Math.max(...d)),
 			])
 		.range([h-padding,padding]);
-
-	var i =0;
 
 
 	var margin = 0;	 
@@ -213,7 +215,9 @@ function start() {
 		.attr("transform", translate(padding-margin,0))
 		.call(yAxis)	;                
 
-	// splines
+	var colors = globalSettings.colors;
+
+	// actual lines of graph
 	var lines = indices.map(i =>
 		d3.svg.line()
 		.interpolate("cardinal")    
@@ -221,12 +225,13 @@ function start() {
 	    .y(d => y(d.ys[i]))
 	    );
 
-	var colors = globalSettings.colors;
-	var addPaths = (k,c) => c
+	var addPaths = (k,c) => {
+		return c
 		  .attr("d",lines[k])
 		  .attr("class", "line") 
-		  .attr("stroke", colors[k])
-	
+		  .attr("stroke", (styles[k]=="line") ? colors[k] : "transparent")
+	}
+
 	var curves = indices.map(i => 
 		addPaths(i,svg
 		  .append("path")
@@ -240,6 +245,7 @@ function start() {
 
 	svg.call(tip);
 
+	// dots for the data
 	var createCircles = function(k,obj) { 
 		obj
 			.attr("transform", d => translate(x(d.x),y(d.ys[k])))
@@ -256,16 +262,21 @@ function start() {
 				.attr("stroke", null)
 				tip.hide();
 			}) }
-	var updateCircles = (k,obj) => {
-		obj
+	var shout = () => console.debug("HERE!");
+
+	var updateCircles = (k,obj,create) => {
+		var selection = obj
 			.selectAll("circle")
-			.data(d =>  [
+			.data(d => [
 				 { r: 4, fill: colors[k], editMode: false }, 
 				 { r: 20, fill: "transparent", editMode: false },
 				 { r: 25, fill: "transparent", editMode: d.edited[k] },
-				 ])
+				 ]);
+		if(create)	// only the first time
+			selection = selection
 			.enter()
-			.append("circle")
+			.append("circle");
+		selection
 			.attr("fill", d => d.fill)
 			.attr("stroke", d => d.editMode ? "black" : "transparent" )
 			.attr("r", d => d.r)
@@ -281,7 +292,7 @@ function start() {
 			.enter()
 			.append("g");
 		createCircles(i,dots[i]);
-		updateCircles(i,dots[i]);
+		updateCircles(i,dots[i], true);
 	}
 	);
 
@@ -314,7 +325,7 @@ function start() {
 					.transition()
 	   			    .duration(delay)
 					.attr("transform", d => translate(x(d.x),y(d.ys[i])))
-				updateCircles(i,dots[i]);
+				updateCircles(i,dots[i], false);
 				});
 			indices.forEach(i => 
 				addPaths(i,curves[i]
@@ -332,94 +343,6 @@ function start() {
 	    .on('↑', move(0,1))
 	    .on('→', move(1,0))
 	    .on('↓', move(0,-1)));
-
-	// svg
-	// 	.append("g")
-	// 	.selectAll("line")
-	// 	.data(data)
-	// 	.enter()
-	// 	.append("line")
-	// 	.attr("x1", d => x(d.x))
-	// 	.attr("y1", 0)
-	// 	.attr("x2", d => x(d.x))
-	// 	.attr("y2", h-padding)
-	// 	.attr("stroke", "transparent")
-	// 	.attr("stroke-width", 5)
-	// 	.on("mouseover", function(d) {
-	// 		tip.show(d);
-	// 	})
-
-}
-
-function refresh() {
-	var svg = d3.select("svg");
-	var data = getChart();
-	var indices = [0,1,2];
-
-	y.domain([
-			d3.min(data, d => Math.min(...d.ys)),
-			d3.max(data, d => Math.max(...d.ys)),
-			])
-	x.domain([d3.min(xs),d3.max(xs)])
-
-	svg.select(".y.axis")
-							.transition()
-							.duration(1000)
-							.call(yAxis);
-	svg.select(".x.axis")
-							.transition()
-							.duration(1000)
-							.call(xAxis);
-
-
-	var lines = indices.map(i =>
-		d3.svg.line()
-		.interpolate("cardinal")    
-	    .x(function(d) { return x(d.x); })
-	    .y(function(d) { return y(d.ys[i]); }) );
-	
-	indices.forEach(i => 
-		svg
-		  .selectAll("#curve"+i)
-		  .datum(data)
-		  .transition()
-		  .duration(1000)
-		 // .attr("transform", translate(padding,padding))
-		  .attr("d",lines[i])
-		  .attr("class", "line") 
-		  .attr("stroke", colors[i])
-	  );
-
-
-	var r = Math.random;
-	scatterData.map(p => { p.x *= (0.9+r()/2); p.y *= (0.65+r()/2);})
-	svg
-		.select("#scatterpoints")
-		.selectAll("image")
-		.data(scatterData)
-		.transition()
-		.duration(1000)
-		.attr("x", d => x(d.x))
-		.attr("y", d => y(d.y))
-
-
-
-	indices.map(i => 
-	{
-		var points = svg
-			.selectAll("#dots"+i)
-			.data(data);
-		points.enter().append("circle");
-		points
-			.transition()
-			.duration(1000)
-			.attr("transform", d => translate(x(d.x),y(d.ys[i])))
-		points
-			.exit()
-			.transition()
-			.duration(1000)
-			.remove()
-	});
 }
 
 start();
