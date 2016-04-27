@@ -114,7 +114,7 @@ function getChart() {
 					[ 2,4, 5, 3, 4]
 				],
 		labels: [ "Series A", "Series B" ],
-		styles: [ "line", "point"],
+		styles: [ "line", "line"],
 		options : {
 			padding: 50,
 			tooltipFn: (d,chart, settings) => {
@@ -172,6 +172,8 @@ function start() {
 			edited: p[1].map(x => (counter++==0))
 		}));
 
+	var activeElement = 0;
+	var activeSeries = 0;
 
 	var x = d3.scale.ordinal()
 		.domain(chart.series)
@@ -268,9 +270,8 @@ function start() {
 		var selection = obj
 			.selectAll("circle")
 			.data(d => [
-				 { r: 4, fill: colors[k], editMode: false }, 
-				 { r: 20, fill: "transparent", editMode: false },
-				 { r: 25, fill: "transparent", editMode: d.edited[k] },
+				 { r: 4, fill: colors[k]  }, 
+				 { r: 20, fill: "transparent" },
 				 ]);
 		if(create)	// only the first time
 			selection = selection
@@ -278,7 +279,6 @@ function start() {
 			.append("circle");
 		selection
 			.attr("fill", d => d.fill)
-			.attr("stroke", d => d.editMode ? "black" : "transparent" )
 			.attr("r", d => d.r)
 	}
 
@@ -296,8 +296,26 @@ function start() {
 	}
 	);
 
-	var activeElement = 0;
-	var activeSeries = 0;
+	var selectedPointFn = () => d3data.filter(d => d.edited[0]);
+	var addSelector = obj => 
+		obj
+		.attr("cx", d => x(d.x))
+		.attr("cy", d => y(d.ys[0]))
+		.attr("fill", colors[0])
+		.attr("opacity", 0.3)
+		.attr("stroke", "black")
+		.attr("r", 15)
+
+	var selector = svg
+		.append("g")
+		.selectAll("circle")
+		.data(selectedPointFn())
+		.enter()
+		.append("circle");
+
+	addSelector(selector);
+
+
 
 	function move(changeElement,shiftY) {
 		var animationDelay = 200;
@@ -334,6 +352,12 @@ function start() {
 	   			  .duration(delay)
 				)
 			  );
+			addSelector(selector
+				.data(selectedPointFn())
+				.transition()
+				.duration(delay)
+				);
+
 	    };
 
 	}
