@@ -116,6 +116,7 @@ function getChart() {
 		labels: [ "Series A", "Series B" ],
 		styles: [ "line", "line"],
 		options : {
+			scalePadding: 0.1,
 			padding: 50,
 			tooltipFn: (d,chart, settings) => {
 			  	var j = 0;
@@ -141,6 +142,12 @@ var globalSettings = {
 		]
 }
 
+Array.prototype.Pad = function(pct) {
+	if(this.length != 2) throw "This only works on arrays of length 2!";
+
+	var rangePadding = pct * (this[1]-this[0]);
+	return [ this[0] - rangePadding, this[1] + rangePadding ];
+}
 
 var translate = (x,y) => "translate(" + x + "," + y + ")";
 
@@ -183,7 +190,7 @@ function start() {
 		.domain([
 			d3.min(chart.data, d => Math.min(...d)),
 			d3.max(chart.data, d => Math.max(...d)),
-			])
+			].Pad(chart.options.scalePadding))
 		.range([h-padding,padding]);
 
 
@@ -296,9 +303,9 @@ function start() {
 	}
 	);
 
+	// selector
 	var selectedPointFn = () => d3data.filter(d => d.edited[0]);
-	var addSelector = obj => 
-		obj
+	var addSelector = obj => obj
 		.attr("cx", d => x(d.x))
 		.attr("cy", d => y(d.ys[0]))
 		.attr("fill", colors[0])
@@ -331,10 +338,16 @@ function start() {
 			activeElement += changeElement;
 			activeElement = Math.min(Math.max(activeElement,0), d3data.length-1);
 			d3data[activeElement].edited[0] = true;
-			d3data[activeElement].ys[0] += shiftY*0.1*factor;
+			d3data[activeElement].ys[0] *= (1+shiftY*0.1*factor);
 
 			// change classes on axis
 			var delay = animationDelay*Math.sqrt(factor);
+			var range = [
+				d3.min(d3data.map(obj => d3.min(obj.ys))),
+				d3.max(d3data.map(obj => d3.max(obj.ys)))
+					];
+			y.domain(range.Pad(chart.options.scalePadding));
+
 			d3.selectAll(d3.selectAll(".x .tick text")[0]).classed("edited",false)
 			d3.select(d3.selectAll(".x .tick text")[0][activeElement]).classed("edited", true);
 			indices.forEach(i =>  {
@@ -357,6 +370,12 @@ function start() {
 				.transition()
 				.duration(delay)
 				);
+
+			svg.select(".y.axis")
+				.transition()
+				.duration(delay)
+				.call(yAxis);                
+
 
 	    };
 
