@@ -77,7 +77,7 @@ text.edited {
 
 <body>
 <p><button onclick='refresh()'>Randomize</button><span id='t'></span>
-<p><svg width=1000 height=500>
+<p><svg width=500 height=400>
 
 </svg>
 
@@ -129,6 +129,49 @@ function getChart() {
 	}
 }
 
+function getChart2() {
+
+	var datasets = [
+	{
+		label: 'CDS curve',
+		style: 'line',
+		// data: [ [1,2.5], [3,2], [4,2.7], [6,3.5] ],
+		data: [1,2,3,4,5,6,7,8,9,10].map(x => [x, x*(x-3)/(1+x*x)*Math.sin(x*6/10)]),
+		color: '#888888',
+		// by default we'll order them - should there be an option to allow keeping points unordered?
+	},
+
+	{
+		// scatter plot
+		label: 'Bonds',
+		style: 'points',	
+		data: [1,2,3,4,5].map(x => [x, x*(x-3)]),
+		color: '#FF33EE',
+	},
+
+	{
+		// scatter plot
+		label: 'Some random curve',
+		style: 'line',	
+		data: [ [-1,3], [1,5], [3,2.7], [4.5,2.5], [6,0.8], [12,2.4] ],
+		color: '#3388FF',
+	},
+];
+
+		var options = {
+			scalePadding: 0.1,
+			padding: 50,
+			tooltipFn: (d,chart, settings) => {
+			  	var j = 0;
+			    return d.x + "<ul>" + d.ys.map(y => "<li><span class='square' style='background-color:"+settings.colors[j]+"'></span> "
+			     + chart.labels[j++]+": " + y
+			      ).join("\n") + "</ul>";
+			  }
+		}
+
+	return { datasets: datasets, options: options };
+}
+
 var globalSettings = { 
 	colors :
 		[
@@ -150,60 +193,19 @@ Array.prototype.Pad = function(pct) {
 }
 
 var translate = (x,y) => "translate(" + x + "," + y + ")";
-
-function start() {
-
-	d3.select("#t").text(new Date().toString());
-	
-	var svg = d3.select("svg");
-
-	var w = svg.attr("width");
-	var h = svg.attr("height");
-
-	var chart = getChart();
-
-	var padding = chart.options.padding;
-	var labels = chart.labels;
-	var styles = chart.styles;
-	var tooltipFn = d => chart.options.tooltipFn(d, chart, globalSettings);
-	var indices = d3.range(chart.data.length);
-	var series = d3.range(chart.series.length);
-
-	var counter = 0;
-	var d3data = d3
-		.zip(chart.series,d3.zip(...chart.data))
-		.map(p => ({ 
-			x: p[0], 
-			ys: p[1], 
-			// only set first element to edited=true
-			edited: p[1].map(x => (counter++==0))
-		}));
-
-	var activeElement = 0;
-	var activeSeries = 0;
-
-	var x = d3.scale.ordinal()
-		.domain(chart.series)
-		.range(series.map(i => padding + i*(w-padding*2)/(series.length-1)));
-
-	var y = d3.scale.linear()
-		.domain([
-			d3.min(chart.data, d => Math.min(...d)),
-			d3.max(chart.data, d => Math.max(...d)),
-			].Pad(chart.options.scalePadding))
-		.range([h-padding,padding]);
+var chart = getChart2();
 
 
-	var margin = 0;	 
+function addAxis(svg,w,h,xScale, yScale, margin,padding) {
 	var xAxis = d3.svg.axis()
-	                  .scale(x)
+	                  .scale(xScale)
 	                  .orient("bottom")
 					  .innerTickSize(-(h-padding*2+margin))
 					  .outerTickSize(0)
 				      .tickPadding(30)
 	                  ;	
 	var yAxis = d3.svg.axis()
-	                  .scale(y)
+	                  .scale(yScale)
 	                  .orient("left")
 	                  .innerTickSize(-(w-padding*2+margin))
 			   	      .outerTickSize(0)
@@ -223,17 +225,64 @@ function start() {
 		.attr("class","y axis")
 		.attr("transform", translate(padding-margin,0))
 		.call(yAxis)	;                
+	
+}
 
+
+function start() {
+
+	d3.select("#t").text(new Date().toString());
+	
+	var svg = d3.select("svg");
+
+	var w = svg.attr("width");
+	var h = svg.attr("height");
+
+	var padding = chart.options.padding;
+	var labels = chart.datasets.map(s => s.label);
+	var styles = chart.datasets.map(s => s.style);
+	var tooltipFn = d => chart.options.tooltipFn(d, chart, globalSettings);
+	var indices = d3.range(chart.datasets.length);
+//	var series = d3.range(chart.series.length);
+
+	var counter = 0;
+	// var d3data = d3
+	// 	.zip(chart.series,d3.zip(...chart.datasets))
+	// 	.map(p => ({ 
+	// 		x: p[0], 
+	// 		ys: p[1], 
+	// 		// only set first element to edited=true
+	// 		edited: p[1].map(x => (counter++==0))
+	// 	}));
+
+	// window.d3data = d3data;
+	var activeElement = 0;
+	var activeSeries = 0;
+
+	var xRange = [d3.min,d3.max].map(op => op(chart.datasets, d => op(d.data.map(p => p[0])))) 
+	var yRange = [d3.min,d3.max].map(op => op(chart.datasets, d => op(d.data.map(p => p[1])))) 
+
+	var x = d3.scale.linear()
+		.domain(xRange)
+		.range([padding,w-padding]);
+//		.range(series.map(i => padding + i*(w-padding*2)/(series.length-1)));
+
+	var y = d3.scale.linear()
+		.domain(yRange.Pad(chart.options.scalePadding))
+		.range([h-padding,padding]);
+
+	var margin = 0;	 
+
+	addAxis(svg,w,h,x, y, margin,padding);
 	var colors = globalSettings.colors;
 
 	// actual lines of graph
-	var lines = indices.map(i =>
-		d3.svg.line()
-		.interpolate("cardinal")    
-	    .x(d => x(d.x))
-	    .y(d => y(d.ys[i]))
-	    );
-
+	var lines = chart.datasets
+		.map(_ => d3.svg.line()
+			.interpolate("cardinal")    
+		    .x(d => x(d[0]))
+		    .y(d => y(d[1]))
+		);
 
 	Array.prototype.d3AddPaths = function(k) {
 		return this
@@ -245,7 +294,7 @@ function start() {
 	var curves = indices.map(i => 
 		svg
 		  .append("path")
-		  .datum(d3data)
+		  .datum(chart.datasets[i].data)
 		  .d3AddPaths(i)
 		  )
 
@@ -258,142 +307,142 @@ function start() {
 	svg.call(tip);
 
 	// dots for the data
-	Array.prototype.d3CreateCircles = function(k) { 
-		this
-			.attr("transform", d => translate(x(d.x),y(d.ys[k])))
-			//.append("g")
-			.on('mouseover', function(d,idx) { 
-				d3.select(this.childNodes[0])
-				.attr("fill", "white")
-				.attr("stroke", colors[k]);
-				tip.show(d);
-			})
-			.on('mouseout', function(d,idx) { 
-				d3.select(this.childNodes[0])
-				.attr("fill", colors[k])
-				.attr("stroke", null)
-				tip.hide();
-			}) }
-	var shout = () => console.debug("HERE!");
+	// Array.prototype.d3CreateCircles = function(k) { 
+	// 	this
+	// 		.attr("transform", d => translate(x(d.x),y(d.ys[k])))
+	// 		//.append("g")
+	// 		.on('mouseover', function(d,idx) { 
+	// 			d3.select(this.childNodes[0])
+	// 			.attr("fill", "white")
+	// 			.attr("stroke", colors[k]);
+	// 			tip.show(d);
+	// 		})
+	// 		.on('mouseout', function(d,idx) { 
+	// 			d3.select(this.childNodes[0])
+	// 			.attr("fill", colors[k])
+	// 			.attr("stroke", null)
+	// 			tip.hide();
+	// 		}) }
+	// var shout = () => console.debug("HERE!");
 
-	Array.prototype.d3UpdateCircles = function(k,create) {
-		var selection = this
-			.selectAll("circle")
-			.data(d => [
-				 { r: 4, fill: colors[k]  }, 
-				 { r: 20, fill: "transparent" },
-				 ]);
-		if(create)	// only the first time
-			selection = selection
-			.enter()
-			.append("circle");
-		selection
-			.attr("fill", d => d.fill)
-			.attr("r", d => d.r)
-	}
+	// Array.prototype.d3UpdateCircles = function(k,create) {
+	// 	var selection = this
+	// 		.selectAll("circle")
+	// 		.data(d => [
+	// 			 { r: 4, fill: colors[k]  }, 
+	// 			 { r: 20, fill: "transparent" },
+	// 			 ]);
+	// 	if(create)	// only the first time
+	// 		selection = selection
+	// 		.enter()
+	// 		.append("circle");
+	// 	selection
+	// 		.attr("fill", d => d.fill)
+	// 		.attr("r", d => d.r)
+	// }
 
-	var dots=[];
-	// little circles around data
-	indices.map(i => { 
-		dots[i] = svg
-			.append("g")
-			.selectAll("circle")
-			.data(d3data)
-			.enter()
-			.append("g");
-		dots[i].d3CreateCircles(i);
-		dots[i].d3UpdateCircles(i,true);
-	}
-	);
+	// var dots=[];
+	// // little circles around data
+	// indices.map(i => { 
+	// 	dots[i] = svg
+	// 		.append("g")
+	// 		.selectAll("circle")
+	// 		.data(d3data)
+	// 		.enter()
+	// 		.append("g");
+	// 	dots[i].d3CreateCircles(i);
+	// 	dots[i].d3UpdateCircles(i,true);
+	// }
+	// );
 
-	// selector
-	var selectedPointFn = () => d3data.filter(d => d.edited[0]);
-	var addSelector = obj => obj
-		.attr("cx", d => x(d.x))
-		.attr("cy", d => y(d.ys[0]))
-		.attr("fill", colors[0])
-		.attr("opacity", 0.3)
-		.attr("stroke", "black")
-		.attr("r", 15)
+	// // selector
+	// var selectedPointFn = () => d3data.filter(d => d.edited[0]);
+	// var addSelector = obj => obj
+	// 	.attr("cx", d => x(d.x))
+	// 	.attr("cy", d => y(d.ys[0]))
+	// 	.attr("fill", colors[0])
+	// 	.attr("opacity", 0.3)
+	// 	.attr("stroke", "black")
+	// 	.attr("r", 15)
 
-	var selector = svg
-		.append("g")
-		.selectAll("circle")
-		.data(selectedPointFn())
-		.enter()
-		.append("circle");
+	// var selector = svg
+	// 	.append("g")
+	// 	.selectAll("circle")
+	// 	.data(selectedPointFn())
+	// 	.enter()
+	// 	.append("circle");
 
-	addSelector(selector);
+	// addSelector(selector);
 
 
 
-	function move(changeElement,shiftY) {
-		var animationDelay = 200;
-		return function(event) {
-	        event.preventDefault();
+	// function move(changeElement,shiftY) {
+	// 	var animationDelay = 200;
+	// 	return function(event) {
+	//         event.preventDefault();
 			
-			var factor = 1;
-			if(event.shiftKey) factor= 0.2;
-			if(event.ctrlKey) factor = 5;
+	// 		var factor = 1;
+	// 		if(event.shiftKey) factor= 0.2;
+	// 		if(event.ctrlKey) factor = 5;
 
-			// switch activelement as possible
-			d3data[activeElement].edited[0] = false;
-			activeElement += changeElement;
-			activeElement = Math.min(Math.max(activeElement,0), d3data.length-1);
-			d3data[activeElement].edited[0] = true;
-			d3data[activeElement].ys[0] *= (1+shiftY*0.1*factor);
+	// 		// switch activelement as possible
+	// 		d3data[activeElement].edited[0] = false;
+	// 		activeElement += changeElement;
+	// 		activeElement = Math.min(Math.max(activeElement,0), d3data.length-1);
+	// 		d3data[activeElement].edited[0] = true;
+	// 		d3data[activeElement].ys[0] *= (1+shiftY*0.1*factor);
 
-			// this is where the data gets fed back in the original source...
-			// need to make this more generic
-			chart.data = d3.transpose(d3data.map(d => d.ys))
-
-
-			// change classes on axis
-			var delay = animationDelay*Math.sqrt(factor);
-			var range = [
-				d3.min(d3data.map(obj => d3.min(obj.ys))),
-				d3.max(d3data.map(obj => d3.max(obj.ys)))
-					];
-			y.domain(range.Pad(chart.options.scalePadding));
-
-			d3.selectAll(d3.selectAll(".x .tick text")[0]).classed("edited",false)
-			d3.select(d3.selectAll(".x .tick text")[0][activeElement]).classed("edited", true);
-			indices.forEach(i =>  {
-				dots[i]
-					.data(d3data)
-					.transition()
-	   			    .duration(delay)
-					.attr("transform", d => translate(x(d.x),y(d.ys[i])))
-				dots[i].d3UpdateCircles(i,false);
-				});
-			indices.forEach(i => 
-				curves[i]
-				  .datum(d3data)
-				  .transition()
-	   			  .duration(delay)
-				  .d3AddPaths(i)
-			  );
-			addSelector(selector
-				.data(selectedPointFn())
-				.transition()
-				.duration(delay)
-				);
-
-			svg.select(".y.axis")
-				.transition()
-				.duration(delay)
-				.call(yAxis);                
+	// 		// this is where the data gets fed back in the original source...
+	// 		// need to make this more generic
+	// 		chart.data = d3.transpose(d3data.map(d => d.ys))
 
 
-	    };
+	// 		// change classes on axis
+	// 		var delay = animationDelay*Math.sqrt(factor);
+	// 		var range = [
+	// 			d3.min(d3data.map(obj => d3.min(obj.ys))),
+	// 			d3.max(d3data.map(obj => d3.max(obj.ys)))
+	// 				];
+	// 		y.domain(range.Pad(chart.options.scalePadding));
 
-	}
+	// 		d3.selectAll(d3.selectAll(".x .tick text")[0]).classed("edited",false)
+	// 		d3.select(d3.selectAll(".x .tick text")[0][activeElement]).classed("edited", true);
+	// 		indices.forEach(i =>  {
+	// 			dots[i]
+	// 				.data(d3data)
+	// 				.transition()
+	//    			    .duration(delay)
+	// 				.attr("transform", d => translate(x(d.x),y(d.ys[i])))
+	// 			dots[i].d3UpdateCircles(i,false);
+	// 			});
+	// 		indices.forEach(i => 
+	// 			curves[i]
+	// 			  .datum(d3data)
+	// 			  .transition()
+	//    			  .duration(delay)
+	// 			  .d3AddPaths(i)
+	// 		  );
+	// 		addSelector(selector
+	// 			.data(selectedPointFn())
+	// 			.transition()
+	// 			.duration(delay)
+	// 			);
 
-	d3.select('body').call(d3.keybinding()
-	    .on('←', move(-1, 0))
-	    .on('↑', move(0,1))
-	    .on('→', move(1,0))
-	    .on('↓', move(0,-1)));
+	// 		svg.select(".y.axis")
+	// 			.transition()
+	// 			.duration(delay)
+	// 			.call(yAxis);                
+
+
+	//     };
+
+	// }
+
+	// d3.select('body').call(d3.keybinding()
+	//     .on('←', move(-1, 0))
+	//     .on('↑', move(0,1))
+	//     .on('→', move(1,0))
+	//     .on('↓', move(0,-1)));
 }
 
 start(chart);
