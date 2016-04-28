@@ -234,17 +234,20 @@ function start() {
 	    .y(d => y(d.ys[i]))
 	    );
 
-	var addPaths = (k,c) => {
-		return c
+
+	Array.prototype.d3AddPaths = function(k) {
+		return this
 		  .attr("d",lines[k])
 		  .attr("class", "line") 
 		  .attr("stroke", (styles[k]=="line") ? colors[k] : "transparent")
 	}
 
 	var curves = indices.map(i => 
-		addPaths(i,svg
+		svg
 		  .append("path")
-		  .datum(d3data)))
+		  .datum(d3data)
+		  .d3AddPaths(i)
+		  )
 
 	// tooltip
 	var tip = d3.tip()
@@ -255,8 +258,8 @@ function start() {
 	svg.call(tip);
 
 	// dots for the data
-	var createCircles = function(k,obj) { 
-		obj
+	Array.prototype.d3CreateCircles = function(k) { 
+		this
 			.attr("transform", d => translate(x(d.x),y(d.ys[k])))
 			//.append("g")
 			.on('mouseover', function(d,idx) { 
@@ -273,8 +276,8 @@ function start() {
 			}) }
 	var shout = () => console.debug("HERE!");
 
-	var updateCircles = (k,obj,create) => {
-		var selection = obj
+	Array.prototype.d3UpdateCircles = function(k,create) {
+		var selection = this
 			.selectAll("circle")
 			.data(d => [
 				 { r: 4, fill: colors[k]  }, 
@@ -298,8 +301,8 @@ function start() {
 			.data(d3data)
 			.enter()
 			.append("g");
-		createCircles(i,dots[i]);
-		updateCircles(i,dots[i], true);
+		dots[i].d3CreateCircles(i);
+		dots[i].d3UpdateCircles(i,true);
 	}
 	);
 
@@ -340,6 +343,11 @@ function start() {
 			d3data[activeElement].edited[0] = true;
 			d3data[activeElement].ys[0] *= (1+shiftY*0.1*factor);
 
+			// this is where the data gets fed back in the original source...
+			// need to make this more generic
+			chart.data = d3.transpose(d3data.map(d => d.ys))
+
+
 			// change classes on axis
 			var delay = animationDelay*Math.sqrt(factor);
 			var range = [
@@ -356,14 +364,14 @@ function start() {
 					.transition()
 	   			    .duration(delay)
 					.attr("transform", d => translate(x(d.x),y(d.ys[i])))
-				updateCircles(i,dots[i], false);
+				dots[i].d3UpdateCircles(i,false);
 				});
 			indices.forEach(i => 
-				addPaths(i,curves[i]
+				curves[i]
 				  .datum(d3data)
 				  .transition()
 	   			  .duration(delay)
-				)
+				  .d3AddPaths(i)
 			  );
 			addSelector(selector
 				.data(selectedPointFn())
@@ -388,7 +396,7 @@ function start() {
 	    .on('↓', move(0,-1)));
 }
 
-start();
+start(chart);
 
 //setInterval(refresh, 1000)
 
