@@ -17,13 +17,13 @@
 
   <body>
 
-    <div ng-app='myApp'>
-  <div ng-controller='myCtrl' ng-init='x=150; y=20; w=83; h=83'>
+    <div ng-app='wordGame'>
+  <div ng-controller='wordGameCtrl' ng-init='x=150; y=20; w=83; h=83; margin=0.02'>
     <svg width=800 height=700>
     <g ng-repeat='row in g.grid' ng-attr-transform='translate(0 {{y+$index*w}})'>
       <g ng-repeat='elt in row' ng-attr-transform='translate({{x+$index*w}})' ng-click='selectCell(elt)' class='cell' ng-class='{available: elt.available, selected: elt.selected}'>
-        <rect  ng-attr-x=0 ng-attr-y=0 ng-attr-width={{w*0.9}} ng-attr-height={{h*0.9}} class='empty' ></rect>
-        <text class='letter' ng-attr-x={{w/2*0.27}} ng-attr-y={{1.4*h/2}}>{{elt.CurrentValue()}}</text>
+        <rect  ng-attr-x=0 ng-attr-y=0 ng-attr-width={{w*(1-margin)}} ng-attr-height={{h*(1-margin)}} class='empty' ></rect>
+        <text class='letter' ng-attr-x={{w/2*0.3}} ng-attr-y={{1.6*h/2}}>{{elt.CurrentValue()}}</text>
       </g>
     </g>
     <text class='letter' ng-attr-x='{{ 300 - selectedWord().length*10 }}' y=500>{{ selectedWord() }}</text>
