@@ -26,8 +26,8 @@
         <text class='letter' ng-attr-x={{w/2*0.27}} ng-attr-y={{1.4*h/2}}>{{elt.CurrentValue()}}</text>
       </g>
     </g>
-    <text class='letter' x=150 y=500>{{ selectedWord() }}</text>
-    <g transform='translate(0 525)'>
+    <text class='letter' ng-attr-x='{{ 300 - selectedWord().length*10 }}' y=500>{{ selectedWord() }}</text>
+    <g transform='translate(40 525)'>
       <g transform='translate(100)' ng-click='resetPath()'>
         <rect x=0 y=0 width=100 height=50></rect>
         <text y=35 x=10 stroke='black' class='textbutton'>Cancel</text>
@@ -39,8 +39,8 @@
     </g>
     <!-- <input type=text ng-model='editCell.value' ng-change='refresh'/> -->
     <g ng-if='showAlphabet()' ng-init='x=40; w=28' ng-repeat='letter in alphabet' ng-attr-transform='translate({{$index*w+x}} 650)'
-      ng-mouseover='selectLetter(letter)'>
-      <text class='small' ng-attr-transform='rotate({{rotations[$index]}}) scale({{letter == editCell.suggestedValue ? 2 : 1 }})'>{{letter}}</text>
+      ng-mouseover='selectLetter(letter)' ng-click='toggleCommit(letter)'>
+      <text class='small' ng-class='{ highlighted: letter == editCell.suggestedValue }' ng-attr-transform='rotate({{rotations[$index]}}) scale({{letter == editCell.suggestedValue ? 2 : 1 }})'>{{letter}}</text>
     </g>
     </svg>
 {{ Math.sin(12) }}

@@ -9,12 +9,12 @@ button {
 }
 
 .selected > rect {
-	fill: red;
+	fill: #e6b8b3;
 	stroke: white;
 }
 
 .available > rect {
-	fill: green;
+	fill: #c8e8cf;
 	stroke: white;
 }
 
@@ -23,7 +23,7 @@ g > text {
 }
 
 rect {
-	fill: lightyellow;
+	fill: #c4e8ea;
 }
 
 text.small {
@@ -34,6 +34,10 @@ text.small {
 	font-family: arial;
 }
 
+text.highlighted {
+	fill: #e6b8b3;
+}
+
 .textbutton {
 	fill: black;
 	font-size: 24px;
@@ -41,10 +45,11 @@ text.small {
 
 text.letter {
 	stroke: black;
-	stroke-width: 2px;
+	stroke-width: 3px;
 	font-size: 62px;
 	font-weight: bold;
 	font-family: arial;
+	fill: #90cfe1;
 }
 
 

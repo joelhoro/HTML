@@ -84,10 +84,18 @@ angular.module('myApp',[])
   }
 
   $scope.selectLetter = function(letter) {
-    //console.debug("Selecting ", letter);
-    $scope.editCell.suggestedValue = letter;
+    if($scope.selectedLetter == "")
+      $scope.editCell.suggestedValue = letter;
   }
 
+  $scope.toggleCommit = function(letter) {
+    if($scope.selectedLetter == letter)
+      $scope.selectedLetter = "";
+    else {
+      $scope.selectedLetter = letter;
+      $scope.selectLetter(letter)
+    }
+  }
   
   $scope.resetPath = function() {
     $scope.path = [];
@@ -120,6 +128,8 @@ angular.module('myApp',[])
 
   $scope.resetPath();
 
+
+  $scope.selectedLetter = "";
 
   // TESTING
   function Assert(assertion, message) {
