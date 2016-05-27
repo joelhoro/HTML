@@ -1,0 +1,54 @@
+body {
+  margin: 30px;
+}
+
+button {
+  width: 50px;
+  height: 50px;
+  margin: 3px;
+}
+
+.selected > rect {
+	fill: red;
+	stroke: white;
+}
+
+.available > rect {
+	fill: green;
+	stroke: white;
+}
+
+g > text {
+	fill: white;
+}
+
+rect {
+	fill: lightyellow;
+}
+
+text.small {
+	font-size:36px;
+	stroke: black;
+	stroke-width: 2px;
+	font-weight: bold;
+	font-family: arial;
+}
+
+.textbutton {
+	fill: black;
+	font-size: 24px;
+}
+
+text.letter {
+	stroke: black;
+	stroke-width: 2px;
+	font-size: 62px;
+	font-weight: bold;
+	font-family: arial;
+}
+
+
+svg {
+  /*background-color: #EEEEEE;*/
+  border: 2px black solid;
+}

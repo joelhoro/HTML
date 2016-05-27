@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>WordGame</title>
+    
+    
+    
+    <link rel='stylesheet prefetch' href='..\pivottable\css\bootstrap.css'>
+
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    <div ng-app='myApp'>
+  <div ng-controller='myCtrl' ng-init='x=150; y=20; w=83; h=83'>
+    <svg width=800 height=700>
+    <g ng-repeat='row in g.grid' ng-attr-transform='translate(0 {{y+$index*w}})'>
+      <g ng-repeat='elt in row' ng-attr-transform='translate({{x+$index*w}})' ng-click='selectCell(elt)' class='cell' ng-class='{available: elt.available, selected: elt.selected}'>
+        <rect  ng-attr-x=0 ng-attr-y=0 ng-attr-width={{w*0.9}} ng-attr-height={{h*0.9}} class='empty' ></rect>
+        <text class='letter' ng-attr-x={{w/2*0.27}} ng-attr-y={{1.4*h/2}}>{{elt.CurrentValue()}}</text>
+      </g>
+    </g>
+    <text class='letter' x=150 y=500>{{ selectedWord() }}</text>
+    <g transform='translate(0 525)'>
+      <g transform='translate(100)' ng-click='resetPath()'>
+        <rect x=0 y=0 width=100 height=50></rect>
+        <text y=35 x=10 stroke='black' class='textbutton'>Cancel</text>
+      </g>
+      <g ng-if='pathIsComplete()' transform='translate(210)' ng-click='submitWord()'>
+        <rect x=0 y=0 width=100 height=50></rect>
+        <text y=35 x=10 stroke='black' class='textbutton'>Submit!</text>
+      </g>
+    </g>
+    <!-- <input type=text ng-model='editCell.value' ng-change='refresh'/> -->
+    <g ng-if='showAlphabet()' ng-init='x=40; w=28' ng-repeat='letter in alphabet' ng-attr-transform='translate({{$index*w+x}} 650)'
+      ng-mouseover='selectLetter(letter)'>
+      <text class='small' ng-attr-transform='rotate({{rotations[$index]}}) scale({{letter == editCell.suggestedValue ? 2 : 1 }})'>{{letter}}</text>
+    </g>
+    </svg>
+{{ Math.sin(12) }}
+  </div>
+</div>
+<script src="../pivottable/lib/angular.js"></script>
+<!-- 
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js'></script>
+ -->
+        <script src="js/index.js"></script>
+
+    
+    
+    
+  </body>
+</html>
